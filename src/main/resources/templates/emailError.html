@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
 <title th:utext="#{label.pages.home.title}">home</title>
 </head>
 <body>
+<div layout:fragment="content">
     <div class="container">
             <h1 class="alert alert-danger" th:utext="#{message.email.config.error}">error</h1>
     </div>
+</div>
 </body>
 
 </html>

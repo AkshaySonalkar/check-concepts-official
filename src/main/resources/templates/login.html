@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
 <title th:utext="#{label.pages.home.title}">Title</title>
 <script th:inline="javascript">
 	function validate() {
-        if (document.f.username.value == "" && document.f.password.value == "") {
-            alert(/*[[#{message.username} + #{message.password}]]*/);
-            document.f.username.focus();
-            return false;
-        }
-        if (document.f.username.value == "") {
-            alert(/*[[#{message.username}]]*/);
-            document.f.username.focus();
-            return false;
-        }
-        if (document.f.password.value == "") {
-            alert(/*[[#{message.password}]]*/);
-            document.f.password.focus();
-            return false;
-        }
-    }
-    
+		if (document.f.username.value == "" && document.f.password.value == "") {
+			alert(/*[[#{message.username} + #{message.password}]]*/);
+			document.f.username.focus();
+			return false;
+		}
+		if (document.f.username.value == "") {
+			alert(/*[[#{message.username}]]*/);
+			document.f.username.focus();
+			return false;
+		}
+		if (document.f.password.value == "") {
+			alert(/*[[#{message.password}]]*/);
+			document.f.password.focus();
+			return false;
+		}
+	}
 </script>
 <style type="text/css">
 .wrapper {
@@ -38,33 +37,33 @@ label {
 </head>
 
 <body>
-	<div th:if="${message != null}" class="alert alert-info"
-		th:utext="${message}">message</div>
+	<div layout:fragment="content">
+		<div th:if="${message != null}" class="alert alert-info"
+			th:utext="${message}">message</div>
 
 
-	<div th:if="${error != null}" class="alert alert-danger"
-		th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+		<div th:if="${error != null}" class="alert alert-danger"
+			th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
 
-	<div class="container">
-		<div class="row wrapper">
-			<h1 th:utext="#{label.form.loginTitle}">Header</h1>
-			<form name='f' action="login" method='POST'
-				onsubmit="return validate();">
-				<span id="welcometext">&nbsp;</span> <br />
-				<br /> <label class="col-sm-4" th:utext="#{label.form.loginEmail}">Email</label>
-				<span class="col-sm-8"><input class="form-control"
-					type='text' name='username' value='' /></span> <br />
-				<br /> <label class="col-sm-4" th:utext="#{label.form.loginPass}">password</label>
-				<span class="col-sm-8"><input class="form-control"
-					type='password' name='password' /></span> <br />
-				<br /> <input class="btn btn-primary" name="submit" type="submit"
-					th:value="#{label.form.submit}" />
+		<div class="container">
+			<div class="row wrapper">
+				<form name='f' action="login" method='POST' style="margin-top: 50px;"
+					onsubmit="return validate();">
+					<label class="col-sm-4" th:utext="#{label.form.loginEmail}">Email</label>
+					<span class="col-sm-8"><input class="form-control"
+						type='text' name='username' value='' /></span> <br /> <label
+						class="col-sm-4" th:utext="#{label.form.loginPass}">password</label>
+					<span class="col-sm-8"><input class="form-control"
+						type='password' name='password' /></span> <br /> <br /> <input
+						class="btn btn-primary" name="submit" type="submit"
+						th:value="#{label.form.submit}" />
 
-			</form>
-			<br /> <a class="btn btn-default" th:href="@{/registration.html}"
-				th:utext="#{label.form.loginSignUp}">signup</a>
-			<br /> <a class="btn btn-default" th:href="@{/forgetPassword.html}"
-				th:utext="#{message.resetPassword}">reset</a>
+				</form>
+				<br /> <a class="btn btn-light" th:href="@{/registration.html}"
+					th:utext="#{label.form.loginSignUp}">signup</a> <br /> <br /> <a
+					class="btn btn-light" th:href="@{/forgetPassword.html}"
+					th:utext="#{message.resetPassword}" style="margin-top: 10px;">reset</a>
+			</div>
 		</div>
 	</div>
 </body>

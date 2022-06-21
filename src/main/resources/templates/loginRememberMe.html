@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
 <title th:utext="#{label.pages.home.title}">Title</title>
 <script th:inline="javascript">
 	function validate() {
@@ -29,6 +30,7 @@ label{padding-left:0 !important}
 </style>
 </head>
 <body>
+<div layout:fragment="content">
 <div th:if="${param.message != null}" class="alert alert-info" th:utext="${param.message[0]}">message</div>
 
 
@@ -71,6 +73,7 @@ label{padding-left:0 !important}
             <a class="btn btn-default" th:href="@{/forgetPassword.html}" th:utext="#{message.resetPassword}">reset</a>
         </div>
     </div>
+</div>
 </body>
 
 </html>
