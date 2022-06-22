@@ -15,11 +15,10 @@ color:#000;
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container">
-        <div >
-            <h1 th:utext="#{label.form.title}">form</h1>
-            <br/>
+    <div class="container pt-3">
+        <div>
             <form action="/" method="POST" enctype="utf8" >
+            <div class="d-grid gap-3">
                 <div class="form-group row" >
                     <label for="firstName" class="col-sm-3" th:utext="#{label.user.firstName}">first</label>
                     <span class="col-sm-5"><input id="firstName" class="form-control" name="firstName" value="" required="required"/></span>
@@ -48,15 +47,15 @@ color:#000;
                     <span class="col-sm-5"><input id="matchPassword" class="form-control" name="matchingPassword" value="" type="password" required="required" autocomplete="new-password"/></span>
                     <span id="globalError" class="alert alert-danger col-sm-4" style="display:none"></span>
                 </div>
-                <br/>
+               </div>
                 <button type="submit" class="btn btn-primary" th:utext="#{label.form.submit}">submit</button>
             </form>
             <br/> 
             <a th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
         </div>
     </div>
-</div>
-<script th:inline="javascript">
+    
+    <script th:inline="javascript">
 var serverContext = [[@{/}]];
 
 $(document).ready(function () {
@@ -133,6 +132,8 @@ function register(event){
 }
 
 </script>
+</div>
+
 </body>
 
 </html>

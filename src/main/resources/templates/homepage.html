@@ -3,16 +3,15 @@
 xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
 <title th:utext="#{label.pages.home.title}">home</title>
 </head>
 <body>
 <div layout:fragment="content">
 
     <div class="container">
-	    <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:utext="#{label.pages.user.message}">user</div>
+	    <div sec:authorize="hasAuthority('ADMIN_PRIVILEGE')" th:utext="#{label.pages.user.message}">user</div>
 	
-	    <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:utext="#{label.pages.admin.message}"></div>
+	    <div sec:authorize="hasAuthority('ADMIN_PRIVILEGE')" th:utext="#{label.pages.admin.message}"></div>
 	     
 	    <p th:if="${param.user} != null" th:text="${param.user[0]}">user</p>
 	     

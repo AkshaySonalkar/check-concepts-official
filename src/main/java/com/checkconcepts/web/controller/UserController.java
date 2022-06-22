@@ -29,4 +29,10 @@ public class UserController {
         model.addAttribute("users", userService.getUsersFromSessionRegistry());
         return "users";
     }
+    
+    @GetMapping("/userProfile")
+    public String getUserProfile(final Locale locale, final Model model) {
+        model.addAttribute("userprof", "User Profile Data");
+        return "userProfile";
+    }
 }

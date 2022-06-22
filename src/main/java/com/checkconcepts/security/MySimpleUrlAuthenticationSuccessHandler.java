@@ -84,9 +84,9 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         boolean isAdmin = false;
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {
-            if (grantedAuthority.getAuthority().equals("READ_PRIVILEGE")) {
+            if (grantedAuthority.getAuthority().equals("USER_PRIVILEGE")) {
                 isUser = true;
-            } else if (grantedAuthority.getAuthority().equals("WRITE_PRIVILEGE")) {
+            } else if (grantedAuthority.getAuthority().equals("ADMIN_PRIVILEGE")) {
                 isAdmin = true;
                 isUser = false;
                 break;

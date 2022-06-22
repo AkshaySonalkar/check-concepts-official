@@ -189,5 +189,12 @@ public class RegistrationController {
         }
         return xfHeader.split(",")[0];
     }
+    
+    @GetMapping("/registration")
+    public String about(final HttpServletRequest request, final Model model) {
+        Locale locale = request.getLocale();
+        model.addAttribute("data", "Registration DATA");
+        return "registration";
+    }
 
 }

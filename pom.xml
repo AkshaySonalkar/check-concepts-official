@@ -150,6 +150,12 @@
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>${font-awesome.version}</version>
+        </dependency>
 
 	</dependencies>
 
@@ -239,6 +245,7 @@
 		<aerogear.version>1.0.0</aerogear.version>
 		<uap-java.version>1.4.0</uap-java.version>
 		<geoip2.version>2.15.0</geoip2.version>
+		<font-awesome.version>5.11.2</font-awesome.version>
 	</properties>
 
 </project>

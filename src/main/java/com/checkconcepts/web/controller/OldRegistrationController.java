@@ -192,7 +192,7 @@ public class OldRegistrationController {
     }
 
     @PostMapping("/user/savePassword")
-    @PreAuthorize("hasRole('READ_PRIVILEGE')")
+    @PreAuthorize("hasRole('USER_PRIVILEGE')")
     public String savePassword(final HttpServletRequest request, final Model model, @RequestParam("password") final String password) {
         final Locale locale = request.getLocale();
 

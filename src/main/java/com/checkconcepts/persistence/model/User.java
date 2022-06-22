@@ -153,5 +153,9 @@ public class User {
                 .append("]");
         return builder.toString();
     }
+    
+    public String getUserDisplayName() {
+    	return this.firstName.concat(" "+this.lastName);
+    }
 
 }

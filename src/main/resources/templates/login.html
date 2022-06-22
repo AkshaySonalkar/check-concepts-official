@@ -54,15 +54,15 @@ label {
 						type='text' name='username' value='' /></span> <br /> <label
 						class="col-sm-4" th:utext="#{label.form.loginPass}">password</label>
 					<span class="col-sm-8"><input class="form-control"
-						type='password' name='password' /></span> <br /> <br /> <input
+						type='password' name='password' /></span> <br /> <input
 						class="btn btn-primary" name="submit" type="submit"
 						th:value="#{label.form.submit}" />
 
 				</form>
-				<br /> <a class="btn btn-light" th:href="@{/registration.html}"
+				<br /> <a class="btn btn-light" th:href="@{/registration}"
 					th:utext="#{label.form.loginSignUp}">signup</a> <br /> <br /> <a
 					class="btn btn-light" th:href="@{/forgetPassword.html}"
-					th:utext="#{message.resetPassword}" style="margin-top: 10px;">reset</a>
+					th:utext="#{message.forgetPassword}" style="margin-top: 10px;">forget</a>
 			</div>
 		</div>
 	</div>

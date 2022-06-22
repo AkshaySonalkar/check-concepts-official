@@ -81,14 +81,16 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
             	.antMatchers("/").permitAll()
-                .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/layout*", "/about*", "/contact*", "/index*" , "/layout*",
+                .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/contact*", "/about*", "/index*", "/webjars/**",
                         "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*",
                         "/badUser*", "/user/resendRegistrationToken*" ,"/forgetPassword*", "/user/resetPassword*","/user/savePassword*","/updatePassword*",
                         "/user/changePassword*", "/emailError*", "/resources/**","/old/user/registration*","/successRegister*","/qrcode*","/user/enableNewLoc*")
                 .permitAll()
                 .antMatchers("/invalidSession*").anonymous()
                 .antMatchers("/user/updatePassword*").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-                .anyRequest().hasAuthority("READ_PRIVILEGE")
+                .antMatchers("/console*").hasAnyAuthority("ADMIN_PRIVILEGE")
+                .antMatchers("/userProfile").hasAnyAuthority("ADMIN_PRIVILEGE","USER_PRIVILEGE")
+                .anyRequest().hasAuthority("USER_PRIVILEGE")
                 .and()
             .formLogin()
                 .loginPage("/login")
