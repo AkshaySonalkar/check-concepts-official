@@ -10,9 +10,9 @@ layout:decorate="~{layout}">
 <body>
 <div layout:fragment="content">
     <div class="container">
-        <h1 id="error" class="alert alert-danger" th:if="${session[SPRING_SECURITY_LAST_EXCEPTION]}" th:utext="#{message.logoutError}">error</h1>
+        <h3 id="error" class="alert alert-danger" th:if="${session[SPRING_SECURITY_LAST_EXCEPTION]}" th:utext="#{message.logoutError}">error</h3>
                 
-        <h1 id="success" class="alert alert-info" th:if="${param.logSucc}" th:utext="#{message.logoutSucc}"> success</h1>
+        <h3 id="success" class="alert alert-info" th:if="${param.logSucc}" th:utext="#{message.logoutSucc}"> success</h3>
         <br/><br/><br/>
         <a class="btn btn-primary" th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
     </div>

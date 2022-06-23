@@ -22,33 +22,40 @@
 			return false;
 		}
 	}
-</script>
-<style type="text/css">
-.wrapper {
-	width: 500px;
-	margin-left: auto;
-	margin-right: auto
-}
 
-label {
-	padding-left: 0 !important
-}
-</style>
+	window.onload = function() {
+		displayMessage();
+	};
+
+	function displayMessage() {
+
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const message = urlParams.get('message');
+
+		const div = document.getElementById('message');
+		if (div.style.display === "none" && message != null) {
+			div.style.display = "block";
+			div.textContent = message;
+		}
+	}
+</script>
 </head>
 
 <body>
 	<div layout:fragment="content">
-		<div th:if="${message != null}" class="alert alert-info"
-			th:utext="${message}">message</div>
-
-
-		<div th:if="${error != null}" class="alert alert-danger"
-			th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-
 		<div class="container">
-			<div class="row wrapper">
-				<form name='f' action="login" method='POST' style="margin-top: 50px;"
-					onsubmit="return validate();">
+			<div th:if="${message != null}" class="alert alert-info"
+				th:utext="${message}">message</div>
+
+			<div id="message" th:if="${message == null}" style="display: none;"
+				class="alert alert-info"></div>
+
+
+			<div th:if="${error != null}" class="alert alert-danger"
+				th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+			<div class="row">
+				<form name='f' action="login" method='POST' onsubmit="return validate();">
 					<label class="col-sm-4" th:utext="#{label.form.loginEmail}">Email</label>
 					<span class="col-sm-8"><input class="form-control"
 						type='text' name='username' value='' /></span> <br /> <label
@@ -61,8 +68,8 @@ label {
 				</form>
 				<br /> <a class="btn btn-light" th:href="@{/registration}"
 					th:utext="#{label.form.loginSignUp}">signup</a> <br /> <br /> <a
-					class="btn btn-light" th:href="@{/forgetPassword.html}"
-					th:utext="#{message.forgetPassword}" style="margin-top: 10px;">forget</a>
+					class="btn btn-light" th:href="@{/forgetPassword}"
+					th:utext="#{message.forgetPassword}">forget</a>
 			</div>
 		</div>
 	</div>

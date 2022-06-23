@@ -191,10 +191,17 @@ public class RegistrationController {
     }
     
     @GetMapping("/registration")
-    public String about(final HttpServletRequest request, final Model model) {
+    public String registration(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "Registration DATA");
         return "registration";
+    }
+    
+    @GetMapping("/forgetPassword")
+    public String forgetPassword(final HttpServletRequest request, final Model model) {
+        Locale locale = request.getLocale();
+        model.addAttribute("data", "forgetPassword DATA");
+        return "forgetPassword";
     }
 
 }
