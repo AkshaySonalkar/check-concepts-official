@@ -14,7 +14,31 @@
 <link th:rel="stylesheet"
 	href="../../../resources/css/bootstrap.min.css"
 	th:href="@{/resources/css/bootstrap.min.css}" />
-<link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.11.2/css/all.css} "/>
+<link th:rel="stylesheet"
+	th:href="@{/webjars/font-awesome/5.11.2/css/all.css} " />
+
+<style type="text/css">
+#footer-bottom {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.alignleft {
+	width: 33.33333%;
+	text-align: left;
+}
+
+.aligncenter {
+	width: 33.33333%;
+	text-align: center;
+}
+
+.alignright {
+	width: 33.33333%;
+	text-align: right;
+}
+</style>
+
 </head>
 <body>
 
@@ -29,8 +53,8 @@
 
 		<div class="collapse navbar-collapse" id="navbar">
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item active"><a class="nav-link" th:href="@{/}" th:utext="#{label.pages.home.title}">Home</a>
-				</li>
+				<li class="nav-item active"><a class="nav-link" th:href="@{/}"
+					th:utext="#{label.pages.home.title}">Home</a></li>
 				<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
 						Us</a></li>
 				<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
@@ -41,11 +65,13 @@
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
 					role="button" data-bs-toggle="dropdown" aria-expanded="false"
 					sec:authentication="name"> </a>
-					<ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="right: 0;">
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown"
+						style="right: 0;">
 						<li><a class="dropdown-item" th:href="@{/userProfile}">Profile</a></li>
 						<li><a class="dropdown-item" href="#">Another action</a></li>
 						<li><hr class="dropdown-divider"></li>
-						<li><a class="dropdown-item" th:href="@{/logout}" th:utext="#{label.pages.logout}">Logout</a></li>
+						<li><a class="dropdown-item" th:href="@{/logout}"
+							th:utext="#{label.pages.logout}">Logout</a></li>
 					</ul>
 				</li>
 
@@ -65,8 +91,8 @@
 			<h3>Check-Concepts</h3>
 			<h5 style="margin: auto;">Don't read it, Understand it with
 				Check-Concepts :)</h5>
-			<p>Check-Concepts is a website where you will find great
-				contents on technical, non-technical topics.</p>
+			<p>Check-Concepts is a website where you will find great contents
+				on technical, non-technical topics.</p>
 			<ul class="socials">
 				<li><a href="#"><i class="fab fa-github"></i></a></li>
 				<li><a href="#"><i class="fab fa-twitter"></i></a></li>
@@ -74,19 +100,13 @@
 				<li><a href="#"><i class="fab fa-youtube"></i></a></li>
 			</ul>
 		</div>
-		<div class="footer-bottom">
-			<p class="text-muted">&copy; 2022 Check-Concepts. All rights
-					reserved.</p>
-			<div class="footer-menu">
-				<ul class="f-menu">
-					<li><a href="/CheckConcepts/" class="text-muted">Home</a></li>
-					<li><a href="/CheckConcepts/AboutUs" class="text-muted">About</a></li>
-					<li><a href="mailto:feedback@check-concepts.com" class="text-muted">Contact</a></li>
-					<!-- <li><a href="">Blog</a></li> -->
-				</ul>
-			</div>
-		</div>
 
+		<div id="footer-bottom">
+			<p class="alignleft"></p>
+			<p class="aligncenter text-muted">&copy; 2022 Check-Concepts. All
+				rights reserved.</p>
+			<p class="alignright"></p>
+		</div>
 	</footer>
 
 	<!-- Optional Section -->
