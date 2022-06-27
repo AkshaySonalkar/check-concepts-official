@@ -12,9 +12,6 @@
 <link th:rel="stylesheet" href="../../../resources/css/bootstrap.css"
 	th:href="@{/resources/css/bootstrap.css}" />
 <link th:rel="stylesheet"
-	href="../../../resources/css/bootstrap.min.css"
-	th:href="@{/resources/css/bootstrap.min.css}" />
-<link th:rel="stylesheet"
 	th:href="@{/webjars/font-awesome/5.11.2/css/all.css} " />
 
 <style type="text/css">
@@ -37,46 +34,81 @@
 	width: 33.33333%;
 	text-align: right;
 }
+
+.dropdown-menu.show {
+    left: unset !important;
+    right: 0 !important;
+}
 </style>
 
 </head>
+
 <body>
 
-	<!-- Main Navigation -->
-	<nav class="navbar navbarheader navbar-expand-md navbar-light bg-white">
-		<a class="navbar-brand" th:href="@{/}">Check-Concepts</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbar" aria-controls="navbar" aria-expanded="false"
-			aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" th:href="@{/}">Check-Concepts</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-		<div class="collapse navbar-collapse" id="navbar">
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item active"><a class="nav-link" th:href="@{/}"
-					th:utext="#{label.pages.home.title}">Home</a></li>
-				<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
-						Us</a></li>
-				<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
-						Us</a></li>
-				<li sec:authorize="!isAuthenticated()" class="nav-item"><a
-					class="nav-link" th:href="@{/login}">Login</a></li>
-				<li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-					role="button" data-bs-toggle="dropdown" aria-expanded="false"
-					sec:authentication="name"> </a>
-					<ul class="dropdown-menu" aria-labelledby="navbarDropdown"
-						style="right: 0;">
-						<li><a class="dropdown-item" th:href="@{/userProfile}">Profile</a></li>
-						<li><a class="dropdown-item" href="#">Another action</a></li>
-						<li><hr class="dropdown-divider"></li>
-						<li><a class="dropdown-item" th:href="@{/logout}"
-							th:utext="#{label.pages.logout}">Logout</a></li>
-					</ul>
-				</li>
+					<!-- <li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Dropdown </a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="#">Action</a></li>
+							<li><a class="dropdown-item" href="#">Another action</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="#">Something else
+									here</a></li>
+						</ul></li> -->
 
+				</ul>
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0" sec:authorize="!isAuthenticated()">
+					<li class="nav-item"><a class="nav-link" th:href="@{/}"
+						th:utext="#{label.pages.home.title}">Home</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
+							Us</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
+							Us</a></li>
+					<li  class="nav-item"><a
+						class="nav-link" th:href="@{/login}">Login</a></li>
+				</ul>
 
-			</ul>
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu"
+					sec:authorize="isAuthenticated()">
+					<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link" th:href="@{/}"
+						th:utext="#{label.pages.home.title}">Home</a></li>
+					<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link" th:href="@{/console}"
+						th:utext="#{label.pages.home.title}">Home</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
+							Us</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
+							Us</a></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fas fa-user"></i>
+					</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="#"><i
+									class="fas fa-sliders-h fa-fw"></i> Account</a></li>
+							<li><a class="dropdown-item" href="#"><i
+									class="fas fa-cog fa-fw"></i> Settings</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" th:href="@{/logout}"
+							th:utext="#{label.pages.logout}"><i
+									class="fas fa-sign-out-alt fa-fw"></i> Log Out</a></li>
+						</ul></li>
+				</ul>
+
+			</div>
 		</div>
 	</nav>
 
@@ -114,8 +146,12 @@
 
 
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+		integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
 		crossorigin="anonymous"></script>
 
 </body>

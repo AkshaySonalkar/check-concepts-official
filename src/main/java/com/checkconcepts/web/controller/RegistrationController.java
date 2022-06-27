@@ -86,7 +86,8 @@ public class RegistrationController {
                     model.addAttribute("message", message);
                 }
         );
-
+        System.out.println("Heyyyyyyyyyyyyyyyyyyyyyyyyy");
+        model.addAttribute("data", "Admin Console Data");
         return new ModelAndView("console", model);
     }
 

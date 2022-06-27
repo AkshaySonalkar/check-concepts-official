@@ -82,6 +82,8 @@ public class RegistrationRestController {
             final String token = UUID.randomUUID().toString();
             userService.createPasswordResetTokenForUser(user, token);
             mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), token, user));
+        }else {
+        	return new GenericResponse(messages.getMessage("message.userNotFound", null, request.getLocale()));
         }
         return new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
     }

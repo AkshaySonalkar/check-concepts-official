@@ -1,7 +1,12 @@
 package com.checkconcepts.security;
 
-import com.checkconcepts.persistence.model.User;
-import com.checkconcepts.service.DeviceService;
+import java.io.IOException;
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +19,13 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Collection;
+import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.service.DeviceService;
 
 @Component("myAuthenticationSuccessHandler")
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -40,7 +43,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(30 * 60);
+            session.setMaxInactiveInterval(60 * 60);
 
             String username;
             if (authentication.getPrincipal() instanceof User) {
@@ -100,9 +103,10 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
              else {
              	username = authentication.getName();
              }
-
+            
             return "/homepage.html?user="+username;
         } else if (isAdmin) {
+        	
             return "/console";
         } else {
             throw new IllegalStateException();

@@ -15,6 +15,7 @@ public class PublicDashboardController {
     public String login(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "DASHBOARD DATA");
+        System.out.println("Heyyyyyyyyyyyyyyyyyyyyyyyyy");
         return "index";
     }
 	
@@ -22,6 +23,7 @@ public class PublicDashboardController {
     public String contact(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "CONTACT DATA");
+        System.out.println("Heyyyyyyyyyyyyyyyyyyyyyyyyy");
         return "contact";
     }
 	
@@ -29,6 +31,7 @@ public class PublicDashboardController {
     public String about(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "ABOUT DATA");
+        System.out.println("Heyyyyyyyyyyyyyyyyyyyyyyyyy");
         return "about";
     }
 
