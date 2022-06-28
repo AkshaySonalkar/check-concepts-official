@@ -92,7 +92,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/staff/**").hasAnyAuthority("STAFF_PRIVILEGE")
                 .antMatchers("/enduser/**").hasAnyAuthority("USER_PRIVILEGE")
                 .antMatchers("/common/**").hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
-				/* .anyRequest().hasAuthority("READ_PRIVILEGE") */
+				.anyRequest().hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
                 .and()
             .formLogin()
                 .loginPage("/login")

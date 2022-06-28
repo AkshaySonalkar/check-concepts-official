@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE"></title>
+<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Check-Concepts</title>
 
 <link th:rel="stylesheet" href="../../../resources/css/main.css"
 	th:href="@{/resources/css/main.css}" />
@@ -83,7 +83,7 @@
 
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu"
 					sec:authorize="isAuthenticated()">
-					<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link" th:href="@{/user/userConsole}"
+					<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link" th:href="@{/enduser/userConsole}"
 						th:utext="#{label.pages.home.title}">Home</a></li>
 					<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link" th:href="@{/admin/adminConsole}"
 						th:utext="#{label.pages.home.title}">Home</a></li>

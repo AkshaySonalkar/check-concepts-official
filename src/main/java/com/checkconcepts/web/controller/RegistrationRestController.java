@@ -1,5 +1,29 @@
 package com.checkconcepts.web.controller;
 
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.checkconcepts.persistence.model.User;
 import com.checkconcepts.persistence.model.VerificationToken;
 import com.checkconcepts.registration.OnRegistrationCompleteEvent;
@@ -9,24 +33,6 @@ import com.checkconcepts.web.dto.PasswordDto;
 import com.checkconcepts.web.dto.UserDto;
 import com.checkconcepts.web.error.InvalidOldPasswordException;
 import com.checkconcepts.web.util.GenericResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 public class RegistrationRestController {
@@ -110,13 +116,22 @@ public class RegistrationRestController {
     // Change user password
     @PostMapping("/user/updatePassword")
     public GenericResponse changeUserPassword(final Locale locale, @Valid PasswordDto passwordDto) {
-        final User user = userService.findUserByEmail(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
+        final User user = currentUser();/*userService.findUserByEmail(((org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());*/
         if (!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())) {
             throw new InvalidOldPasswordException();
         }
         userService.changeUserPassword(user, passwordDto.getNewPassword());
         return new GenericResponse(messages.getMessage("message.updatePasswordSuc", null, locale));
     }
+    
+     public User currentUser() {
+    	  Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	  if (auth == null || auth instanceof AnonymousAuthenticationToken) {
+    	    return null;
+    	  }
+    	  String email = ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername();
+    	  return userService.findUserByEmail(email);
+    	}
 
     // ============== NON-API ============
 

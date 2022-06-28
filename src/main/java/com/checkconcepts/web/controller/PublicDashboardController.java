@@ -22,6 +22,7 @@ public class PublicDashboardController {
     public String contact(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "CONTACT DATA");
+        model.addAttribute("CONTENT_TITLE", "CONTACT DATA");
         return "contact";
     }
 	

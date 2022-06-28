@@ -4,10 +4,31 @@
       layout:decorate="~{layout.html}">
 <head>
     <title>Welcome to Our Site</title>
+    <script th:inline="javascript">
+
+	window.onload = function() {
+		displayMessage();
+	};
+
+	function displayMessage() {
+
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const message = urlParams.get('message');
+
+		const div = document.getElementById('message');
+		if (div.style.display === "none" && message != null) {
+			div.style.display = "block";
+			div.textContent = message;
+		}
+	}
+</script>
 </head>
 <body>
 
 <div layout:fragment="content">
+<div id="message" th:if="${message == null}" style="display: none;"
+				class="alert alert-info"></div>
     <section class="my-5">
     <div th:each="dataa : ${data}">
 			<p th:utext="${dataa}">Data</p>
