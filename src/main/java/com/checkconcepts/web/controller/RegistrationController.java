@@ -68,26 +68,13 @@ public class RegistrationController {
             // }
             authWithoutPassword(user);
             model.addAttribute("messageKey", "message.accountVerified");
-            return new ModelAndView("redirect:/console", model);
+            return new ModelAndView("redirect:/adminConsole", model);
         }
 
         model.addAttribute("messageKey", "auth.message." + result);
         model.addAttribute("expired", "expired".equals(result));
         model.addAttribute("token", token);
         return new ModelAndView("redirect:/badUser", model);
-    }
-
-    @GetMapping("/console")
-    public ModelAndView console(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey) {
-
-        Locale locale = request.getLocale();
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
-        model.addAttribute("data", "Admin Console Data");
-        return new ModelAndView("console", model);
     }
 
     @GetMapping("/badUser")

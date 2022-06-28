@@ -83,9 +83,9 @@
 
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu"
 					sec:authorize="isAuthenticated()">
-					<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link" th:href="@{/}"
+					<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link" th:href="@{/user/userConsole}"
 						th:utext="#{label.pages.home.title}">Home</a></li>
-					<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link" th:href="@{/console}"
+					<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link" th:href="@{/admin/adminConsole}"
 						th:utext="#{label.pages.home.title}">Home</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
 							Us</a></li>

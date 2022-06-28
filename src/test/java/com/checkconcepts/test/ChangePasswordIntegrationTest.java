@@ -85,14 +85,14 @@ public class ChangePasswordIntegrationTest {
     public void givenNotAuthenticatedUser_whenLoggingIn_thenCorrect() {
         final RequestSpecification request = RestAssured.given().auth().form("test@test.com", "test", formConfig);
 
-        request.when().get("/console").then().assertThat().statusCode(200).and().body(containsString("home"));
+        request.when().get("/adminConsole").then().assertThat().statusCode(200).and().body(containsString("home"));
     }
 
     @Test
     public void givenNotAuthenticatedUser_whenBadPasswordLoggingIn_thenCorrect() {
         final RequestSpecification request = RestAssured.given().auth().form("XXXXXXXX@XXXXXXXXX.com", "XXXXXXXX", formConfig).redirects().follow(false);
 
-        request.when().get("/console").then().statusCode(IsNot.not(200)).body(is(emptyOrNullString()) );
+        request.when().get("/adminConsole").then().statusCode(IsNot.not(200)).body(is(emptyOrNullString()) );
     }
 
     @Test

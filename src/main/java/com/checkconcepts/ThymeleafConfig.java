@@ -11,7 +11,7 @@ public class ThymeleafConfig {
     @Bean
     public ClassLoaderTemplateResolver userTemplateResolver() {
         ClassLoaderTemplateResolver userTemplateResolver = new ClassLoaderTemplateResolver();
-        userTemplateResolver.setPrefix("user/");
+        userTemplateResolver.setPrefix("enduser/");
         userTemplateResolver.setSuffix(".html");
         userTemplateResolver.setTemplateMode(TemplateMode.HTML);
         userTemplateResolver.setCharacterEncoding("UTF-8");
