@@ -67,8 +67,10 @@ public class UserController {
             user.setId(id);
             return "update-user";
         }
-        
-        userRepository.save(user);
+        User userObj = userRepository.findById(id).get();
+        userObj.setEmail(user.getEmail());
+        userObj.setFirstName(user.getFirstName());
+        userRepository.save(userObj);
 
         return "redirect:/admin/usersinfo";
     }
