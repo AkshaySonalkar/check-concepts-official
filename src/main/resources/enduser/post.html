@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+
+<head>
+    <title th:text="${post.title}">Post Details</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+<main id="posts">
+    <article>
+        <h2 class="title" th:text="${post.title}">Post Title</h2>
+        <div class="date">
+            <i>Posted on</i>
+            <span th:text="${#dates.format(post.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+            <span th:if="${post.author}" th:remove="tag">
+                    <i>by</i> <span th:text="${post.author.firstName != null ?
+                        post.author.firstName : post.author.email}">Svetlin Nakov</span>
+                </span>
+        </div>
+        <p class="content" th:utext="${post.body}">Post content</p>
+    </article>
+</main>
+</div>
+</body>
+
+</html>
+

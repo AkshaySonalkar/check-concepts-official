@@ -29,19 +29,26 @@
 <div layout:fragment="content">
 <div id="message" th:if="${message == null}" style="display: none;"
 				class="alert alert-info"></div>
-    <section class="my-5">
-    <div th:each="dataa : ${data}">
-			<p th:utext="${dataa}">Data</p>
-		</div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Welcome to Our Site</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur [....]</p>
-                </div>
-            </div>
+    <aside>
+    <h2>Recent Posts</h2>
+    <a href="#" th:each="p : ${latest5posts}" th:text="${p.title}"
+       th:href="@{/posts/view/{id}/(id=${p.id})}">Work Begins on HTML5.1</a>
+</aside>
+
+<main id="posts">
+    <article th:each="p : ${latest3posts}">
+        <h2 class="title" th:text="${p.title}">Post Title</h2>
+        <div class="date">
+            <i>Posted on</i>
+            <span th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+            <span th:if="${p.author}" th:remove="tag">
+                    <i>by</i> <span th:text="${p.author.firstName != null ?
+                        p.author.firstName : p.author.email}">Svetlin Nakov</span>
+                </span>
         </div>
-    </section>
+        <p class="content" th:utext="${p.body}">Post content</p>
+    </article>
+</main>
 </div>
 
 </body>

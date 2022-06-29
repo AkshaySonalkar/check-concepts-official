@@ -47,7 +47,7 @@
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
-			<a class="navbar-brand" th:href="@{/}">Check-Concepts</a>
+			<a class="navbar-brand" th:href="@{/public/}">Check-Concepts</a>
 			<button class="navbar-toggler" type="button"
 				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -71,11 +71,11 @@
 
 				</ul>
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0" sec:authorize="!isAuthenticated()">
-					<li class="nav-item"><a class="nav-link" th:href="@{/}"
+					<li class="nav-item"><a class="nav-link" th:href="@{/public/}"
 						th:utext="#{label.pages.home.title}">Home</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
+					<li class="nav-item"><a class="nav-link" th:href="@{/public/contact}">Contact
 							Us</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
+					<li class="nav-item"><a class="nav-link" th:href="@{/public/about}">About
 							Us</a></li>
 					<li  class="nav-item"><a
 						class="nav-link" th:href="@{/login}">Login</a></li>
@@ -87,9 +87,9 @@
 						th:utext="#{label.pages.home.title}">Home</a></li>
 					<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link" th:href="@{/admin/adminConsole}"
 						th:utext="#{label.pages.home.title}">Home</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/contact}">Contact
+					<li class="nav-item"><a class="nav-link" th:href="@{/public/contact}">Contact
 							Us</a></li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
+					<li class="nav-item"><a class="nav-link" th:href="@{/public/about}">About
 							Us</a></li>
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
@@ -97,7 +97,7 @@
 							<i class="fas fa-user"></i>
 					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#"><i
+							<li><a class="dropdown-item" th:href="@{/admin/usersinfo}"><i
 									class="fas fa-sliders-h fa-fw"></i> Account</a></li>
 							<li><a class="dropdown-item" href="#"><i
 									class="fas fa-cog fa-fw"></i> Settings</a></li>
