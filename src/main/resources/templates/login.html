@@ -44,7 +44,18 @@
 
 <body>
 	<div layout:fragment="content">
-		<div class="container">
+		<div th:if="${message != null}" class="alert alert-info"
+			th:utext="${message}">message</div>
+
+		<div id="message" th:if="${message == null}" style="display: none;"
+			class="alert alert-info"></div>
+
+
+		<div th:if="${error != null}" class="alert alert-danger"
+			th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+
+
+		<!-- <div class="container">
 			<div th:if="${message != null}" class="alert alert-info"
 				th:utext="${message}">message</div>
 
@@ -71,7 +82,61 @@
 					class="btn btn-light" th:href="@{/forgetPassword}"
 					th:utext="#{message.forgetPassword}">forget</a>
 			</div>
-		</div>
+		</div> -->
+
+
+
+		<section class="vh-100">
+			<div class="container py-5 h-100">
+				<div
+					class="row d-flex justify-content-center align-items-center h-100">
+					<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+						<div class="card shadow-2-strong" style="border-radius: 1rem;">
+							<div class="card-body p-5 text-center">
+
+								<h3 class="mb-5">Sign in</h3>
+								<form name='f' action="login" method='POST'
+									onsubmit="return validate();">
+
+
+									<div class="form-floating mb-3">
+										<input type="email" class="form-control" id="floatingInput"
+											placeholder="name@example.com" name='username' value=''>
+										<label for="floatingInput" th:utext="#{label.form.loginEmail}">Email
+											address</label>
+									</div>
+									<div class="form-floating">
+										<input type="password" class="form-control"
+											id="floatingPassword" placeholder="Password" name='password'>
+										<label for="floatingPassword"
+											th:utext="#{label.form.loginPass}">Password</label>
+									</div>
+									<br />
+
+									<div class="d-grid gap-2 col-6 mx-auto">
+										<button class="btn btn-primary btn-block"
+											th:value="#{label.form.submit}" type="submit">Login</button>
+									</div>
+
+								</form>
+
+
+
+								<hr class="my-4">
+
+								<div class="d-grid gap-2">
+									<a class="btn btn-light" th:href="@{/registration}"
+										th:utext="#{label.form.loginSignUp}">signup</a> <a
+										class="btn btn-light" th:href="@{/forgetPassword}"
+										th:utext="#{message.forgetPassword}">forget</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	</div>
 </body>
 
