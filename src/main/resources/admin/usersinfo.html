@@ -1,41 +1,306 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" 
-xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
 <head>
-<title >Users Information</title>
+	<title>Users Information</title>
+	<style>
+		.password-verdict {
+			color: #000;
+		}
+
+		label span {
+			display: inline-block;
+			margin-left: 10px;
+		}
+	</style>
+	<script th:src="@{/resources/pwstrength.js}"></script>
 </head>
-    <body>
-    <div layout:fragment="content">
-        <div th:switch="${users}" class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 th:case="null">No users yet!</h2>
-                    <div th:case="*">
-                        <h2>Users</h2>
-                        <table class="table table-striped table-responsive-md">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td th:text="${user.firstName}"></td>
-                                    <td th:text="${user.email}"></td>
-                                    <td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a></td>
-                                    <td><a th:href="@{/admin/delete/{id}(id=${user.id})}" class="btn btn-primary"><i class="fas fa-user-times ml-2"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>      
-                    <p class="my-5"><a href="/admin/signup" class="btn btn-primary"><i class="fas fa-user-plus ml-2"></i></a></p>
-                </div>
-            </div>
-        </div>
-        </div>
-    </body>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+
+			<div class="row">
+
+
+				<div class="col-md-6 card">
+					<h5 class="text-center">Add Users</h5>
+					<div class="container pt-3">
+						<div>
+							<form action="/" method="POST" enctype="utf8">
+								<div class="d-grid gap-3">
+
+									<div class="form-group row">
+										<div class="form-check">
+											<label class="form-check-label">
+												<input class="form-check-input radio-inline" type="radio"
+													style="padding-left:15px;" name="roleName" id="gridRadios1"
+													value="ROLE_ADMIN" checked>
+												ROLE_ADMIN</label>
+											<label class="form-check-label" style="padding-left:30px;">
+												<input class="form-check-input radio-inline" type="radio"
+													style="padding-left:15px;" name="roleName" id="gridRadios2"
+													value="ROLE_STAFF">
+												ROLE_STAFF</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="firstName" class="col-sm-3"
+											th:utext="#{label.user.firstName}">first</label>
+										<span class="col-sm-5"><input id="firstName" class="form-control"
+												name="firstName" value="" required="required" /></span>
+										<span id="firstNameError" class="alert alert-danger col-sm-4"
+											style="display:none"></span>
+									</div>
+									<div class="form-group row">
+										<label for="lastName" class="col-sm-3"
+											th:utext="#{label.user.lastName}">last</label>
+										<span class="col-sm-5"><input id="lastName" class="form-control" name="lastName"
+												value="" required="required" /></span>
+										<span id="lastNameError" class="alert alert-danger col-sm-4"
+											style="display:none"></span>
+
+									</div>
+									<div class="form-group row">
+										<label for="email" class="col-sm-3" th:utext="#{label.user.email}">email</label>
+										<span class="col-sm-5"><input id="email" type="email" class="form-control"
+												name="email" value="" required="required" /></span>
+										<span id="emailError" class="alert alert-danger col-sm-4"
+											style="display:none"></span>
+
+									</div>
+									<div class="form-group row">
+										<label for="password" class="col-sm-3"
+											th:utext="#{label.user.password}">password</label>
+										<span class="col-sm-5"><input id="password" class="form-control" name="password"
+												value="" type="password" required="required"
+												autocomplete="new-password" /></span>
+										<span id="passwordError" class="alert alert-danger col-sm-4"
+											style="display:none"></span>
+									</div>
+									<div class="form-group row">
+										<label for="matchPassword" class="col-sm-3"
+											th:utext="#{label.user.confirmPass}">confirm</label>
+										<span class="col-sm-5"><input id="matchPassword" class="form-control"
+												name="matchingPassword" value="" type="password" required="required"
+												autocomplete="new-password" /></span>
+										<span id="globalError" class="alert alert-danger col-sm-4"
+											style="display:none"></span>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary"
+									th:utext="#{label.form.create}">create</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div th:switch="${adminusers}" class="col-md-6 card">
+					<h2 th:case="null">No admin users yet!</h2>
+					<div th:case="*">
+						<h5 class="text-center">Admin Users</h5>
+						<table class="table table-striped table-bordered" id="adminUserTable">
+							<thead>
+								<tr>
+									<th scope="col">First Name</th>
+									<th scope="col">Last Name</th>
+									<th scope="col">Email</th>
+									<th scope="col">Role</th>
+									<th scope="col">Edit</th>
+									<th scope="col">(De)activate</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="user : ${adminusers}">
+									<td th:text="${user.firstName}"></td>
+									<td th:text="${user.lastName}"></td>
+									<td th:text="${user.email}"></td>
+									<td th:text="${user.roles.get(0).name}"></td>
+									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+												class="fas fa-user-edit ml-2"></i></a></td>
+									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
+										<a th:href="@{/admin/activate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:unless="${user.accountActive}"><i class="fas fa-user-check"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+			<br />
+			<div class="row">
+
+				<div th:switch="${staffusers}" class="col-md-6 card">
+					<h2 th:case="null">No staff users yet!</h2>
+					<div th:case="*">
+						<h5 class="text-center">Staff Users</h5>
+						<table class="table table-striped table-bordered" id="staffUserTable">
+							<thead>
+								<tr>
+									<th scope="col">First Name</th>
+									<th scope="col">Last Name</th>
+									<th scope="col">Email</th>
+									<th scope="col">Role</th>
+									<th scope="col">Edit</th>
+									<th scope="col">(De)activate</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="user : ${staffusers}">
+									<td th:text="${user.firstName}"></td>
+									<td th:text="${user.lastName}"></td>
+									<td th:text="${user.email}"></td>
+									<td th:text="${user.roles.get(0).name}"></td>
+
+									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+												class="fas fa-user-edit ml-2"></i></a></td>
+									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
+										<a th:href="@{/admin/activate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:unless="${user.accountActive}"><i class="fas fa-user-check"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div th:switch="${endusers}" class="col-md-6 card">
+					<h2 th:case="null">No end users yet!</h2>
+					<div th:case="*">
+						<h5 class="text-center">End Users</h5>
+						<table class="table table-striped table-bordered" id="endUserTable">
+							<thead>
+								<tr>
+									<th scope="col">First Name</th>
+									<th scope="col">Last Name</th>
+									<th scope="col">Email</th>
+									<th scope="col">Role</th>
+									<th scope="col">Edit</th>
+									<th scope="col">(De)activate</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="user : ${endusers}">
+									<td th:text="${user.firstName}"></td>
+									<td th:text="${user.lastName}"></td>
+									<td th:text="${user.email}"></td>
+									<td th:text="${user.roles.get(0).name}"></td>
+									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+												class="fas fa-user-edit ml-2"></i></a></td>
+									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
+										<a th:href="@{/admin/activate/{id}(id=${user.id})}" class="btn btn-primary"
+											th:unless="${user.accountActive}"><i class="fas fa-user-check"></i></i></a>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+		<script th:inline="javascript">
+			var serverContext = [[@{/}]];
+
+			$(document).ready(function () {
+				$('form').submit(function (event) {
+					register(event);
+				});
+
+				$(":password").keyup(function () {
+					if ($("#password").val() != $("#matchPassword").val()) {
+						$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+					} else {
+						$("#globalError").html("").hide();
+					}
+				});
+
+				options = {
+					common: {minChar: 8},
+					ui: {
+						showVerdictsInsideProgressBar: true,
+						showErrors: true,
+						errorMessages: {
+							wordLength: /*[[#{error.wordLength}]]*/,
+							wordNotEmail: /*[[#{error.wordNotEmail}]]*/,
+							wordSequences: /*[[#{error.wordSequences}]]*/,
+							wordLowercase: /*[[#{error.wordLowercase}]]*/,
+							wordUppercase: /*[[#{error.wordUppercase}]]*/,
+							wordOneNumber: /*[[#{error.wordOneNumber}]]*/,
+							wordOneSpecialChar: /*[[#{error.wordOneSpecialChar}]]*/
+		    		}
+					}
+				};
+				$('#password').pwstrength(options);
+			});
+
+			function register(event) {
+				event.preventDefault();
+				$(".alert").html("").hide();
+				$(".error-list").html("");
+				if ($("#password").val() != $("#matchPassword").val()) {
+					$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+					return;
+				}
+				var formData = $('form').serialize();
+				$.post(serverContext + "user/admin/registration", formData, function (data) {
+					if (data.message == "success") {
+						window.location.href = serverContext + "admin/usersinfo";
+					}
+
+				})
+					.fail(function (data) {
+						if (data.responseJSON.error == "UserAlreadyExist") {
+							$("#emailError").show().html(data.responseJSON.message);
+						}
+						else if (data.responseJSON.error.indexOf("InternalError") > -1) {
+							window.location.href = serverContext + "login?message=" + data.responseJSON.message;
+						}
+						else {
+							var errors = $.parseJSON(data.responseJSON.message);
+							$.each(errors, function (index, item) {
+								if (item.field) {
+									$("#" + item.field + "Error").show().append(item.defaultMessage + "<br/>");
+								}
+								else {
+									$("#globalError").show().append(item.defaultMessage + "<br/>");
+								}
+
+							});
+						}
+					});
+			}
+
+		</script>
+
+		<script>
+			$(document).ready(function () {
+				$('#adminUserTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+
+				$('#staffUserTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+
+				$('#endUserTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+			});
+
+		</script>
+	</div>
+</body>
+
 </html>

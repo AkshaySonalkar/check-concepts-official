@@ -29,6 +29,7 @@ import com.checkconcepts.persistence.model.VerificationToken;
 import com.checkconcepts.registration.OnRegistrationCompleteEvent;
 import com.checkconcepts.security.ISecurityUserService;
 import com.checkconcepts.service.IUserService;
+import com.checkconcepts.web.dto.ContactDto;
 import com.checkconcepts.web.dto.PasswordDto;
 import com.checkconcepts.web.dto.UserDto;
 import com.checkconcepts.web.error.InvalidOldPasswordException;
@@ -70,6 +71,22 @@ public class RegistrationRestController {
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return new GenericResponse("success");
     }
+    
+    @PostMapping("/user/admin/registration")
+    public GenericResponse registerUserStaffAccount(@Valid final UserDto accountDto, final HttpServletRequest request) {
+        LOGGER.debug("Registering user account with information: {}", accountDto);
+        if(accountDto.getRoleName().equalsIgnoreCase("ROLE_STAFF")) {
+        	final User registered = userService.registerNewStaffUserAccount(accountDto);
+        	userService.addUserLocation(registered, getClientIP(request));
+        }
+        if(accountDto.getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
+        	final User registered = userService.registerNewAdminUserAccount(accountDto);
+        	userService.addUserLocation(registered, getClientIP(request));
+        }
+        
+//        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
+        return new GenericResponse("success");
+    }
 
     // User activation - verification
     @GetMapping("/user/resendRegistrationToken")
@@ -84,6 +101,9 @@ public class RegistrationRestController {
     @PostMapping("/user/resetPassword")
     public GenericResponse resetPassword(final HttpServletRequest request, @RequestParam("email") final String userEmail, final Model model) {
         final User user = userService.findUserByEmail(userEmail);
+        if(user!=null && !user.isAccountActive()) {
+        	return new GenericResponse(messages.getMessage("auth.message.deactivated", null, request.getLocale()));
+        }
         if (user != null) {
             final String token = UUID.randomUUID().toString();
             userService.createPasswordResetTokenForUser(user, token);
@@ -111,6 +131,16 @@ public class RegistrationRestController {
         } else {
             return new GenericResponse(messages.getMessage("auth.message.invalid", null, locale));
         }
+    }
+    
+    //Contact Us
+    @PostMapping("/public/contact/mail")
+    public GenericResponse contactUs(@Valid final ContactDto contactDto, final HttpServletRequest request) {
+        LOGGER.debug("Contact Us: {}", contactDto);
+        mailSender.send(constructContactEmail(contactDto.getSubject(), contactDto.getMessage(), contactDto.getEmail(), contactDto.getName()));
+        mailSender.send(constructContactReplyEmail(contactDto.getSubject(), contactDto.getMessage(), contactDto.getEmail(), contactDto.getName()));
+//        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
+        return new GenericResponse("success");
     }
 
     // Change user password
@@ -152,6 +182,24 @@ public class RegistrationRestController {
         email.setSubject(subject);
         email.setText(body);
         email.setTo(user.getEmail());
+        email.setFrom(env.getProperty("support.email"));
+        return email;
+    }
+    
+    private SimpleMailMessage constructContactEmail(String subject, String message, String emailFrom, String name) {
+        final SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(message + "\r\n" + "Mail from user name: "+ name+ " email: "+emailFrom);
+        email.setTo(env.getProperty("support.email"));
+        email.setFrom(env.getProperty("support.email"));
+        return email;
+    }
+    
+    private SimpleMailMessage constructContactReplyEmail(String subject, String message, String emailFrom, String name) {
+        final SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText("Hello "+name+"\r\n"+" we have received your request. We are going through your query. We will get back to you within 24 hrs. "+"\r\n"+"Best Regards,"+"\r\n"+"Check-Concepts Team");
+        email.setTo(emailFrom);
         email.setFrom(env.getProperty("support.email"));
         return email;
     }

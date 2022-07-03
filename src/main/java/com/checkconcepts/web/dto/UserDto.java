@@ -30,6 +30,8 @@ public class UserDto {
     private String email;
 
     private boolean isUsing2FA;
+    
+    private String roleName;
 
     public String getEmail() {
         return email;
@@ -89,7 +91,15 @@ public class UserDto {
         this.isUsing2FA = isUsing2FA;
     }
 
-    @Override
+    public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	@Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("UserDto [firstName=")

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
+<head>
+<title th:utext="#{label.pages.home.title}">home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+	<div class="container">
+		<h2>Currently logged in users</h2>
+		<div th:each="user : ${users}">
+			<p th:utext="${user}">user</p>
+		</div>
+	</div>
+	</div>
+</body>
+
+</html>

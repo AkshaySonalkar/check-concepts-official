@@ -26,7 +26,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
-@ComponentScan(basePackages = { "com.checkconcepts.web" })
+@ComponentScan(basePackages = { "com.checkconcepts.web.*" })
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
 
@@ -39,7 +39,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
-        registry.addViewController("/public/").setViewName("forward:/public/index");
+        registry.addViewController("/").setViewName("forward:/public/index");
         registry.addViewController("/loginRememberMe");
         registry.addViewController("/customLogin");
         registry.addViewController("/registration.html");

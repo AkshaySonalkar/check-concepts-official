@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+<title th:utext="#{label.pages.home.title}">home</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <h3 id="error" class="alert alert-danger" th:if="${session[SPRING_SECURITY_LAST_EXCEPTION]}" th:utext="#{message.logoutError}">error</h3>
+                
+        <h3 id="success" class="alert alert-info" th:if="${param.logSucc}" th:utext="#{message.logoutSucc}"> success</h3>
+        <br/><br/><br/>
+        <a class="btn btn-primary" th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
+    </div>
+</div>
+</body>
+
+</html>

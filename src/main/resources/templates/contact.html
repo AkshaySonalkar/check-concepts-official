@@ -1,31 +1,168 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+
 <head>
-    <title th:utext="${CONTENT_TITLE}">Contact Us</title>
+	<title th:utext="${CONTENT_TITLE}">Contact Us</title>
+	<script th:inline="javascript">
+		window.onload = function () {
+			displayMessage();
+		};
+
+		function displayMessage() {
+
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const message = urlParams.get('message');
+
+			const div = document.getElementById('message');
+			if (div.style.display === "none" && message != null) {
+				div.style.display = "block";
+				div.textContent = message;
+			}
+		}
+
+	</script>
 </head>
+
 <body>
 
-<div layout:fragment="content">
-    <section class="my-5">
-    <div th:each="dataa : ${data}">
-			<p th:utext="${dataa}">Data</p>
-		</div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Contact Us</h1>
-                    <p>Please send us an email at help@example.com.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
+	<div layout:fragment="content">
+		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
 
-<th:block th:fragment="optional">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-</th:block>
+		<!--Section: Contact v.2-->
+		<section class="mb-4">
+
+			<!--Section heading-->
+			<h2 class="h1-responsive font-weight-bold text-center my-4">Contact us</h2>
+			<!--Section description-->
+			<p class="text-center w-responsive mx-auto mb-5">Do you have any questions? Please do not hesitate to
+				contact us directly. Our team will come back to you within
+				a matter of hours to help you.</p>
+
+			<div class="row">
+
+				<!--Grid column-->
+				<div class="col-md-9 mb-md-0 mb-5">
+					<form action="/" method="POST" enctype="utf8">
+						<!--Grid row-->
+						<div class="row">
+
+							<!--Grid column-->
+							<div class="col-md-6">
+								<div class="form-floating md-form mb-0">
+									<input type="text" class="form-control" id="floatingInput" required
+										placeholder="ABC XYZ" name='name' value=''>
+									<label for="floatingInput">Your Name</label>
+								</div>
+							</div>
+
+							<!--Grid column-->
+
+							<!--Grid column-->
+							<div class="col-md-6">
+								<div class="form-floating md-form mb-0">
+									<input type="email" class="form-control" id="email" required
+										placeholder="abc@xyz.com" name='email' value=''>
+									<label for="email">Your Email</label>
+								</div>
+							</div>
+							<!--Grid column-->
+
+						</div>
+						<!--Grid row-->
+
+						<!--Grid row-->
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-floating md-form mb-0">
+									<input type="text" class="form-control" id="subject" required
+										placeholder="abc xyz pqr" name='subject' value=''>
+									<label for="subject">Subject</label>
+								</div>
+							</div>
+						</div>
+						<!--Grid row-->
+
+						<!--Grid row-->
+						<div class="row">
+
+							<!--Grid column-->
+
+							<div class="col-md-6">
+								<div class="md-form mb-0">
+									<textarea type="text" id="message" name="message" rows="4"
+										placeholder="your message ..." required
+										class="form-control md-textarea"></textarea>
+								</div>
+							</div>
+						</div>
+						<!--Grid row-->
+						<div class="text-center text-md-left">
+							<button type="submit" class="btn btn-primary">Send</button>
+						</div>
+					</form>
+
+					<div class="status"></div>
+				</div>
+				<!--Grid column-->
+
+				<!--Grid column-->
+				<div class="col-md-3 text-center">
+					<ul class="list-unstyled mb-0">
+						<li><i class="fas fa-map-marker-alt fa-2x"></i>
+							<p>Medshingi, Sangola, Solapur 413307</p>
+						</li>
+
+						<li><i class="fas fa-phone mt-4 fa-2x"></i>
+							<p>+91 9448428031</p>
+						</li>
+
+						<li><i class="fas fa-envelope mt-4 fa-2x"></i>
+							<p>feedback@check-concepts.com</p>
+							<p>check.authentic.concepts@gmail.com</p>
+						</li>
+					</ul>
+				</div>
+				<!--Grid column-->
+
+			</div>
+
+		</section>
+		<!--Section: Contact v.2-->
+
+		<script th:inline="javascript">
+			var serverContext = [[@{/}]];
+
+			$(document).ready(function () {
+				$('form').submit(function (event) {
+					register(event);
+				});
+			});
+
+			function register(event) {
+				event.preventDefault();
+				var formData = $('form').serialize();
+				$.post(serverContext + "public/contact/mail", formData, function (data) {
+					if (data.message == "success") {
+						window.location.href = serverContext + "public/contact?message=We have successfully received your message. Thank you for your message !";
+					}
+
+				})
+					.fail(function (data) {
+						if (data.responseJSON.error == "UserAlreadyExist") {
+							$("#emailError").show().html(data.responseJSON.message);
+						}
+					});
+			}
+		</script>
+
+	</div>
+
+	<th:block th:fragment="optional">
+
+	</th:block>
 
 </body>
+
 </html>

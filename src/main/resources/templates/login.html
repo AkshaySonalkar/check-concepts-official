@@ -1,61 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-	layout:decorate="~{layout}">
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
 <head>
-<title th:utext="#{label.pages.home.title}">Title</title>
-<script th:inline="javascript">
-	function validate() {
-		if (document.f.username.value == "" && document.f.password.value == "") {
-			alert(/*[[#{message.username} + #{message.password}]]*/);
-			document.f.username.focus();
-			return false;
+	<title th:utext="#{label.pages.home.title}">Title</title>
+	<script th:inline="javascript">
+		function validate() {
+			if (document.f.username.value == "" && document.f.password.value == "") {
+				alert(/*[[#{message.username} + #{message.password}]]*/);
+				document.f.username.focus();
+				return false;
+			}
+			if (document.f.username.value == "") {
+				alert(/*[[#{message.username}]]*/);
+				document.f.username.focus();
+				return false;
+			}
+			if (document.f.password.value == "") {
+				alert(/*[[#{message.password}]]*/);
+				document.f.password.focus();
+				return false;
+			}
 		}
-		if (document.f.username.value == "") {
-			alert(/*[[#{message.username}]]*/);
-			document.f.username.focus();
-			return false;
+
+		window.onload = function () {
+			displayMessage();
+		};
+
+		function displayMessage() {
+
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const message = urlParams.get('message');
+
+			const div = document.getElementById('message');
+			if (div.style.display === "none" && message != null) {
+				div.style.display = "block";
+				div.textContent = message;
+			}
 		}
-		if (document.f.password.value == "") {
-			alert(/*[[#{message.password}]]*/);
-			document.f.password.focus();
-			return false;
-		}
-	}
-
-	window.onload = function() {
-		displayMessage();
-	};
-
-	function displayMessage() {
-
-		const queryString = window.location.search;
-		const urlParams = new URLSearchParams(queryString);
-		const message = urlParams.get('message');
-
-		const div = document.getElementById('message');
-		if (div.style.display === "none" && message != null) {
-			div.style.display = "block";
-			div.textContent = message;
-		}
-	}
-</script>
+	</script>
 </head>
 
 <body>
 	<div layout:fragment="content">
-		<div th:if="${message != null}" class="alert alert-info"
-			th:utext="${message}">message</div>
+		<div class="container-fluid">
+			<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
 
-		<div id="message" th:if="${message == null}" style="display: none;"
-			class="alert alert-info"></div>
-
-
-		<div th:if="${error != null}" class="alert alert-danger"
-			th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+			<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
 
 
-		<!-- <div class="container">
+			<div th:if="${error != null}" class="alert alert-danger"
+				th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+
+
+			<!-- <div class="container">
 			<div th:if="${message != null}" class="alert alert-info"
 				th:utext="${message}">message</div>
 
@@ -86,57 +85,55 @@
 
 
 
-		<section class="vh-100">
-			<div class="container py-5 h-100">
-				<div
-					class="row d-flex justify-content-center align-items-center h-100">
-					<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-						<div class="card shadow-2-strong" style="border-radius: 1rem;">
-							<div class="card-body p-5 text-center">
+			<section>
+				<div class="container py-5 h-100">
+					<div class="row d-flex justify-content-center align-items-center h-100">
+						<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+							<div class="card shadow-2-strong" style="border-radius: 1rem;">
+								<div class="card-body p-5 text-center">
 
-								<h3 class="mb-5">Sign in</h3>
-								<form name='f' action="login" method='POST'
-									onsubmit="return validate();">
+									<h3 class="mb-5">Sign in</h3>
+									<form name='f' action="login" method='POST' onsubmit="validate();">
 
 
-									<div class="form-floating mb-3">
-										<input type="email" class="form-control" id="floatingInput"
-											placeholder="name@example.com" name='username' value=''>
-										<label for="floatingInput" th:utext="#{label.form.loginEmail}">Email
-											address</label>
+										<div class="form-floating mb-3">
+											<input type="email" class="form-control" id="floatingInput"
+												placeholder="name@example.com" name='username' value=''>
+											<label for="floatingInput" th:utext="#{label.form.loginEmail}">Email
+												address</label>
+										</div>
+										<div class="form-floating">
+											<input type="password" class="form-control" id="floatingPassword"
+												placeholder="Password" name='password'>
+											<label for="floatingPassword"
+												th:utext="#{label.form.loginPass}">Password</label>
+										</div>
+										<br />
+
+										<div class="d-grid gap-2 col-6 mx-auto">
+											<button class="btn btn-primary btn-block" th:value="#{label.form.submit}"
+												type="submit">Login</button>
+										</div>
+
+									</form>
+
+
+
+									<hr class="my-4">
+
+									<div class="d-grid gap-2">
+										<a class="btn btn-light" th:href="@{/registration}"
+											th:utext="#{label.form.loginSignUp}">signup</a> <a class="btn btn-light"
+											th:href="@{/forgetPassword}" th:utext="#{message.forgetPassword}">forget</a>
 									</div>
-									<div class="form-floating">
-										<input type="password" class="form-control"
-											id="floatingPassword" placeholder="Password" name='password'>
-										<label for="floatingPassword"
-											th:utext="#{label.form.loginPass}">Password</label>
-									</div>
-									<br />
 
-									<div class="d-grid gap-2 col-6 mx-auto">
-										<button class="btn btn-primary btn-block"
-											th:value="#{label.form.submit}" type="submit">Login</button>
-									</div>
-
-								</form>
-
-
-
-								<hr class="my-4">
-
-								<div class="d-grid gap-2">
-									<a class="btn btn-light" th:href="@{/registration}"
-										th:utext="#{label.form.loginSignUp}">signup</a> <a
-										class="btn btn-light" th:href="@{/forgetPassword}"
-										th:utext="#{message.forgetPassword}">forget</a>
 								</div>
-
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</div>
 	</div>
 </body>
 

@@ -1,9 +1,11 @@
 package com.checkconcepts.security;
 
-import com.checkconcepts.persistence.dao.UserRepository;
-import com.checkconcepts.persistence.model.Privilege;
-import com.checkconcepts.persistence.model.Role;
-import com.checkconcepts.persistence.model.User;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,10 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.checkconcepts.persistence.dao.UserRepository;
+import com.checkconcepts.persistence.model.Privilege;
+import com.checkconcepts.persistence.model.Role;
+import com.checkconcepts.persistence.model.User;
 
 @Service("userDetailsService")
 @Transactional
@@ -48,6 +50,10 @@ public class MyUserDetailsService implements UserDetailsService {
             final User user = userRepository.findByEmail(email);
             if (user == null) {
                 throw new UsernameNotFoundException("No user found with username: " + email);
+            }
+            
+            if(!user.isAccountActive()) {
+            	throw new RuntimeException("deactivated");
             }
 
             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));

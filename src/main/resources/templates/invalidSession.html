@@ -4,6 +4,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
 layout:decorate="~{layout}">
 <head>
 <title th:utext="#{label.pages.home.title}">home</title>
+<meta http-equiv="Refresh" th:content="|2; url=${url}|" />
 </head>
 <body>
 <div layout:fragment="content">

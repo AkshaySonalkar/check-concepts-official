@@ -13,6 +13,10 @@ import com.checkconcepts.persistence.model.NewLocationToken;
 public interface IUserService {
 
     User registerNewUserAccount(UserDto accountDto);
+    
+    User registerNewStaffUserAccount(UserDto accountDto);
+    
+    User registerNewAdminUserAccount(UserDto accountDto);
 
     User getUser(String verificationToken);
 

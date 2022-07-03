@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
+
+<head>
+<title>QR code</title>
+
+
+</head>
+<body>
+<div layout:fragment="content">
+	<div id="qr">
+	    <p>Scan this Barcode using Google Authenticator app on your phone to use it later in login
+	           <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Android</a> and 
+	           <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605">iPhone</a>
+	    </p>
+	    <br/>
+	    <img th:src="${param.qr[0]}"/>
+	</div>
+          
+    <a href="/login" class="btn btn-primary">Go to login page</a>
+</div>
+</body>
+</html>

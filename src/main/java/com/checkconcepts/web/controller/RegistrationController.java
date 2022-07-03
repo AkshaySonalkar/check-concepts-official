@@ -68,7 +68,7 @@ public class RegistrationController {
             // }
             authWithoutPassword(user);
             model.addAttribute("messageKey", "message.accountVerified");
-            return new ModelAndView("redirect:/adminConsole", model);
+            return new ModelAndView("redirect:/enduser/userConsole", model);
         }
 
         model.addAttribute("messageKey", "auth.message." + result);

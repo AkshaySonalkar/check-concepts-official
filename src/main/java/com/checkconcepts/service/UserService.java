@@ -90,6 +90,40 @@ public class UserService implements IUserService {
         user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
         return userRepository.save(user);
     }
+    
+    @Override
+    public User registerNewStaffUserAccount(final UserDto accountDto) {
+        if (emailExists(accountDto.getEmail())) {
+            throw new UserAlreadyExistException("There is an account with that email address: " + accountDto.getEmail());
+        }
+        final User user = new User();
+
+        user.setFirstName(accountDto.getFirstName());
+        user.setLastName(accountDto.getLastName());
+        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        user.setEmail(accountDto.getEmail());
+        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_STAFF")));
+        user.setEnabled(Boolean.TRUE);
+        user.setAccountActive(true);
+        return userRepository.save(user);
+    }
+    
+    @Override
+    public User registerNewAdminUserAccount(final UserDto accountDto) {
+        if (emailExists(accountDto.getEmail())) {
+            throw new UserAlreadyExistException("There is an account with that email address: " + accountDto.getEmail());
+        }
+        final User user = new User();
+
+        user.setFirstName(accountDto.getFirstName());
+        user.setLastName(accountDto.getLastName());
+        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        user.setEmail(accountDto.getEmail());
+        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_ADMIN")));
+        user.setEnabled(Boolean.TRUE);
+        user.setAccountActive(true);
+        return userRepository.save(user);
+    }
 
     @Override
     public User getUser(final String verificationToken) {
@@ -196,6 +230,7 @@ public class UserService implements IUserService {
         }
 
         user.setEnabled(true);
+        user.setAccountActive(true);
         // tokenRepository.delete(verificationToken);
         userRepository.save(user);
         return TOKEN_VALID;

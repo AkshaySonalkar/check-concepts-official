@@ -31,7 +31,6 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         super.onAuthenticationFailure(request, response, exception);
 
         final Locale locale = localeResolver.resolveLocale(request);
-
         String errorMessage = messages.getMessage("message.badCredentials", null, locale);
 
         if (exception.getMessage()
@@ -46,6 +45,9 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         } else if (exception.getMessage()
             .equalsIgnoreCase("unusual location")) {
             errorMessage = messages.getMessage("auth.message.unusual.location", null, locale);
+        } else if (exception.getMessage()
+                .equalsIgnoreCase("deactivated")) {
+                errorMessage = messages.getMessage("auth.message.deactivated", null, locale);
         }
 
         request.getSession()

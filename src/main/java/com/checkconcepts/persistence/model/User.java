@@ -37,6 +37,8 @@ public class User {
     private String password;
 
     private boolean enabled;
+    
+    private boolean accountActive;
 
     private String secret;
 
@@ -172,4 +174,11 @@ public class User {
     	return this.firstName.concat(" "+this.lastName);
     }
 
+	public boolean isAccountActive() {
+		return accountActive;
+	}
+
+	public void setAccountActive(boolean accountActive) {
+		this.accountActive = accountActive;
+	}
 }

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+layout:decorate="~{layout}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+<title th:utext="#{label.pages.home.title}">home</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container">
+    <h1 class="alert alert-success" th:utext="#{message.regSucc}">success</h1>
+    <a th:href="@{/login}" th:utext="#{label.login}">login</a>
+</div>
+</div>
+</body>
+</html>

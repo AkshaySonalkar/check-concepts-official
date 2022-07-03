@@ -19,7 +19,7 @@ public class StaffPagesNavigationController {
 	@Autowired
     private MessageSource messages;
 
-	@GetMapping("/staffConsole")
+	@GetMapping("/staff/staffConsole")
     public ModelAndView staffConsole(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey) {
 
         Locale locale = request.getLocale();

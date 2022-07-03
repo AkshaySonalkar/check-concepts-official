@@ -26,6 +26,10 @@ public class PublicDashboardController {
 
     @Autowired
     private NotificationService notificationService;
+    
+    private String getAppUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    }
 	
 	@GetMapping("/public/index")
     public String login(final HttpServletRequest request, final Model model) {
@@ -53,7 +57,7 @@ public class PublicDashboardController {
     public String about(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "ABOUT DATA");
-        return "about";
+        return "aboutme";
     }
 	
 	@RequestMapping("/public/posts/view/{id}")
@@ -69,6 +73,13 @@ public class PublicDashboardController {
 
         model.addAttribute("post", post);
         return "/post";
+    }
+	
+	@GetMapping("/public/invalidSession")
+    public String invalidSession(final HttpServletRequest request, final Model model) {
+        Locale locale = request.getLocale();
+        model.addAttribute("url", getAppUrl(request));
+        return "invalidSession";
     }
 
 }
