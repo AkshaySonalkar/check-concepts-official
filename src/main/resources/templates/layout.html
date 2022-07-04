@@ -50,8 +50,8 @@ src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
-
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<header class="header" id="header">
+	<div class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container-fluid">
 			<a class="navbar-brand" th:href="@{/public/index}">Check-Concepts</a>
 			<button class="navbar-toggler" type="button"
@@ -118,8 +118,8 @@ src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 
 			</div>
 		</div>
-	</nav>
-
+	</div>
+</header>
 	<!-- Content Section -->
 	<section layout:fragment="content" style="min-height: 200px">
 		<p>This is filled by the content template.</p>
