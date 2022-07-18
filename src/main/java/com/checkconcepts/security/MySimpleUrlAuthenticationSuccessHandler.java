@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.checkconcepts.persistence.model.User;
 import com.checkconcepts.service.DeviceService;
+import com.checkconcepts.service.UserService;
 
 @Component("myAuthenticationSuccessHandler")
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -34,6 +35,9 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 
     @Autowired
     private DeviceService deviceService;
+    
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private Environment env;
@@ -54,6 +58,8 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             }
             LoggedUser user = new LoggedUser(username, activeUserStore);
             session.setAttribute("user", user);
+            User userObj = userService.findUserByEmail(username);
+            session.setAttribute("fullname", userObj.getFirstName().concat(" "+userObj.getLastName()));
         }
         clearAuthenticationAttributes(request);
 

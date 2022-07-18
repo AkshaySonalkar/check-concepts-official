@@ -31,7 +31,7 @@ public class PublicDashboardController {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 	
-	@GetMapping("/public/index")
+	@GetMapping("/index")
     public String login(final HttpServletRequest request, final Model model) {
 		
 
@@ -45,7 +45,7 @@ public class PublicDashboardController {
         return "index";
     }
 	
-	@GetMapping("/public/contact")
+	@GetMapping("/contact")
     public String contact(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "CONTACT DATA");
@@ -53,14 +53,14 @@ public class PublicDashboardController {
         return "contact";
     }
 	
-	@GetMapping("/public/about")
+	@GetMapping("/about")
     public String about(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("data", "ABOUT DATA");
         return "aboutme";
     }
 	
-	@RequestMapping("/public/posts/view/{id}")
+	@RequestMapping("/posts/view/{id}")
     public String view(@PathVariable("id") Long id,
                        Model model) {
         Post post = postService.findById(id);
@@ -75,7 +75,7 @@ public class PublicDashboardController {
         return "/post";
     }
 	
-	@GetMapping("/public/invalidSession")
+	@GetMapping("/invalidSession")
     public String invalidSession(final HttpServletRequest request, final Model model) {
         Locale locale = request.getLocale();
         model.addAttribute("url", getAppUrl(request));

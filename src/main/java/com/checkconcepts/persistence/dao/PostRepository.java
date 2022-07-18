@@ -11,7 +11,7 @@ import com.checkconcepts.persistence.model.Post;
 @Repository
 public interface PostRepository extends
         JpaRepository<Post, Long> {
-    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.author ORDER BY p.date DESC")
+    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.author ORDER BY p.updatedAt DESC")
     List<Post> findLatest5Posts();
 }
 

@@ -86,8 +86,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/badUser*", "/user/resendRegistrationToken*" ,"/forgetPassword*", "/user/resetPassword*","/user/savePassword*","/updatePassword*",
                         "/user/changePassword*", "/emailError*", "/resources/**","/old/user/registration*","/successRegister*","/qrcode*","/user/enableNewLoc*")
                 .permitAll()
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/public/invalidSession*").anonymous()
+                .antMatchers("/invalidSession*").anonymous()
                 .antMatchers("/user/updatePassword*").hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN_PRIVILEGE")
                 .antMatchers("/staff/**").hasAnyAuthority("STAFF_PRIVILEGE")
@@ -104,7 +103,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
                 .and()
             .sessionManagement()
-                .invalidSessionUrl("/public/invalidSession")
+                .invalidSessionUrl("/invalidSession")
                 .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
                 .sessionFixation().none()
             .and()

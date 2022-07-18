@@ -134,7 +134,7 @@ public class RegistrationRestController {
     }
     
     //Contact Us
-    @PostMapping("/public/contact/mail")
+    @PostMapping("/contact/mail")
     public GenericResponse contactUs(@Valid final ContactDto contactDto, final HttpServletRequest request) {
         LOGGER.debug("Contact Us: {}", contactDto);
         mailSender.send(constructContactEmail(contactDto.getSubject(), contactDto.getMessage(), contactDto.getEmail(), contactDto.getName()));

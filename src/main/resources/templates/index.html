@@ -1,55 +1,151 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout.html}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout.html}">
+
 <head>
-    <title>Welcome to Our Site</title>
-    <script th:inline="javascript">
+	<title>Welcome to Our Site</title>
+	<script th:inline="javascript">
 
-	window.onload = function() {
-		displayMessage();
-	};
+		window.onload = function () {
+			displayMessage();
+		};
 
-	function displayMessage() {
+		function displayMessage() {
 
-		const queryString = window.location.search;
-		const urlParams = new URLSearchParams(queryString);
-		const message = urlParams.get('message');
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const message = urlParams.get('message');
 
-		const div = document.getElementById('message');
-		if (div.style.display === "none" && message != null) {
-			div.style.display = "block";
-			div.textContent = message;
+			const div = document.getElementById('message');
+			if (div.style.display === "none" && message != null) {
+				div.style.display = "block";
+				div.textContent = message;
+			}
 		}
-	}
-</script>
+	</script>
 </head>
+
 <body>
 
-<div layout:fragment="content">
-<div id="message" th:if="${message == null}" style="display: none;"
-				class="alert alert-info"></div>
-    <aside>
-    <h2>Recent Posts</h2>
-    <a href="#" th:each="p : ${latest5posts}" th:text="${p.title}"
-       th:href="@{/posts/view/{id}/(id=${p.id})}">Work Begins on HTML5.1</a>
-</aside>
+	<div layout:fragment="content">
+		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
+		<!--	<aside>
+		<h2>Recent Posts</h2>
+		<a href="#" th:each="p : ${latest5posts}" th:text="${p.title}" th:href="@{/posts/view/{id}/(id=${p.id})}">Work
+			Begins on HTML5.1</a>
+	</aside>
+	
+	<main id="posts">
+		<article th:each="p : ${latest3posts}">
+			<h2 class="title" th:text="${p.title}">Post Title</h2>
+			<div class="date">
+				<i>Posted on</i>
+				<span th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</span>
+				<span th:if="${p.author}" th:remove="tag">
+					<i>by</i> <span th:text="${p.author.firstName != null ?
+	                        p.author.firstName : p.author.email}">Svetlin Nakov</span>
+				</span>
+			</div>
+			<p class="content" th:utext="${p.body}">Post content</p>
+		</article>
+	</main> -->
 
-<main id="posts">
-    <article th:each="p : ${latest3posts}">
-        <h2 class="title" th:text="${p.title}">Post Title</h2>
-        <div class="date">
-            <i>Posted on</i>
-            <span th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</span>
-            <span th:if="${p.author}" th:remove="tag">
-                    <i>by</i> <span th:text="${p.author.firstName != null ?
-                        p.author.firstName : p.author.email}">Svetlin Nakov</span>
-                </span>
-        </div>
-        <p class="content" th:utext="${p.body}">Post content</p>
-    </article>
-</main>
-</div>
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+			<div class="col d-flex align-items-start">
+				<div class="card ms-3">
+					<img src="..." class="card-img-top" alt="...">
+					<div class="card-body">
+						<h5 class="card-title">Card title</h5>
+						<p class="card-text">Some quick example text to build on the card title and make up the bulk of
+							the card's content.</p>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">An item</li>
+						<li class="list-group-item">A second item</li>
+						<li class="list-group-item">A third item</li>
+					</ul>
+					<div class="card-body">
+						<a href="#" class="card-link">Card link</a>
+						<a href="#" class="card-link">Another link</a>
+					</div>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<div class="card ms-3">
+					<img src="..." class="card-img-top" alt="...">
+					<div class="card-body">
+						<h5 class="card-title">Card title</h5>
+						<p class="card-text">Some quick example text to build on the card title and make up the bulk of
+							the card's content.</p>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">An item</li>
+						<li class="list-group-item">A second item</li>
+						<li class="list-group-item">A third item</li>
+					</ul>
+					<div class="card-body">
+						<a href="#" class="card-link">Card link</a>
+						<a href="#" class="card-link">Another link</a>
+					</div>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#calendar3"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#home"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#speedometer2"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#toggles2"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#geo-fill"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+			<div class="col d-flex align-items-start">
+				<svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+					<use xlink:href="#tools"></use>
+				</svg>
+				<div>
+					<h4 class="fw-bold mb-0">Featured title</h4>
+					<p>Paragraph of text beneath the heading to explain the heading.</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
+
 </html>

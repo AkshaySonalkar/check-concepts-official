@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,10 +23,15 @@ public class Category {
 	@Column(nullable = false, length = 300)
     private String categoryName;
 	
+	@Lob @Column(nullable = false)
+    private String description;
+	
 	private boolean premium;
 	
+	private boolean isTech;
+	
 	@OneToMany(mappedBy = "categoryType")
-    private Set<Post> posts = new HashSet<Post>();
+    private Set<SubCategory> subCategories = new HashSet<SubCategory>();
 
 	public Long getId() {
 		return id;
@@ -42,6 +48,14 @@ public class Category {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public boolean isPremium() {
 		return premium;
@@ -51,11 +65,19 @@ public class Category {
 		this.premium = premium;
 	}
 
-	public Set<Post> getPosts() {
-		return posts;
+	public Set<SubCategory> getSubCategories() {
+		return subCategories;
 	}
 
-	public void setPosts(Set<Post> posts) {
-		this.posts = posts;
+	public void setSubCategories(Set<SubCategory> subCategories) {
+		this.subCategories = subCategories;
+	}
+
+	public boolean isTech() {
+		return isTech;
+	}
+
+	public void setTech(boolean isTech) {
+		this.isTech = isTech;
 	}
 }
