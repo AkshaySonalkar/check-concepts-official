@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -40,155 +41,166 @@ import java.util.stream.Collectors;
 @Controller
 public class RegistrationController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private IUserService userService;
+	@Autowired
+	private IUserService userService;
 
-    @Autowired
-    private ISecurityUserService securityUserService;
+	@Autowired
+	private ISecurityUserService securityUserService;
 
-    @Autowired
-    private MessageSource messages;
+	@Autowired
+	private MessageSource messages;
 
-    public RegistrationController() {
-        super();
-    }
+	public RegistrationController() {
+		super();
+	}
 
-    @GetMapping("/registrationConfirm")
-    public ModelAndView confirmRegistration(final HttpServletRequest request, final ModelMap model, @RequestParam("token") final String token) throws UnsupportedEncodingException {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        final String result = userService.validateVerificationToken(token);
-        if (result.equals("valid")) {
-            final User user = userService.getUser(token);
-            // if (user.isUsing2FA()) {
-            // model.addAttribute("qr", userService.generateQRUrl(user));
-            // return "redirect:/qrcode.html?lang=" + locale.getLanguage();
-            // }
-            authWithoutPassword(user);
-            model.addAttribute("messageKey", "message.accountVerified");
-            return new ModelAndView("redirect:/enduser/userConsole", model);
-        }
+	@GetMapping("/registrationConfirm")
+	public ModelAndView confirmRegistration(final HttpServletRequest request, final ModelMap model,
+			@RequestParam("token") final String token) throws UnsupportedEncodingException {
+		Locale locale = request.getLocale();
+		model.addAttribute("lang", locale.getLanguage());
+		final String result = userService.validateVerificationToken(token);
+		final HttpSession session = request.getSession(false);
+		if (result.equals("valid")) {
+			final User user = userService.getUser(token);
+			// if (user.isUsing2FA()) {
+			// model.addAttribute("qr", userService.generateQRUrl(user));
+			// return "redirect:/qrcode.html?lang=" + locale.getLanguage();
+			// }
+			authWithoutPassword(user);
+			model.addAttribute("messageKey", "message.accountVerified");
 
-        model.addAttribute("messageKey", "auth.message." + result);
-        model.addAttribute("expired", "expired".equals(result));
-        model.addAttribute("token", token);
-        return new ModelAndView("redirect:/badUser", model);
-    }
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			String username = "";
+			if (principal instanceof User) {
+				username = ((User) principal).getEmail();
+			} else {
+				username = principal.toString();
+			}
 
-    @GetMapping("/badUser")
-    public ModelAndView badUser(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("expired" ) final Optional<String> expired, @RequestParam("token" ) final Optional<String> token) {
+			User userObj = userService.findUserByEmail(username);
+			session.setAttribute("fullname", userObj.getFirstName().concat(" " + userObj.getLastName()));
+			return new ModelAndView("redirect:/enduser/userConsole", model);
+		}
 
-        Locale locale = request.getLocale();
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
+		model.addAttribute("messageKey", "auth.message." + result);
+		model.addAttribute("expired", "expired".equals(result));
+		model.addAttribute("token", token);
+		return new ModelAndView("redirect:/badUser", model);
+	}
 
-        expired.ifPresent( e -> model.addAttribute("expired", e));
-        token.ifPresent( t -> model.addAttribute("token", t));
+	@GetMapping("/badUser")
+	public ModelAndView badUser(final HttpServletRequest request, final ModelMap model,
+			@RequestParam("messageKey") final Optional<String> messageKey,
+			@RequestParam("expired") final Optional<String> expired,
+			@RequestParam("token") final Optional<String> token) {
 
-        return new ModelAndView("badUser", model);
-    }
+		Locale locale = request.getLocale();
+		messageKey.ifPresent(key -> {
+			String message = messages.getMessage(key, null, locale);
+			model.addAttribute("message", message);
+		});
 
-    @GetMapping("/user/changePassword")
-    public ModelAndView showChangePasswordPage(final ModelMap model, @RequestParam("token") final String token) {
-        final String result = securityUserService.validatePasswordResetToken(token);
+		expired.ifPresent(e -> model.addAttribute("expired", e));
+		token.ifPresent(t -> model.addAttribute("token", t));
 
-        if(result != null) {
-            String messageKey = "auth.message." + result;
-            model.addAttribute("messageKey", messageKey);
-            return new ModelAndView("redirect:/login", model);
-        } else {
-            model.addAttribute("token", token);
-            return new ModelAndView("redirect:/updatePassword");
-        }
-    }
+		return new ModelAndView("badUser", model);
+	}
 
-    @GetMapping("/updatePassword")
-    public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey) {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
+	@GetMapping("/user/changePassword")
+	public ModelAndView showChangePasswordPage(final ModelMap model, @RequestParam("token") final String token) {
+		final String result = securityUserService.validatePasswordResetToken(token);
 
-        return new ModelAndView("updatePassword", model);
-    }
+		if (result != null) {
+			String messageKey = "auth.message." + result;
+			model.addAttribute("messageKey", messageKey);
+			return new ModelAndView("redirect:/login", model);
+		} else {
+			model.addAttribute("token", token);
+			return new ModelAndView("redirect:/updatePassword");
+		}
+	}
 
-    @GetMapping("/login")
-    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("error" ) final Optional<String> error) {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
+	@GetMapping("/updatePassword")
+	public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model,
+			@RequestParam("messageKey") final Optional<String> messageKey) {
+		Locale locale = request.getLocale();
+		model.addAttribute("lang", locale.getLanguage());
+		messageKey.ifPresent(key -> {
+			String message = messages.getMessage(key, null, locale);
+			model.addAttribute("message", message);
+		});
 
-        error.ifPresent( e ->  model.addAttribute("error", e));
+		return new ModelAndView("updatePassword", model);
+	}
 
-        return new ModelAndView("login", model);
-    }
+	@GetMapping("/login")
+	public ModelAndView login(final HttpServletRequest request, final ModelMap model,
+			@RequestParam("messageKey") final Optional<String> messageKey,
+			@RequestParam("error") final Optional<String> error) {
+		Locale locale = request.getLocale();
+		model.addAttribute("lang", locale.getLanguage());
+		messageKey.ifPresent(key -> {
+			String message = messages.getMessage(key, null, locale);
+			model.addAttribute("message", message);
+		});
 
-    @RequestMapping(value = "/user/enableNewLoc", method = RequestMethod.GET)
-    public String enableNewLoc(Locale locale, Model model, @RequestParam("token") String token) {
-        final String loc = userService.isValidNewLocationToken(token);
-        if (loc != null) {
-            model.addAttribute("message", messages.getMessage("message.newLoc.enabled", new Object[] { loc }, locale));
-        } else {
-            model.addAttribute("message", messages.getMessage("message.error", null, locale));
-        }
-        return "redirect:/login?lang=" + locale.getLanguage();
-    }
+		error.ifPresent(e -> model.addAttribute("error", e));
 
-    // ============== NON-API ============
+		return new ModelAndView("login", model);
+	}
 
-    public void authWithoutPassword(User user) {
+	@RequestMapping(value = "/user/enableNewLoc", method = RequestMethod.GET)
+	public String enableNewLoc(Locale locale, Model model, @RequestParam("token") String token) {
+		final String loc = userService.isValidNewLocationToken(token);
+		if (loc != null) {
+			model.addAttribute("message", messages.getMessage("message.newLoc.enabled", new Object[] { loc }, locale));
+		} else {
+			model.addAttribute("message", messages.getMessage("message.error", null, locale));
+		}
+		return "redirect:/login?lang=" + locale.getLanguage();
+	}
 
-        List<Privilege> privileges = user.getRoles()
-                .stream()
-                .map(Role::getPrivileges)
-                .flatMap(Collection::stream)
-                .distinct()
-                .collect(Collectors.toList());
+	// ============== NON-API ============
 
-        List<GrantedAuthority> authorities = privileges.stream()
-                .map(p -> new SimpleGrantedAuthority(p.getName()))
-                .collect(Collectors.toList());
+	public void authWithoutPassword(User user) {
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+		List<Privilege> privileges = user.getRoles().stream().map(Role::getPrivileges).flatMap(Collection::stream)
+				.distinct().collect(Collectors.toList());
 
-    private String getAppUrl(HttpServletRequest request) {
-        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-    }
+		List<GrantedAuthority> authorities = privileges.stream().map(p -> new SimpleGrantedAuthority(p.getName()))
+				.collect(Collectors.toList());
 
-    private final String getClientIP(HttpServletRequest request) {
-        final String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
-    }
-    
-    @GetMapping("/registration")
-    public String registration(final HttpServletRequest request, final Model model) {
-        Locale locale = request.getLocale();
-        model.addAttribute("data", "Registration DATA");
-        return "registration";
-    }
-    
-    @GetMapping("/forgetPassword")
-    public String forgetPassword(final HttpServletRequest request, final Model model) {
-        Locale locale = request.getLocale();
-        model.addAttribute("data", "forgetPassword DATA");
-        return "forgetPassword";
-    }
+		Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+	}
+
+	private String getAppUrl(HttpServletRequest request) {
+		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+	}
+
+	private final String getClientIP(HttpServletRequest request) {
+		final String xfHeader = request.getHeader("X-Forwarded-For");
+		if (xfHeader == null) {
+			return request.getRemoteAddr();
+		}
+		return xfHeader.split(",")[0];
+	}
+
+	@GetMapping("/registration")
+	public String registration(final HttpServletRequest request, final Model model) {
+		Locale locale = request.getLocale();
+		model.addAttribute("data", "Registration DATA");
+		return "registration";
+	}
+
+	@GetMapping("/forgetPassword")
+	public String forgetPassword(final HttpServletRequest request, final Model model) {
+		Locale locale = request.getLocale();
+		model.addAttribute("data", "forgetPassword DATA");
+		return "forgetPassword";
+	}
 
 }

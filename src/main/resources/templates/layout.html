@@ -53,6 +53,33 @@
 			left: unset !important;
 			right: 0 !important;
 		}
+		
+		.back-to-top {
+  position: fixed;
+  visibility: hidden;
+  opacity: 0;
+  right: 15px;
+  bottom: 15px;
+  z-index: 996;
+  background: #0563bb;
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  transition: all 0.4s;
+}
+.back-to-top i {
+  font-size: 28px;
+  color: #fff;
+  line-height: 0;
+}
+.back-to-top:hover {
+  background: #0678e3;
+  color: #fff;
+}
+.back-to-top.active {
+  visibility: visible;
+  opacity: 1;
+}
 	</style>
 
 	<script th:src="@{/resources/layout.js}"></script>
@@ -127,20 +154,21 @@
 		<!-- Page Content  -->
 		<div id="content">
 
-			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<nav class="navbar navbar-expand-lg navbar-light" style="background: #6d7fcc;">
 				<div class="container-fluid">
 
 					<button type="button" id="sidebarCollapse" class="btn btn-info">
 						<i class="fas fa-align-left"></i>
 					</button>
 					<a class="navbar-brand" th:href="@{/index}">Check-Concepts</a>
-					<button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
-						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
+
+					<button class="btn btn-info d-inline-block d-lg-none ml-auto" type="button"
+						data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
+						aria-controls="collapseExample">
 						<i class="fas fa-align-justify"></i>
 					</button>
 
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<div class="collapse navbar-collapse" id="collapseExample">
 						<ul class="nav navbar-nav ms-auto" sec:authorize="!isAuthenticated()">
 							<li class="nav-item"><a class="nav-link" th:href="@{/index}"
 									th:utext="#{label.pages.home.title}">Home</a></li>
@@ -163,26 +191,31 @@
 							<li class="nav-item"><a class="nav-link" th:href="@{/about}">About
 									Us</a></li>
 
-							<li class="nav-item"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-									role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-									<span th:text="${session.fullname}"></span>
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="dropdown-item"
-											th:href="@{/admin/usersinfo}"><i class="fas fa-sliders-h fa-fw"></i>
-											Account</a>
-									</li>
-									<li><a class="dropdown-item" href="#"><i class="fas fa-cog fa-fw"></i>
-											Settings</a></li>
-									<li>
-										<hr class="dropdown-divider">
-									</li>
-									<li><a class="dropdown-item" th:href="@{/logout}"
-											th:utext="#{label.pages.logout}"><i class="fas fa-sign-out-alt fa-fw"></i>
-											Log Out</a></li>
-								</ul>
-							</li>
+							<li class="nav-item">
+								<div class="dropdown">
+									<a class="btn" href="#" role="button"
+										id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"
+										>
+										<span th:text="${session.fullname}"></span>
+									</a>
+
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+										<li sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="dropdown-item"
+												th:href="@{/admin/usersinfo}"><i class="fas fa-sliders-h fa-fw"></i>
+												Account</a>
+										</li>
+										<li><a class="dropdown-item" href="#"><i class="fas fa-cog fa-fw"></i>
+												Settings</a></li>
+										<li>
+											<hr class="dropdown-divider">
+										</li>
+										<li><a class="dropdown-item" th:href="@{/logout}"
+												th:utext="#{label.pages.logout}"><i
+													class="fas fa-sign-out-alt fa-fw"></i>
+												Log Out</a></li>
+									</ul>
+								</div>
 
 
 						</ul>
@@ -194,9 +227,8 @@
 			<section layout:fragment="content">
 				<p>This is filled by the content template.</p>
 			</section>
-
-
-			<footer>
+			
+			<footer style="background: #6d7fcc;">
 				<div class="footer-content">
 					<h3>Check-Concepts</h3>
 					<h5 style="margin: auto;">Don't read it, Understand it with
@@ -213,19 +245,21 @@
 
 				<div id="footer-bottom">
 					<p class="alignleft"></p>
-					<p class="aligncenter text-muted">&copy; 2022 Check-Concepts. All
+					<p class="aligncenter" style="color:#fff;">&copy; 2022 Check-Concepts. All
 						rights reserved.</p>
 					<p class="alignright"></p>
 				</div>
 			</footer>
+			
+			
 		</div>
+
 	</div>
 
 	<div class="overlay">
 
 	</div>
-
-
+	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
 		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	<!-- Popper.JS -->
@@ -259,6 +293,7 @@
 				$('a[aria-expanded=true]').attr('aria-expanded', 'false');
 			});
 		});
+
 	</script>
 </body>
 

@@ -138,7 +138,7 @@ a:focus {
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
     color: #fff;
-    background: #fff;
+    background: #7386D5;
 }
 
 a[data-toggle="collapse"] {
@@ -250,7 +250,7 @@ footer{
     transition: color .4s ease;
 }
 .socials a:hover i{
-    color: green;
+    color: #0dcaf0;
 }
 
 .text-left {
@@ -281,6 +281,6 @@ footer{
 /* The progress bar (scroll indicator) */
 .progress-container .progress-bar {
   height: 2px;
-  background: #7386D5;
+  background: #0dcaf0;
   width: 0%;
 }
