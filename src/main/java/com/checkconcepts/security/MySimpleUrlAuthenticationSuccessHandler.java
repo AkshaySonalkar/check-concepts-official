@@ -63,20 +63,20 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         }
         clearAuthenticationAttributes(request);
 
-        loginNotification(authentication, request);
+//        loginNotification(authentication, request);
     }
 
-    private void loginNotification(Authentication authentication, HttpServletRequest request) {
-        try {
-            if (authentication.getPrincipal() instanceof User && isGeoIpLibEnabled()) {
-                deviceService.verifyDevice(((User)authentication.getPrincipal()), request);
-            }
-        } catch (Exception e) {
-            logger.error("An error occurred while verifying device or location", e);
-            throw new RuntimeException(e);
-        }
-
-    }
+	/*
+	 * private void loginNotification(Authentication authentication,
+	 * HttpServletRequest request) { try { if (authentication.getPrincipal()
+	 * instanceof User && isGeoIpLibEnabled()) {
+	 * deviceService.verifyDevice(((User)authentication.getPrincipal()), request); }
+	 * } catch (Exception e) {
+	 * logger.error("An error occurred while verifying device or location", e);
+	 * throw new RuntimeException(e); }
+	 * 
+	 * }
+	 */
 
     protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         final String targetUrl = determineTargetUrl(authentication);

@@ -1,14 +1,12 @@
 package com.checkconcepts.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
-import com.checkconcepts.web.dto.UserDto;
 import com.checkconcepts.persistence.model.PasswordResetToken;
 import com.checkconcepts.persistence.model.User;
 import com.checkconcepts.persistence.model.VerificationToken;
-import com.checkconcepts.persistence.model.NewLocationToken;
+import com.checkconcepts.web.dto.UserDto;
 
 public interface IUserService {
 
@@ -48,9 +46,9 @@ public interface IUserService {
 
     List<String> getUsersFromSessionRegistry();
 
-    NewLocationToken isNewLoginLocation(String username, String ip);
+//    NewLocationToken isNewLoginLocation(String username, String ip);
 
     String isValidNewLocationToken(String token);
 
-    void addUserLocation(User user, String ip);
+//    void addUserLocation(User user, String ip);
 }

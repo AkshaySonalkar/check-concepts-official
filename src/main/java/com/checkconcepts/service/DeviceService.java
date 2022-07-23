@@ -1,28 +1,25 @@
 package com.checkconcepts.service;
 
-import com.checkconcepts.persistence.dao.DeviceMetadataRepository;
-import com.google.common.base.Strings;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.model.CityResponse;
-import com.checkconcepts.persistence.model.DeviceMetadata;
-import com.checkconcepts.persistence.model.User;
-import org.springframework.beans.factory.annotation.Qualifier;
+import static java.util.Objects.nonNull;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+
+import com.checkconcepts.persistence.dao.DeviceMetadataRepository;
+import com.checkconcepts.persistence.model.DeviceMetadata;
+
 import ua_parser.Client;
 import ua_parser.Parser;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
-
-import static java.util.Objects.nonNull;
 
 @Component
 public class DeviceService {
@@ -33,47 +30,47 @@ public class DeviceService {
     private String from;
 
     private DeviceMetadataRepository deviceMetadataRepository;
-    private DatabaseReader databaseReader;
+//    private DatabaseReader databaseReader;
     private Parser parser;
     private JavaMailSender mailSender;
     private MessageSource messages;
 
     public DeviceService(DeviceMetadataRepository deviceMetadataRepository,
-                         @Qualifier("GeoIPCity") DatabaseReader databaseReader,
                          Parser parser,
                          JavaMailSender mailSender,
                          MessageSource messages) {
         this.deviceMetadataRepository = deviceMetadataRepository;
-        this.databaseReader = databaseReader;
+//        this.databaseReader = databaseReader;
         this.parser = parser;
         this.mailSender = mailSender;
         this.messages = messages;
     }
 
-    public void verifyDevice(User user, HttpServletRequest request) throws IOException, GeoIp2Exception {
-
-        String ip = extractIp(request);
-        String location = getIpLocation(ip);
-
-        String deviceDetails = getDeviceDetails(request.getHeader("user-agent"));
-
-        DeviceMetadata existingDevice = findExistingDevice(user.getId(), deviceDetails, location);
-
-        if (Objects.isNull(existingDevice)) {
-            unknownDeviceNotification(deviceDetails, location, ip, user.getEmail(), request.getLocale());
-
-            DeviceMetadata deviceMetadata = new DeviceMetadata();
-            deviceMetadata.setUserId(user.getId());
-            deviceMetadata.setLocation(location);
-            deviceMetadata.setDeviceDetails(deviceDetails);
-            deviceMetadata.setLastLoggedIn(new Date());
-            deviceMetadataRepository.save(deviceMetadata);
-        } else {
-            existingDevice.setLastLoggedIn(new Date());
-            deviceMetadataRepository.save(existingDevice);
-        }
-
-    }
+	/*
+	 * public void verifyDevice(User user, HttpServletRequest request) throws
+	 * IOException, GeoIp2Exception {
+	 * 
+	 * String ip = extractIp(request); String location = getIpLocation(ip);
+	 * 
+	 * String deviceDetails = getDeviceDetails(request.getHeader("user-agent"));
+	 * 
+	 * DeviceMetadata existingDevice = findExistingDevice(user.getId(),
+	 * deviceDetails, location);
+	 * 
+	 * if (Objects.isNull(existingDevice)) {
+	 * unknownDeviceNotification(deviceDetails, location, ip, user.getEmail(),
+	 * request.getLocale());
+	 * 
+	 * DeviceMetadata deviceMetadata = new DeviceMetadata();
+	 * deviceMetadata.setUserId(user.getId()); deviceMetadata.setLocation(location);
+	 * deviceMetadata.setDeviceDetails(deviceDetails);
+	 * deviceMetadata.setLastLoggedIn(new Date());
+	 * deviceMetadataRepository.save(deviceMetadata); } else {
+	 * existingDevice.setLastLoggedIn(new Date());
+	 * deviceMetadataRepository.save(existingDevice); }
+	 * 
+	 * }
+	 */
 
     private String extractIp(HttpServletRequest request) {
         String clientIp;
@@ -103,22 +100,21 @@ public class DeviceService {
         return deviceDetails;
     }
 
-    private String getIpLocation(String ip) throws IOException, GeoIp2Exception {
-
-        String location = UNKNOWN;
-
-        InetAddress ipAddress = InetAddress.getByName(ip);
-
-        CityResponse cityResponse = databaseReader.city(ipAddress);
-        if (Objects.nonNull(cityResponse) &&
-                Objects.nonNull(cityResponse.getCity()) &&
-                !Strings.isNullOrEmpty(cityResponse.getCity().getName())) {
-
-            location = cityResponse.getCity().getName();
-        }
-
-        return location;
-    }
+	/*
+	 * private String getIpLocation(String ip) throws IOException, GeoIp2Exception {
+	 * 
+	 * String location = UNKNOWN;
+	 * 
+	 * InetAddress ipAddress = InetAddress.getByName(ip);
+	 * 
+	 * CityResponse cityResponse = databaseReader.city(ipAddress); if
+	 * (Objects.nonNull(cityResponse) && Objects.nonNull(cityResponse.getCity()) &&
+	 * !Strings.isNullOrEmpty(cityResponse.getCity().getName())) {
+	 * 
+	 * location = cityResponse.getCity().getName(); }
+	 * 
+	 * return location; }
+	 */
 
     private DeviceMetadata findExistingDevice(Long userId, String deviceDetails, String location) {
 

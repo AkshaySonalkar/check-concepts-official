@@ -1,6 +1,5 @@
 package com.checkconcepts.spring;
 
-import com.maxmind.geoip2.DatabaseReader;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,8 @@ public class TestIntegrationConfig {
     @MockBean
     private JavaMailSender javaMailSender;
 
-    @MockBean(name = "GeoIPCountry")
-    private DatabaseReader databaseReader;
+	/*
+	 * @MockBean(name = "GeoIPCountry") private DatabaseReader databaseReader;
+	 */
 
 }

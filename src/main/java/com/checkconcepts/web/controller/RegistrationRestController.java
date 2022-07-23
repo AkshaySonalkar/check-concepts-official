@@ -67,7 +67,7 @@ public class RegistrationRestController {
         LOGGER.debug("Registering user account with information: {}", accountDto);
 
         final User registered = userService.registerNewUserAccount(accountDto);
-        userService.addUserLocation(registered, getClientIP(request));
+//        userService.addUserLocation(registered, getClientIP(request));
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return new GenericResponse("success");
     }
@@ -77,11 +77,11 @@ public class RegistrationRestController {
         LOGGER.debug("Registering user account with information: {}", accountDto);
         if(accountDto.getRoleName().equalsIgnoreCase("ROLE_STAFF")) {
         	final User registered = userService.registerNewStaffUserAccount(accountDto);
-        	userService.addUserLocation(registered, getClientIP(request));
+//        	userService.addUserLocation(registered, getClientIP(request));
         }
         if(accountDto.getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
         	final User registered = userService.registerNewAdminUserAccount(accountDto);
-        	userService.addUserLocation(registered, getClientIP(request));
+//        	userService.addUserLocation(registered, getClientIP(request));
         }
         
 //        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));

@@ -1,8 +1,5 @@
 package com.checkconcepts.spring;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -32,8 +29,6 @@ import com.checkconcepts.persistence.dao.UserRepository;
 import com.checkconcepts.security.CustomAccessDeniedHandler;
 import com.checkconcepts.security.CustomRememberMeServices;
 import com.checkconcepts.security.location.DifferentLocationChecker;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
 
 @ComponentScan(basePackages = { "com.checkconcepts.security" })
 // @ImportResource({ "classpath:webSecurityConfig.xml" })
@@ -145,11 +140,12 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 		return rememberMeServices;
 	}
 
-	@Bean(name = "GeoIPCountry")
-	public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
-		final File resource = new File("src/main/resources/maxmind/GeoLite2-Country.mmdb");
-		return new DatabaseReader.Builder(resource).build();
-	}
+	/*
+	 * @Bean(name = "GeoIPCountry") public DatabaseReader databaseReader() throws
+	 * IOException, GeoIp2Exception { final File resource = new
+	 * File("src/main/resources/maxmind/GeoLite2-Country.mmdb"); return new
+	 * DatabaseReader.Builder(resource).build(); }
+	 */
 
 	@Bean
 	public RoleHierarchy roleHierarchy() {

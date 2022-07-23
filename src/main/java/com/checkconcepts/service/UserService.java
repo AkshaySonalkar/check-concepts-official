@@ -1,6 +1,5 @@
 package com.checkconcepts.service;
 
-import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +28,6 @@ import com.checkconcepts.persistence.model.UserLocation;
 import com.checkconcepts.persistence.model.VerificationToken;
 import com.checkconcepts.web.dto.UserDto;
 import com.checkconcepts.web.error.UserAlreadyExistException;
-import com.maxmind.geoip2.DatabaseReader;
 
 @Service
 @Transactional
@@ -54,9 +51,11 @@ public class UserService implements IUserService {
     @Autowired
     private SessionRegistry sessionRegistry;
 
-    @Autowired
-    @Qualifier("GeoIPCountry")
-    private DatabaseReader databaseReader;
+	/*
+	 * @Autowired
+	 * 
+	 * @Qualifier("GeoIPCountry") private DatabaseReader databaseReader;
+	 */
 
     @Autowired
     private UserLocationRepository userLocationRepository;
@@ -256,29 +255,20 @@ public class UserService implements IUserService {
             }).collect(Collectors.toList());
     }
 
-    @Override
-    public NewLocationToken isNewLoginLocation(String username, String ip) {
-
-        if(!isGeoIpLibEnabled()) {
-            return null;
-        }
-
-        try {
-            final InetAddress ipAddress = InetAddress.getByName(ip);
-            final String country = databaseReader.country(ipAddress)
-                .getCountry()
-                .getName();
-            System.out.println(country + "====****");
-            final User user = userRepository.findByEmail(username);
-            final UserLocation loc = userLocationRepository.findByCountryAndUser(country, user);
-            if ((loc == null) || !loc.isEnabled()) {
-                return createNewLocationToken(country, user);
-            }
-        } catch (final Exception e) {
-            return null;
-        }
-        return null;
-    }
+	/*
+	 * @Override public NewLocationToken isNewLoginLocation(String username, String
+	 * ip) {
+	 * 
+	 * if(!isGeoIpLibEnabled()) { return null; }
+	 * 
+	 * try { final InetAddress ipAddress = InetAddress.getByName(ip); final String
+	 * country = databaseReader.country(ipAddress) .getCountry() .getName();
+	 * System.out.println(country + "====****"); final User user =
+	 * userRepository.findByEmail(username); final UserLocation loc =
+	 * userLocationRepository.findByCountryAndUser(country, user); if ((loc == null)
+	 * || !loc.isEnabled()) { return createNewLocationToken(country, user); } }
+	 * catch (final Exception e) { return null; } return null; }
+	 */
 
     @Override
     public String isValidNewLocationToken(String token) {
@@ -293,25 +283,17 @@ public class UserService implements IUserService {
         return userLoc.getCountry();
     }
 
-    @Override
-    public void addUserLocation(User user, String ip) {
-
-        if(!isGeoIpLibEnabled()) {
-            return;
-        }
-
-        try {
-            final InetAddress ipAddress = InetAddress.getByName(ip);
-            final String country = databaseReader.country(ipAddress)
-                .getCountry()
-                .getName();
-            UserLocation loc = new UserLocation(country, user);
-            loc.setEnabled(true);
-            userLocationRepository.save(loc);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	/*
+	 * @Override public void addUserLocation(User user, String ip) {
+	 * 
+	 * if(!isGeoIpLibEnabled()) { return; }
+	 * 
+	 * try { final InetAddress ipAddress = InetAddress.getByName(ip); final String
+	 * country = databaseReader.country(ipAddress) .getCountry() .getName();
+	 * UserLocation loc = new UserLocation(country, user); loc.setEnabled(true);
+	 * userLocationRepository.save(loc); } catch (final Exception e) { throw new
+	 * RuntimeException(e); } }
+	 */
 
     private boolean isGeoIpLibEnabled() {
         return Boolean.parseBoolean(env.getProperty("geo.ip.lib.enabled"));
