@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.checkconcepts.blog.services.NotificationService;
 import com.checkconcepts.blog.services.PostService;
+import com.checkconcepts.menu.AppSidebarMenu;
+import com.checkconcepts.menu.MenuCategory;
 import com.checkconcepts.persistence.model.Post;
 
 @Controller
@@ -26,6 +29,9 @@ public class PublicDashboardController {
 
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private AppSidebarMenu appMenu;
     
     private String getAppUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
@@ -41,7 +47,13 @@ public class PublicDashboardController {
         List<Post> latest3Posts = latest5Posts.stream()
                 .limit(3).collect(toList());
         model.addAttribute("latest3posts", latest3Posts);
-
+        
+        List<MenuCategory> categories= appMenu.getAllSidebarCategories().stream().filter(a -> a.isTech()).collect(Collectors.toList());
+        model.addAttribute("sidebarcategories", categories);
+        
+        model.addAttribute("sidebarHeader", "Check-C");
+        
+        
         return "index";
     }
 	
@@ -80,6 +92,13 @@ public class PublicDashboardController {
         Locale locale = request.getLocale();
         model.addAttribute("url", getAppUrl(request));
         return "invalidSession";
+    }
+	
+	@GetMapping("/accessDenied")
+    public String accessDenied(final HttpServletRequest request, final Model model) {
+        Locale locale = request.getLocale();
+        model.addAttribute("url", getAppUrl(request));
+        return "accessDenied";
     }
 
 }

@@ -2,6 +2,8 @@ package com.checkconcepts.blog.services;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.checkconcepts.persistence.model.Post;
 
 @Service
 @Primary
+@Transactional
 public class PostServiceJpaImpl implements PostService {
 
     @Autowired

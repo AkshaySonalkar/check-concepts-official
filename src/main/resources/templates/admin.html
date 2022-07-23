@@ -5,7 +5,7 @@
 <head>
 <title th:utext="#{label.pages.home.title}"></title>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 <div layout:fragment="content">
 <div class="container">         
      <p sec:authorize="!hasAuthority('ADMIN_PRIVILEGE')" th:utext="#{message.unauth}">unauth</p>

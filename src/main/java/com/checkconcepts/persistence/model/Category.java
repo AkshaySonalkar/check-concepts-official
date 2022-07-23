@@ -1,6 +1,7 @@
 package com.checkconcepts.persistence.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,23 +16,24 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "category")
 public class Category {
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-	
-	@Column(nullable = false, length = 300)
-    private String categoryName;
-	
-	@Lob @Column(nullable = false)
-    private String description;
-	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false, length = 100, unique = true)
+	private String name;
+
+	@Lob
+	@Column(nullable = false)
+	private String description;
+
 	private boolean premium;
-	
-	private boolean isTech;
-	
+
+	private boolean tech;
+
 	@OneToMany(mappedBy = "categoryType")
-    private Set<SubCategory> subCategories = new HashSet<SubCategory>();
+	private Set<SubCategory> subCategories = new HashSet<SubCategory>();
 
 	public Long getId() {
 		return id;
@@ -41,14 +43,16 @@ public class Category {
 		this.id = id;
 	}
 
-	public String getCategoryName() {
-		return categoryName;
+	
+
+	public String getName() {
+		return name;
 	}
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -74,10 +78,34 @@ public class Category {
 	}
 
 	public boolean isTech() {
-		return isTech;
+		return tech;
 	}
 
-	public void setTech(boolean isTech) {
-		this.isTech = isTech;
+	public void setTech(boolean tech) {
+		this.tech = tech;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Category other = (Category) obj;
+		return Objects.equals(name, other.name) && Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", categoryName=" + name + ", description=" + description + ", premium="
+				+ premium + ", isTech=" + tech + ", subCategories=" + subCategories + "]";
+	}
+
 }

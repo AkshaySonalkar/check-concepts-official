@@ -1,9 +1,10 @@
-package com.checkconcepts.admin.controller;
+package com.checkconcepts.web.admin.controller;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -63,13 +64,13 @@ public class AdminPagesNavigationController {
 	
 	@GetMapping("/admin/usersinfo")
     public String showUserList(Model model) {
-        model.addAttribute("endusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_USER"))).toList());
-        model.addAttribute("adminusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_ADMIN"))).toList());
-        model.addAttribute("staffusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_STAFF"))).toList());
+        model.addAttribute("endusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_USER"))).collect(Collectors.toList()));
+        model.addAttribute("adminusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_ADMIN"))).collect(Collectors.toList()));
+        model.addAttribute("staffusers", userRepository.findAll().stream().filter(u-> u.isEnabled() && u.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ROLE_STAFF"))).collect(Collectors.toList()));
         return "usersinfo";
     }
     
-    @GetMapping("/admin/edit/{id}")
+    @GetMapping("/admin/edit/user/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         model.addAttribute("user", user);

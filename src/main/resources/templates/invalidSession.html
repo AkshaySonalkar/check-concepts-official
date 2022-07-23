@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" 
-xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
 <head>
-<title th:utext="#{label.pages.home.title}">home</title>
-<meta http-equiv="Refresh" th:content="|2; url=${url}|" />
+	<title th:utext="#{label.pages.home.title}">home</title>
+	<meta http-equiv="Refresh" th:content="|5; url=${url}|" />
 </head>
-<body>
-<div layout:fragment="content">
-    <div class="container">
-	    <h1 class="alert alert-danger" th:utext="#{message.sessionExpired}">expired</h1>
-	    <a class="btn btn-primary" th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
-    </div>
-</div>
+
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+				<div class="card shadow-2-strong" style="border-radius: 1rem;">
+					<div class="card-body p-5 text-center">
+						<h1 class="alert alert-danger" th:utext="#{message.sessionExpired}">expired</h1>
+						<a class="btn btn-primary" th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>

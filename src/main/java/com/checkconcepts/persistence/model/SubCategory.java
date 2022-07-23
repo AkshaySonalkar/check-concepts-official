@@ -1,6 +1,7 @@
 package com.checkconcepts.persistence.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -19,23 +20,24 @@ import javax.persistence.Table;
 public class SubCategory {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-	
-	@Column(nullable = false, length = 300)
-    private String subCategoryName;
-	
-	@Lob @Column(nullable = false)
-    private String subCategoryDescription;
-	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false, length = 100, unique = true)
+	private String name;
+
+	@Lob
+	@Column(nullable = false)
+	private String description;
+
 	@Column
 	private boolean premium;
-	
+
 	@OneToMany(mappedBy = "subCategoryType")
-    private Set<Post> posts = new HashSet<Post>();
-	
+	private Set<Post> posts = new HashSet<Post>();
+
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Category categoryType;
+	private Category categoryType;
 
 	public Long getId() {
 		return id;
@@ -45,20 +47,20 @@ public class SubCategory {
 		this.id = id;
 	}
 
-	public String getSubCategoryName() {
-		return subCategoryName;
+	public String getName() {
+		return name;
 	}
 
-	public void setSubCategoryName(String subCategoryName) {
-		this.subCategoryName = subCategoryName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getSubCategoryDescription() {
-		return subCategoryDescription;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setSubCategoryDescription(String subCategoryDescription) {
-		this.subCategoryDescription = subCategoryDescription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public boolean isPremium() {
@@ -76,4 +78,37 @@ public class SubCategory {
 	public void setPosts(Set<Post> posts) {
 		this.posts = posts;
 	}
+
+	public Category getCategoryType() {
+		return categoryType;
+	}
+
+	public void setCategoryType(Category categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SubCategory other = (SubCategory) obj;
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public String toString() {
+		return "SubCategory [id=" + id + ", subCategoryName=" + name + ", subCategoryDescription="
+				+ description + ", premium=" + premium + ", posts=" + posts + ", categoryType="
+				+ categoryType + "]";
+	}
+
 }

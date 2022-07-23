@@ -14,19 +14,14 @@
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<!-- Our Custom CSS -->
 	<link rel="stylesheet" href="../resources/css/style.css">
+	<link rel="stylesheet" href="../resources/richtext/richtext.min.css">
 	<!-- Scrollbar Custom CSS -->
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 	<link th:rel="stylesheet" th:href="@{/webjars/font-awesome/6.1.1/css/all.css} " />
 
-	<!-- Font Awesome JS -->
-	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
-		integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
-		crossorigin="anonymous"></script>
-	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
-		integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
-		crossorigin="anonymous"></script>
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 
 	<style type="text/css">
 		#footer-bottom {
@@ -53,40 +48,60 @@
 			left: unset !important;
 			right: 0 !important;
 		}
-		
-		.back-to-top {
-  position: fixed;
-  visibility: hidden;
-  opacity: 0;
-  right: 15px;
-  bottom: 15px;
-  z-index: 996;
-  background: #0563bb;
-  width: 40px;
-  height: 40px;
-  border-radius: 50px;
-  transition: all 0.4s;
-}
-.back-to-top i {
-  font-size: 28px;
-  color: #fff;
-  line-height: 0;
-}
-.back-to-top:hover {
-  background: #0678e3;
-  color: #fff;
-}
-.back-to-top.active {
-  visibility: visible;
-  opacity: 1;
-}
-	</style>
 
+		.back-to-top {
+			position: fixed;
+			visibility: hidden;
+			opacity: 0;
+			right: 15px;
+			bottom: 15px;
+			z-index: 996;
+			background: #0563bb;
+			width: 40px;
+			height: 40px;
+			border-radius: 50px;
+			transition: all 0.4s;
+		}
+
+		.back-to-top i {
+			font-size: 28px;
+			color: #fff;
+			line-height: 0;
+		}
+
+		.back-to-top:hover {
+			background: #0678e3;
+			color: #fff;
+		}
+
+		.back-to-top.active {
+			visibility: visible;
+			opacity: 1;
+		}
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<!-- Popper.JS -->
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+		integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+		crossorigin="anonymous"></script>
+	<!-- jQuery Custom Scroller CDN -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+
+	<script th:src="@{/resources/pwstrength.js}"></script>
 	<script th:src="@{/resources/layout.js}"></script>
+	<script th:src="@{/resources/richtext/jquery.richtext.min.js}"></script>
 
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 	<div class="progress-container">
 		<div class="progress-bar" id="myBar"></div>
 	</div>
@@ -97,58 +112,17 @@
 			<div id="dismiss">
 				<i class="fa-solid fa-xmark"></i>
 			</div>
-
-			<div class="sidebar-header">
-				<h3>Bootstrap Sidebar</h3>
+			<div class="sidebar-header" th:if="${sidebarHeader != null}">
+				<a th:href="@{/index}" class="link-dark text-decoration-none"><span class="fs-4"
+						th:text="${sidebarHeader}">Check-Concepts</span></a>
 			</div>
+			<div class="d-flex flex-column flex-shrink-0">
+				<ul class="list-unstyled" th:each="cat : ${sidebarcategories}">
+					<li class="sidebar-item"><a class="sidebar-link link-dark text-decoration-none" th:href="${cat.pageUrl}">
+							<span class="fs-5" th:text="${cat.name}">Category</span> </a></li>
 
-			<ul class="list-unstyled components">
-				<p>Dummy Heading</p>
-				<li class="active">
-					<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
-					<ul class="collapse list-unstyled" id="homeSubmenu">
-						<li>
-							<a href="#">Home 1</a>
-						</li>
-						<li>
-							<a href="#">Home 2</a>
-						</li>
-						<li>
-							<a href="#">Home 3</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">About</a>
-					<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
-					<ul class="collapse list-unstyled" id="pageSubmenu">
-						<li>
-							<a href="#">Page 1</a>
-						</li>
-						<li>
-							<a href="#">Page 2</a>
-						</li>
-						<li>
-							<a href="#">Page 3</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">Portfolio</a>
-				</li>
-				<li>
-					<a href="#">Contact</a>
-				</li>
-			</ul>
-
-			<ul class="list-unstyled CTAs">
-				<li>
-					<a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
-				</li>
-				<li>
-					<a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
-				</li>
-			</ul>
+				</ul>
+			</div>
 		</nav>
 
 		<!-- Page Content  -->
@@ -157,7 +131,7 @@
 			<nav class="navbar navbar-expand-lg navbar-light" style="background: #6d7fcc;">
 				<div class="container-fluid">
 
-					<button type="button" id="sidebarCollapse" class="btn btn-info">
+					<button type="button" id="sidebarCollapse" class="btn btn-info" th:if="${sidebarHeader != null}">
 						<i class="fas fa-align-left"></i>
 					</button>
 					<a class="navbar-brand" th:href="@{/index}">Check-Concepts</a>
@@ -194,25 +168,26 @@
 
 							<li class="nav-item">
 								<div class="dropdown">
-									<a class="btn" href="#" role="button"
-										id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"
-										>
+									<a class="btn" href="#" role="button" id="dropdownMenuLink"
+										data-bs-toggle="dropdown" aria-expanded="false">
 										<span th:text="${session.fullname}"></span>
 									</a>
 
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 										<li sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="dropdown-item"
 												th:href="@{/admin/usersinfo}"><i class="fas fa-sliders-h fa-fw"></i>
-												Account</a>
+												User Account</a>
 										</li>
-										<li><a class="dropdown-item" href="#"><i class="fas fa-cog fa-fw"></i>
-												Settings</a></li>
+										<li>
+											<a class="dropdown-item" th:href="@{/changePassword.html}"><i
+													class="fa-solid fa-key"></i>
+												Change Password</a>
+										</li>
 										<li>
 											<hr class="dropdown-divider">
 										</li>
-										<li><a class="dropdown-item" th:href="@{/logout}"
-												th:utext="#{label.pages.logout}"><i
-													class="fas fa-sign-out-alt fa-fw"></i>
+										<li><a class="dropdown-item" th:href="@{/logout}"><i
+													class="fa-solid fa-arrow-right-from-bracket"></i>
 												Log Out</a></li>
 									</ul>
 								</div>
@@ -227,12 +202,12 @@
 			<section layout:fragment="content">
 				<p>This is filled by the content template.</p>
 			</section>
-			
+
 			<footer style="background: #6d7fcc;">
 				<div class="footer-content">
 					<h3>Check-Concepts</h3>
 					<h5 style="margin: auto;">Don't read it, Understand it with
-						Check-Concepts :)</h5>
+						Check-Concepts <span style='font-size:20px;'>&#128519;</span></h5>
 					<p>Check-Concepts is a website where you will find great contents
 						on technical, non-technical topics.</p>
 					<ul class="socials">
@@ -250,8 +225,8 @@
 					<p class="alignright"></p>
 				</div>
 			</footer>
-			
-			
+
+
 		</div>
 
 	</div>
@@ -259,21 +234,6 @@
 	<div class="overlay">
 
 	</div>
-	
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-	<!-- Popper.JS -->
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
-		integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
-		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
-		integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
-		crossorigin="anonymous"></script>
-	<!-- jQuery Custom Scroller CDN -->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
-
 
 	<script type="text/javascript">
 		$(document).ready(function () {

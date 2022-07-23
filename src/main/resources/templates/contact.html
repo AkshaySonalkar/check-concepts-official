@@ -25,7 +25,7 @@
 	</script>
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 
 	<div layout:fragment="content">
 		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
@@ -33,13 +33,11 @@
 		<!--Section: Contact v.2-->
 		<section class="mb-4 ms-4">
 
-			<!--Section heading-->
-			<h2 class="h1-responsive font-weight-bold text-center my-4">Contact Us</h2>
-			<!--Section description-->
-			<p class="text-center w-responsive mx-auto mb-5"><h5>Do you have any questions? Please do not hesitate to
-				contact us directly. Our team will come back to you within
-				a matter of hours to help you.</h5></p>
-
+			<div class="text-center mb-5">
+			<i class="fas fa-envelope mt-4 fa-2x"></i>
+				<h3 class="fw-bolder">Get in touch </h3>
+				<p class="lead fw-normal text-muted mb-0">We'd love to hear from you</p>
+			</div>
 			<div class="row">
 
 				<!--Grid column-->
@@ -84,7 +82,7 @@
 							</div>
 						</div>
 						<!--Grid row-->
-						
+
 						<br />
 
 						<!--Grid row-->
@@ -101,7 +99,7 @@
 							</div>
 						</div>
 						<!--Grid row-->
-						
+
 						<br />
 						<div class="text-center text-md-left">
 							<button type="submit" class="btn btn-primary">Send</button>
@@ -116,36 +114,41 @@
 				<div class="col-md-3 text-center">
 					<ul class="list-unstyled mb-0">
 						<li><i class="fas fa-map-marker-alt fa-2x"></i>
-							<p><h5>Medshingi, Sangola, Solapur 413307</h5></p>
+							<p>
+							Medshingi, Sangola, Solapur 413307
+							</p>
 						</li>
 
 						<li><i class="fas fa-phone mt-4 fa-2x"></i>
-							<p><h5>+91 9448428031</h5></p>
+							<p>
+							+91 9448428031
+							</p>
 						</li>
 
 						<li><i class="fas fa-envelope mt-4 fa-2x"></i>
-							<p><h5>feedback@check-concepts.com</h5></p>
-							<p><h5>check.authentic.concepts@gmail.com</h5></p>
+							<p>
+							feedback@check-concepts.com
+							</p>
+							<p>
+							check.authentic.concepts@gmail.com
+							</p>
 						</li>
 					</ul>
 				</div>
 				<!--Grid column-->
 
 			</div>
-
-		</section>
-		<!--Section: Contact v.2-->
-
-		<script th:inline="javascript">
+			
+			<script th:inline="javascript">
 			var serverContext = [[@{/}]];
 
 			$(document).ready(function () {
 				$('form').submit(function (event) {
-					register(event);
+					contact(event);
 				});
 			});
 
-			function register(event) {
+			function contact(event) {
 				event.preventDefault();
 				var formData = $('form').serialize();
 				$.post(serverContext + "contact/mail", formData, function (data) {
@@ -161,6 +164,11 @@
 					});
 			}
 		</script>
+
+		</section>
+		<!--Section: Contact v.2-->
+
+		
 
 	</div>
 

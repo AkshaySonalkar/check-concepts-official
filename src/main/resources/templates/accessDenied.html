@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+	<title>Access Denied</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<section>
+				<div class="container py-5 h-100">
+					<div class="row d-flex justify-content-center align-items-center h-100">
+						<div class="col-12 col-md-8 col-lg-6 col-xl-7">
+							<div class="card shadow-2-strong" style="border-radius: 1rem;">
+								<div class="card-body p-5 text-center">
+									<h1> Oops! Access Denied!</h1>
+									<hr class="my-4">
+									<p> You don't have permission to access this page </p>
+									<br />
+									<a type="button" class="btn btn-outline-success" th:href="@{/index}">Go Back
+										Home</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+		</div>
+	</div>
+</body>
+
+</html>

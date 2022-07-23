@@ -1,5 +1,7 @@
 package com.checkconcepts.persistence.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -70,4 +72,28 @@ public class PostsMeta {
 	public void setImgSrc(String imgSrc) {
 		this.imgSrc = imgSrc;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, keyType);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PostsMeta other = (PostsMeta) obj;
+		return Objects.equals(id, other.id) && Objects.equals(keyType, other.keyType);
+	}
+
+	@Override
+	public String toString() {
+		return "PostsMeta [id=" + id + ", keyType=" + keyType + ", content=" + content + ", imgSrc=" + imgSrc
+				+ ", parentPost=" + parentPost + "]";
+	}
+
 }

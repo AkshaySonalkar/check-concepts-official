@@ -1,138 +1,148 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" 
-xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
 <head>
-<style>
-.password-verdict{
-color:#000;
-}
-</style>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script th:src="@{/resources/pwstrength.js}"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
-<title th:utext="#{label.form.title}">form</title>
+	<style>
+		.password-verdict {
+			color: #000;
+		}
+	</style>
+	<script th:src="@{/resources/pwstrength.js}"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
+	<title th:utext="#{label.form.title}">form</title>
 </head>
-<body>
-<div layout:fragment="content">
-    <div class="container pt-3">
-        <div>
-            <form action="/" method="POST" enctype="utf8" >
-            <div class="d-grid gap-3">
-                <div class="form-group row" >
-                    <label for="firstName" class="col-sm-3" th:utext="#{label.user.firstName}">first</label>
-                    <span class="col-sm-5"><input id="firstName" class="form-control" name="firstName" value="" required="required"/></span>
-                    <span id="firstNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
-                    
-                </div>
-                <div class="form-group row">
-                    <label for="lastName" class="col-sm-3" th:utext="#{label.user.lastName}">last</label>
-                    <span class="col-sm-5"><input id="lastName" class="form-control" name="lastName" value="" required="required"/></span>
-                    <span id="lastNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
-                    
-                </div>
-                <div class="form-group row">
-                    <label for="email" class="col-sm-3" th:utext="#{label.user.email}">email</label>
-                    <span class="col-sm-5"><input id="email" type="email" class="form-control" name="email" value="" required="required"/></span>
-                    <span id="emailError" class="alert alert-danger col-sm-4" style="display:none"></span>
-                    
-                </div>
-                <div class="form-group row">
-                    <label for="password" class="col-sm-3" th:utext="#{label.user.password}">password</label>
-                    <span class="col-sm-5"><input id="password" class="form-control" name="password" value="" type="password" required="required" autocomplete="new-password"/></span>
-                    <span id="passwordError" class="alert alert-danger col-sm-4" style="display:none"></span>
-                </div>
-                <div class="form-group row">
-                    <label for="matchPassword" class="col-sm-3" th:utext="#{label.user.confirmPass}">confirm</label>
-                    <span class="col-sm-5"><input id="matchPassword" class="form-control" name="matchingPassword" value="" type="password" required="required" autocomplete="new-password"/></span>
-                    <span id="globalError" class="alert alert-danger col-sm-4" style="display:none"></span>
-                </div>
-               </div>
-                <button type="submit" class="btn btn-primary" th:utext="#{label.form.submit}">submit</button>
-            </form>
-            <br/> 
-            <a th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
-        </div>
-    </div>
-    
-    <script th:inline="javascript">
-var serverContext = [[@{/}]];
 
-$(document).ready(function () {
-	$('form').submit(function(event) {
-		register(event);
-	});
-	
-	$(":password").keyup(function(){
-		if($("#password").val() != $("#matchPassword").val()){
-	        $("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
-	    }else{
-	    	$("#globalError").html("").hide();
-	    }
-	});
-	
-	options = {
-		    common: {minChar:8},
-		    ui: {
-		    	showVerdictsInsideProgressBar:true,
-		    	showErrors:true,
-		    	errorMessages:{
-		    		  wordLength: /*[[#{error.wordLength}]]*/,
-		    		  wordNotEmail: /*[[#{error.wordNotEmail}]]*/,
-		    		  wordSequences: /*[[#{error.wordSequences}]]*/,
-		    		  wordLowercase: /*[[#{error.wordLowercase}]]*/,
-		    		  wordUppercase: /*[[#{error.wordUppercase}]]*/,
-		    	          wordOneNumber: /*[[#{error.wordOneNumber}]]*/,
-		    		  wordOneSpecialChar: /*[[#{error.wordOneSpecialChar}]]*/
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<div class="card shadow-2-strong" style="border-radius: 1rem; margin: 1.1em;">
+			<div class="card-body p-5 text-center">
+				<h3 class="mb-5">Register | Sign up</h3>
+				<form action="/" method="POST" enctype="utf8">
+					<div class="d-grid gap-3">
+						<div class="form-group row">
+							<label for="firstName" class="col-sm-3" th:utext="#{label.user.firstName}">first</label>
+							<span class="col-sm-5"><input id="firstName" class="form-control" name="firstName" value=""
+									required="required" /></span>
+							<span id="firstNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
+
+						</div>
+						<div class="form-group row">
+							<label for="lastName" class="col-sm-3" th:utext="#{label.user.lastName}">last</label>
+							<span class="col-sm-5"><input id="lastName" class="form-control" name="lastName" value=""
+									required="required" /></span>
+							<span id="lastNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
+
+						</div>
+						<div class="form-group row">
+							<label for="email" class="col-sm-3" th:utext="#{label.user.email}">email</label>
+							<span class="col-sm-5"><input id="email" type="email" class="form-control" name="email"
+									value="" required="required" /></span>
+							<span id="emailError" class="alert alert-danger col-sm-4" style="display:none"></span>
+
+						</div>
+						<div class="form-group row">
+							<label for="password" class="col-sm-3" th:utext="#{label.user.password}">password</label>
+							<span class="col-sm-5"><input id="password" class="form-control" name="password" value=""
+									type="password" required="required" autocomplete="new-password" /></span>
+							<span id="passwordError" class="alert alert-danger col-sm-4" style="display:none"></span>
+						</div>
+						<div class="form-group row">
+							<label for="matchPassword" class="col-sm-3"
+								th:utext="#{label.user.confirmPass}">confirm</label>
+							<span class="col-sm-5"><input id="matchPassword" class="form-control"
+									name="matchingPassword" value="" type="password" required="required"
+									autocomplete="new-password" /></span>
+							<span id="globalError" class="alert alert-danger col-sm-4" style="display:none"></span>
+						</div>
+					</div>
+
+					<hr class="my-4">
+
+						<button type="submit" class="btn btn-primary" th:utext="#{label.form.submit}">submit</button>
+						<br /><br />
+						<a th:href="@{/login}" th:utext="#{label.form.loginLink}" style="margin-left: 5px;"> login</a>
+				</form>
+			</div>
+		</div>
+
+		<script th:inline="javascript">
+			var serverContext = [[@{/}]];
+
+			$(document).ready(function () {
+				$('form').submit(function (event) {
+					register(event);
+				});
+
+				$(":password").keyup(function () {
+					if ($("#password").val() != $("#matchPassword").val()) {
+						$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+					} else {
+						$("#globalError").html("").hide();
+					}
+				});
+
+				options = {
+					common: {minChar: 8},
+					ui: {
+						showVerdictsInsideProgressBar: true,
+						showErrors: true,
+						errorMessages: {
+							wordLength: /*[[#{error.wordLength}]]*/,
+							wordNotEmail: /*[[#{error.wordNotEmail}]]*/,
+							wordSequences: /*[[#{error.wordSequences}]]*/,
+							wordLowercase: /*[[#{error.wordLowercase}]]*/,
+							wordUppercase: /*[[#{error.wordUppercase}]]*/,
+							wordOneNumber: /*[[#{error.wordOneNumber}]]*/,
+							wordOneSpecialChar: /*[[#{error.wordOneSpecialChar}]]*/
 		    		}
-		    	}
-		};
-	 $('#password').pwstrength(options);
-});
+					}
+				};
+				$('#password').pwstrength(options);
+			});
 
-function register(event){
-	event.preventDefault();
-    $(".alert").html("").hide();
-    $(".error-list").html("");
-    if($("#password").val() != $("#matchPassword").val()){
-    	$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
-    	return;
-    }
-    var formData= $('form').serialize();
-    $.post(serverContext + "user/registration",formData ,function(data){
-        if(data.message == "success"){
-            window.location.href = serverContext + "successRegister.html";
-        }
-        
-    })
-    .fail(function(data) {
-        if(data.responseJSON.error.indexOf("MailError") > -1)
-        {
-            window.location.href = serverContext + "emailError.html";
-        }
-        else if(data.responseJSON.error == "UserAlreadyExist"){
-            $("#emailError").show().html(data.responseJSON.message);
-        }
-        else if(data.responseJSON.error.indexOf("InternalError") > -1){
-            window.location.href = serverContext + "login?message=" + data.responseJSON.message;
-        }
-        else{
-        	var errors = $.parseJSON(data.responseJSON.message);
-            $.each( errors, function( index,item ){
-            	if (item.field){
-            		$("#"+item.field+"Error").show().append(item.defaultMessage+"<br/>");
-            	}
-            	else {
-            		$("#globalError").show().append(item.defaultMessage+"<br/>");
-            	}
-               
-            });
-        }
-    });
-}
+			function register(event) {
+				event.preventDefault();
+				$(".alert").html("").hide();
+				$(".error-list").html("");
+				if ($("#password").val() != $("#matchPassword").val()) {
+					$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+					return;
+				}
+				var formData = $('form').serialize();
+				$.post(serverContext + "user/registration", formData, function (data) {
+					if (data.message == "success") {
+						window.location.href = serverContext + "successRegister.html";
+					}
 
-</script>
-</div>
+				})
+					.fail(function (data) {
+						if (data.responseJSON.error.indexOf("MailError") > -1) {
+							window.location.href = serverContext + "emailError.html";
+						}
+						else if (data.responseJSON.error == "UserAlreadyExist") {
+							$("#emailError").show().html(data.responseJSON.message);
+						}
+						else if (data.responseJSON.error.indexOf("InternalError") > -1) {
+							window.location.href = serverContext + "login?message=" + data.responseJSON.message;
+						}
+						else {
+							var errors = $.parseJSON(data.responseJSON.message);
+							$.each(errors, function (index, item) {
+								if (item.field) {
+									$("#" + item.field + "Error").show().append(item.defaultMessage + "<br/>");
+								}
+								else {
+									$("#globalError").show().append(item.defaultMessage + "<br/>");
+								}
+
+							});
+						}
+					});
+			}
+
+		</script>
+	</div>
 
 </body>
 

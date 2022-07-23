@@ -1,4 +1,4 @@
-package com.checkconcepts.user.controller;
+package com.checkconcepts.web.user.controller;
 
 import java.util.Locale;
 import java.util.Optional;

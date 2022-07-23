@@ -13,11 +13,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -27,6 +29,7 @@ import org.springframework.security.web.authentication.rememberme.InMemoryTokenR
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.checkconcepts.persistence.dao.UserRepository;
+import com.checkconcepts.security.CustomAccessDeniedHandler;
 import com.checkconcepts.security.CustomRememberMeServices;
 import com.checkconcepts.security.location.DifferentLocationChecker;
 import com.maxmind.geoip2.DatabaseReader;
@@ -37,52 +40,53 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 @EnableWebSecurity
 public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
+	@Autowired
+	private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
 
-    @Autowired
-    private LogoutSuccessHandler myLogoutSuccessHandler;
+	@Autowired
+	private LogoutSuccessHandler myLogoutSuccessHandler;
 
-    @Autowired
-    private AuthenticationFailureHandler authenticationFailureHandler;
+	@Autowired
+	private AuthenticationFailureHandler authenticationFailureHandler;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private DifferentLocationChecker differentLocationChecker;
+	@Autowired
+	private DifferentLocationChecker differentLocationChecker;
 
-    public SecSecurityConfig() {
-        super();
-    }
+	public SecSecurityConfig() {
+		super();
+	}
 
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	@Override
+	public void configure(final WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/resources/**").antMatchers("/h2/**");
+	}
 
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		return new CustomAccessDeniedHandler();
+	}
 
-    @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.ignoring()
-            .antMatchers("/resources/**")
-            .antMatchers("/h2/**");
-    }
-
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        // @formatter:off
+	@Override
+	protected void configure(final HttpSecurity http) throws Exception {
+		// @formatter:off
         http
             .csrf().disable()
             .authorizeRequests()
             	.antMatchers("/").permitAll()
-                .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/contact*", "/about*", "/index*", "/webjars/**",
-                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*",
+                .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/contact*", "/about*", "/index*", "/webjars/**","/accessDenied",
+                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*", "/files/*",
                         "/badUser*", "/user/resendRegistrationToken*" ,"/forgetPassword*", "/user/resetPassword*","/user/savePassword*","/updatePassword*",
                         "/user/changePassword*", "/emailError*", "/resources/**","/old/user/registration*","/successRegister*","/qrcode*","/user/enableNewLoc*")
                 .permitAll()
@@ -92,8 +96,10 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/staff/**").hasAnyAuthority("STAFF_PRIVILEGE")
                 .antMatchers("/enduser/**").hasAnyAuthority("USER_PRIVILEGE")
                 .antMatchers("/common/**").hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
-				.anyRequest().hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
+				.anyRequest().authenticated()
                 .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+             .and()
             .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/homepage.html")
@@ -103,6 +109,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
                 .and()
             .sessionManagement()
+            	.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .invalidSessionUrl("/invalidSession")
                 .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
                 .sessionFixation().none()
@@ -117,49 +124,50 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe().rememberMeServices(rememberMeServices()).key("theKey");
 
     // @formatter:on
-    }
+	}
 
-    // beans
+	// beans
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(11);
-    }
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder(11);
+	}
 
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
+	@Bean
+	public SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
+	}
 
-    @Bean
-    public RememberMeServices rememberMeServices() {
-        CustomRememberMeServices rememberMeServices = new CustomRememberMeServices("theKey", userDetailsService, new InMemoryTokenRepositoryImpl());
-        return rememberMeServices;
-    }
+	@Bean
+	public RememberMeServices rememberMeServices() {
+		CustomRememberMeServices rememberMeServices = new CustomRememberMeServices("theKey", userDetailsService,
+				new InMemoryTokenRepositoryImpl());
+		return rememberMeServices;
+	}
 
-    @Bean(name="GeoIPCountry")
-    public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
-        final File resource = new File("src/main/resources/maxmind/GeoLite2-Country.mmdb");
-        return new DatabaseReader.Builder(resource).build();
-    }
+	@Bean(name = "GeoIPCountry")
+	public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
+		final File resource = new File("src/main/resources/maxmind/GeoLite2-Country.mmdb");
+		return new DatabaseReader.Builder(resource).build();
+	}
 
-    @Bean
-    public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER";
-        roleHierarchy.setHierarchy(hierarchy);
-        return roleHierarchy;
-    }
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+		String hierarchy = "ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER";
+		roleHierarchy.setHierarchy(hierarchy);
+		return roleHierarchy;
+	}
 
-    @Bean
-    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
-        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy());
-        return expressionHandler;
-    }
+	@Bean
+	public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
+		DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+		expressionHandler.setRoleHierarchy(roleHierarchy());
+		return expressionHandler;
+	}
 
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
 }

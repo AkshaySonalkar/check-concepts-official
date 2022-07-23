@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+	<title>Posts</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<div th:if="${message}">
+			<h2 th:text="${message}" />
+		</div>
+
+		<div>
+			<form method="POST" enctype="multipart/form-data" action="/staff/fileupload">
+				<table>
+					<tr>
+						<td>File to upload:</td>
+						<td><input type="file" name="file" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="Upload" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+		<div>
+			<ul>
+				<li th:each="file : ${files}">
+					<a th:href="${file}" th:text="${file}" />
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>

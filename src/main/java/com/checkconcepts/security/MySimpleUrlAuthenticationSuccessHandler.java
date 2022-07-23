@@ -49,16 +49,16 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         if (session != null) {
             session.setMaxInactiveInterval(60 * 60);
 
-            String username;
+            String email;
             if (authentication.getPrincipal() instanceof User) {
-            	username = ((User)authentication.getPrincipal()).getEmail();
+            	email = ((User)authentication.getPrincipal()).getEmail();
             }
             else {
-            	username = authentication.getName();
+            	email = authentication.getName();
             }
-            LoggedUser user = new LoggedUser(username, activeUserStore);
+            LoggedUser user = new LoggedUser(email, activeUserStore);
             session.setAttribute("user", user);
-            User userObj = userService.findUserByEmail(username);
+            User userObj = userService.findUserByEmail(email);
             session.setAttribute("fullname", userObj.getFirstName().concat(" "+userObj.getLastName()));
         }
         clearAuthenticationAttributes(request);

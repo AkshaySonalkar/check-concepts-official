@@ -4,45 +4,9 @@
 
 <head>
 	<title th:utext="#{label.pages.home.title}">Title</title>
-	<script th:inline="javascript">
-		function validate() {
-			if (document.f.username.value == "" && document.f.password.value == "") {
-				alert(/*[[#{message.username} + #{message.password}]]*/);
-				document.f.username.focus();
-				return false;
-			}
-			if (document.f.username.value == "") {
-				alert(/*[[#{message.username}]]*/);
-				document.f.username.focus();
-				return false;
-			}
-			if (document.f.password.value == "") {
-				alert(/*[[#{message.password}]]*/);
-				document.f.password.focus();
-				return false;
-			}
-		}
-
-		window.onload = function () {
-			displayMessage();
-		};
-
-		function displayMessage() {
-
-			const queryString = window.location.search;
-			const urlParams = new URLSearchParams(queryString);
-			const message = urlParams.get('message');
-
-			const div = document.getElementById('message');
-			if (div.style.display === "none" && message != null) {
-				div.style.display = "block";
-				div.textContent = message;
-			}
-		}
-	</script>
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
@@ -93,25 +57,25 @@
 								<div class="card-body p-5 text-center">
 
 									<h3 class="mb-5">Sign in</h3>
-									<form name='f' action="login" method='POST' onsubmit="validate();">
+									<form name='f' action="login" method='POST' onsubmit="disablebtn();">
 
 
 										<div class="form-floating mb-3">
 											<input type="email" class="form-control" id="floatingInput"
-												placeholder="name@example.com" name='username' value=''>
+												placeholder="name@example.com" name='username' value='' required>
 											<label for="floatingInput" th:utext="#{label.form.loginEmail}">Email
 												address</label>
 										</div>
 										<div class="form-floating">
 											<input type="password" class="form-control" id="floatingPassword"
-												placeholder="Password" name='password'>
+												placeholder="Password" name='password' required>
 											<label for="floatingPassword"
 												th:utext="#{label.form.loginPass}">Password</label>
 										</div>
 										<br />
 
 										<div class="d-grid gap-2 col-6 mx-auto">
-											<button class="btn btn-primary btn-block" th:value="#{label.form.submit}"
+											<button id="login_btn" class="btn btn-primary btn-block" th:value="#{label.form.submit}"
 												type="submit">Login</button>
 										</div>
 
@@ -134,6 +98,30 @@
 				</div>
 			</section>
 		</div>
+
+		<script th:inline="javascript">
+		
+		function disablebtn(){
+			$('login_btn').prop('disabled', true);
+		}
+		
+			window.onload = function () {
+				displayMessage();
+			};
+
+			function displayMessage() {
+
+				const queryString = window.location.search;
+				const urlParams = new URLSearchParams(queryString);
+				const message = urlParams.get('message');
+
+				const div = document.getElementById('message');
+				if (div.style.display === "none" && message != null) {
+					div.style.display = "block";
+					div.textContent = message;
+				}
+			}
+		</script>
 	</div>
 </body>
 

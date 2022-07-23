@@ -1,10 +1,14 @@
 package com.checkconcepts.persistence.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,54 +22,58 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "posts")
 public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false, length = 300)
-    private String title;
+	@Column(nullable = false, length = 300)
+	private String title;
 
-    @Lob @Column(nullable = false)
-    private String description;
-    
-    @Column(nullable = false)
-    private Date createdAt = new Date();
-    
-    @Column
-    private Date updatedAt = new Date();
-    
-    @Column
-    private boolean published;
-    
-    @Column
-    private Date publishedAt = new Date();
+	@Lob
+	@Column(nullable = false)
+	private String description;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User author;
-    
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private SubCategory subCategoryType;
-    
-    @OneToMany(mappedBy = "parentPost")
-    private Set<PostsMeta> postsMeta = new HashSet<PostsMeta>();
+	@Column(nullable = false)
+	private Date createdAt = new Date();
 
-    public Long getId() {
-        return id;
-    }
+	@Column
+	private Date updatedAt = new Date();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Column
+	private boolean published;
 
-    public String getTitle() {
-        return title;
-    }
+	@Column
+	private Date publishedAt = new Date();
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private User author;
 
-    public String getDescription() {
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SubCategory subCategoryType;
+
+	@OneToMany(mappedBy = "parentPost")
+	private Set<PostsMeta> postsMeta = new HashSet<PostsMeta>();
+
+	@ElementCollection
+	private List<Tag> tags = new ArrayList<>();
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
 		return description;
 	}
 
@@ -74,21 +82,21 @@ public class Post {
 	}
 
 	public User getAuthor() {
-        return author;
-    }
+		return author;
+	}
 
-    public void setAuthor(User author) {
-        this.author = author;
-    }
+	public void setAuthor(User author) {
+		this.author = author;
+	}
 
-    public SubCategory getSubCategoryType() {
+	public SubCategory getSubCategoryType() {
 		return subCategoryType;
 	}
 
 	public void setSubCategoryType(SubCategory subCategoryType) {
 		this.subCategoryType = subCategoryType;
 	}
-	
+
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -121,7 +129,6 @@ public class Post {
 		this.publishedAt = publishedAt;
 	}
 
-	
 	public Set<PostsMeta> getPostsMeta() {
 		return postsMeta;
 	}
@@ -130,23 +137,47 @@ public class Post {
 		this.postsMeta = postsMeta;
 	}
 
-	public Post() {}
+	public Post() {
+	}
 
-    public Post(Long id, String title, String description, User author) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.author = author;
-    }
+	public Post(Long id, String title, String description, Date createdAt, Date updatedAt, boolean published,
+			Date publishedAt, User author, SubCategory subCategoryType, Set<PostsMeta> postsMeta, List<Tag> tags) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.published = published;
+		this.publishedAt = publishedAt;
+		this.author = author;
+		this.subCategoryType = subCategoryType;
+		this.postsMeta = postsMeta;
+		this.tags = tags;
+	}
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", body='" + description + '\'' +
-                ", author=" + author +
-                ", createddate=" + createdAt +
-                '}';
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Post other = (Post) obj;
+		return Objects.equals(id, other.id) && Objects.equals(title, other.title);
+	}
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", description=" + description + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", published=" + published + ", publishedAt=" + publishedAt + ", author="
+				+ author + ", subCategoryType=" + subCategoryType + ", postsMeta=" + postsMeta + ", tags=" + tags + "]";
+	}
+
 }

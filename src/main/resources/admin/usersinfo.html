@@ -14,17 +14,13 @@
 			margin-left: 10px;
 		}
 	</style>
-	<script th:src="@{/resources/pwstrength.js}"></script>
-	<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
-		<div class="container-fluid">
-
+		<div class="container-fluid" style="padding-top: 50px; padding-bottom: 50px;">
 			<div class="row">
-
-
 				<div class="col-md-6 card">
 					<h5 class="text-center">Add Users</h5>
 					<div class="container pt-3">
@@ -115,9 +111,9 @@
 								<tr th:each="user : ${adminusers}">
 									<td th:text="${user.firstName}"></td>
 									<td th:text="${user.lastName}"></td>
-									<td th:text="${user.email}"></td>
+									<td th:text="${user.email}" style="word-break: break-word !important;"></td>
 									<td th:text="${user.roles.get(0).name}"></td>
-									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+									<td><a th:href="@{/admin/edit/user/{id}(id=${user.id})}" class="btn btn-primary"><i
 												class="fas fa-user-edit ml-2"></i></a></td>
 									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
 											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
@@ -154,10 +150,10 @@
 								<tr th:each="user : ${staffusers}">
 									<td th:text="${user.firstName}"></td>
 									<td th:text="${user.lastName}"></td>
-									<td th:text="${user.email}"></td>
+									<td th:text="${user.email}" style="word-break: break-word !important;"></td>
 									<td th:text="${user.roles.get(0).name}"></td>
 
-									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+									<td><a th:href="@{/admin/edit/user/{id}(id=${user.id})}" class="btn btn-primary"><i
 												class="fas fa-user-edit ml-2"></i></a></td>
 									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
 											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
@@ -189,9 +185,9 @@
 								<tr th:each="user : ${endusers}">
 									<td th:text="${user.firstName}"></td>
 									<td th:text="${user.lastName}"></td>
-									<td th:text="${user.email}"></td>
+									<td th:text="${user.email}" style="word-break: break-word !important;"></td>
 									<td th:text="${user.roles.get(0).name}"></td>
-									<td><a th:href="@{/admin/edit/{id}(id=${user.id})}" class="btn btn-primary"><i
+									<td><a th:href="@{/admin/edit/user/{id}(id=${user.id})}" class="btn btn-primary"><i
 												class="fas fa-user-edit ml-2"></i></a></td>
 									<td><a th:href="@{/admin/deactivate/{id}(id=${user.id})}" class="btn btn-primary"
 											th:if="${user.accountActive}"><i class="fas fa-user-slash"></i></a>
