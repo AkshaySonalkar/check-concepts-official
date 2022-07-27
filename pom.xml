@@ -9,7 +9,7 @@
 	<version>1.0.1-SNAPSHOT</version>
 
 	<name>check-concepts-official-website</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -87,10 +87,10 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.google.guava</groupId>

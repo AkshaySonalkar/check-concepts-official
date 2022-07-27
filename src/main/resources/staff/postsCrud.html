@@ -8,32 +8,152 @@
 
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
-		<div th:if="${message}">
-			<h2 th:text="${message}" />
+		<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
+		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
+		<div th:if="${error != null}" class="alert alert-danger" th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">
+			error</div>
+		<span id="categoryError" class="alert alert-danger" style="display:none"></span>
+		<div class="container-fluid py-5">
+			<section>
+				<div class="card mb-4">
+					<div class="card-header">
+						<i class="fas fa-table me-1"></i>
+						Posts
+					</div>
+					<div class="card-body">
+						<table class="table table-striped table-bordered" id="postsTable" style="width: 100%;">
+							<thead>
+								<tr>
+									<th scope="col" style="width: 10%;">Post Title</th>
+									<th scope="col" style="width: 30%;">Description</th>
+									<th scope="col" style="width: 10%;">Category</th>
+									<th scope="col" style="width: 10%;">Status</th>
+									<th scope="col" style="width: 10%;">Author</th>
+									<th scope="col" style="width: 10%;">Edit</th>
+									<th scope="col" style="width: 10%;">Preview</th>
+									<th scope="col" style="width: 10%;">Delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="post : ${posts}">
+									<td th:text="${post.title}"></td>
+									<td th:text="${post.description}" style="word-break: break-word !important;">
+									</td>
+									<td th:text="${post.subCategoryType.name}"></td>
+									<td th:text="${post.status.getDisplayName()}"></td>
+									<td th:text="${post.author.getUserDisplayName()}"></td>
+									<td><a th:href="@{/staff/post/edit/{id}(id=${post.id})}" class="btn btn-primary"><i
+												class="fa-solid fa-pen-to-square"></i></a></td>
+									<td><a th:href="@{/staff/previewPost/{postid}/{postname}(postid=${post.id},postname=${post.title})}"
+											class="btn btn-primary"><i class="fa-solid fa-eye"></i></a></td>
+									<td><a th:href="@{/staff/post/delete/{id}(id=${post.id})}"
+											class="btn btn-primary"><i class="fa-solid fa-trash-can"></i>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="card mb-4">
+					<div class="card-header">
+						<i class="fa-solid fa-file-circle-plus me-1"></i>
+						Add New Post
+					</div>
+					<div class="card-body">
+						<div class="container h-100">
+
+							<form action="/" method="POST" enctype="utf8">
+
+								<div class="mb-3">
+									<label for="categoryId" class="form-label">Select Category</label>
+
+									<select id="categoryId" name="categoryId" required>
+										<option th:each="category : ${subcategories}" th:value="${category.Id}"
+											th:text="${category.name}">
+											Category
+										</option>
+									</select>
+
+
+								</div>
+								<div class="mb-3">
+									<label for="title" class="form-label">Post Title</label>
+									<input type="text" class="form-control" name="title" id="title" required
+										maxlength="50">
+								</div>
+								<div class="mb-3">
+									<label for="description" class="form-label">Post Description</label>
+									<textarea type="text" id="description" name="description" required maxlength="200"
+										class="form-control md-textarea"></textarea>
+								</div>
+								
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 
-		<div>
-			<form method="POST" enctype="multipart/form-data" action="/staff/fileupload">
-				<table>
-					<tr>
-						<td>File to upload:</td>
-						<td><input type="file" name="file" /></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><input type="submit" value="Upload" /></td>
-					</tr>
-				</table>
-			</form>
-		</div>
+		<script th:inline="javascript">
+			var serverContext = [[@{/}]];
 
-		<div>
-			<ul>
-				<li th:each="file : ${files}">
-					<a th:href="${file}" th:text="${file}" />
-				</li>
-			</ul>
-		</div>
+			$(document).ready(function () {
+				$('form').submit(function (event) {
+					createPost(event);
+				});
+			});
+
+			function createPost(event) {
+				event.preventDefault();
+				var formData = $('form').serialize();
+				$.post(serverContext + "staff/post/save", formData, function (data) {
+					if (data.message == "success") {
+						window.location.href = serverContext + "staff/postsCrud?message=New Post Added Successfully";
+					}
+
+				})
+					.fail(function (data) {
+						if (data.responseJSON.error == "CategoryAlreadyExist") {
+							$("#categoryError").show().html(data.responseJSON.message);
+						}
+						else if (data.responseJSON.error.indexOf("InternalError") > -1) {
+							window.location.href = serverContext + "staff/postsCrud?message=" + data.responseJSON.message;
+						}
+
+					});
+			}
+		</script>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+
+				$('#postsTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+
+			});
+
+			window.onload = function () {
+				displayMessage();
+			};
+
+			function displayMessage() {
+
+				const queryString = window.location.search;
+				const urlParams = new URLSearchParams(queryString);
+				const message = urlParams.get('message');
+
+				const div = document.getElementById('message');
+				if (div.style.display === "none" && message != null) {
+					div.style.display = "block";
+					div.textContent = message;
+				}
+			}
+
+		</script>
 	</div>
 </body>
 

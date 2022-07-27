@@ -13,7 +13,7 @@
 		<div th:if="${error != null}" class="alert alert-danger" th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">
 			error</div>
 		<span id="categoryError" class="alert alert-danger" style="display:none"></span>
-		<div class="container-fluid">
+		<div class="container-fluid py-5">
 			<section>
 				<div class="card mb-4">
 					<div class="card-header">
@@ -56,7 +56,7 @@
 						Add New Sub Category
 					</div>
 					<div class="card-body">
-						<div class="container py-5 h-100">
+						<div class="container h-100">
 
 							<form action="/" method="POST" enctype="utf8">
 								<div class="mb-3">

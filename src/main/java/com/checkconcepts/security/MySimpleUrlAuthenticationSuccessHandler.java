@@ -59,6 +59,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             LoggedUser user = new LoggedUser(email, activeUserStore);
             session.setAttribute("user", user);
             User userObj = userService.findUserByEmail(email);
+            session.setAttribute("userObj", userObj);
             session.setAttribute("fullname", userObj.getFirstName().concat(" "+userObj.getLastName()));
         }
         clearAuthenticationAttributes(request);

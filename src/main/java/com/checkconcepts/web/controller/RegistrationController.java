@@ -1,17 +1,19 @@
 package com.checkconcepts.web.controller;
 
-import com.checkconcepts.persistence.model.Privilege;
-import com.checkconcepts.persistence.model.Role;
-import com.checkconcepts.persistence.model.User;
-import com.checkconcepts.registration.OnRegistrationCompleteEvent;
-import com.checkconcepts.security.ISecurityUserService;
-import com.checkconcepts.service.IUserService;
-import com.checkconcepts.web.dto.UserDto;
-import com.checkconcepts.web.util.GenericResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,24 +21,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.checkconcepts.persistence.model.Privilege;
+import com.checkconcepts.persistence.model.Role;
+import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.security.ISecurityUserService;
+import com.checkconcepts.service.IUserService;
 
 @Controller
 public class RegistrationController {
@@ -51,6 +48,9 @@ public class RegistrationController {
 
 	@Autowired
 	private MessageSource messages;
+	
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 
 	public RegistrationController() {
 		super();
@@ -179,7 +179,11 @@ public class RegistrationController {
 	}
 
 	private String getAppUrl(HttpServletRequest request) {
+		if(activeProfile.equalsIgnoreCase("dev"))
 		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		if(activeProfile.equalsIgnoreCase("prod"))
+		return "http://www.check-concepts.com" + request.getContextPath();
+		return null;
 	}
 
 	private final String getClientIP(HttpServletRequest request) {

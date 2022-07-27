@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.checkconcepts.persistence.dao.UserRepository;
@@ -65,7 +66,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**").antMatchers("/h2/**");
+		web.ignoring().antMatchers("/resources/**")/* .antMatchers("/h2/**") */;
 	}
 
 	@Bean
@@ -77,11 +78,13 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(final HttpSecurity http) throws Exception {
 		// @formatter:off
         http
-            .csrf().disable()
-            .authorizeRequests()
+        .csrf().disable()
+        .headers()
+        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+            .and().authorizeRequests()
             	.antMatchers("/").permitAll()
                 .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/contact*", "/about*", "/index*", "/webjars/**","/accessDenied",
-                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*", "/files/*",
+                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*", "/files/*", "/image/**","/pdf/**",
                         "/badUser*", "/user/resendRegistrationToken*" ,"/forgetPassword*", "/user/resetPassword*","/user/savePassword*","/updatePassword*",
                         "/user/changePassword*", "/emailError*", "/resources/**","/old/user/registration*","/successRegister*","/qrcode*","/user/enableNewLoc*")
                 .permitAll()

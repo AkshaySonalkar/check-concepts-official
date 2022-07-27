@@ -20,7 +20,7 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: #999;
+    color: rgb(0, 0, 0);
 }
 
 a,
@@ -32,11 +32,17 @@ a:focus {
 }
 
 .navbar {
-    padding: 15px 10px;
+	padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     background: #fff;
     border: none;
     border-radius: 0;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    height: auto;
+    position: fixed;
 }
 
 .navbar-btn {
@@ -57,14 +63,15 @@ a:focus {
 ----------------------------------------------------- */
 
 #sidebar {
-    width: 250px;
+    width: 400px;
     position: fixed;
     top: 0;
-    left: -250px;
+    left: -400px;
     height: 100vh;
     z-index: 999;
-    background: #7386D5;
-    color: #fff;
+    background: #fafafa;
+    background-color: white !important;
+	color: black !important;
     transition: all 0.3s;
     overflow-y: scroll;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
@@ -79,7 +86,7 @@ a:focus {
     height: 35px;
     line-height: 35px;
     text-align: center;
-    background: #7386D5;
+    background: #fafafa;
     position: absolute;
     top: 10px;
     right: 10px;
@@ -111,7 +118,8 @@ a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #6d7fcc;
+    /*background: #6d7fcc;*/
+    border-bottom: 1px solid #dee2e6;
 }
 
 #sidebar ul.components {
@@ -180,6 +188,26 @@ a.article,
 a.article:hover {
     background: #6d7fcc !important;
     color: #fff !important;
+}
+
+.menu-items{
+	padding: 0 0 1rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-items a {
+    color:  #212529;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.menu-items a:hover {
+    background: #dee2e6;
 }
 
 /* ---------------------------------------------------
@@ -281,7 +309,7 @@ footer{
 /* The progress bar (scroll indicator) */
 .progress-container .progress-bar {
   height: 2px;
-  background: #0dcaf0;
+  background: #A020F0;
   width: 0%;
 }
 
@@ -298,6 +326,12 @@ footer{
   /*margin-top: 10px;*/
 }
 
+@media screen and (max-width: 767px) {
+	#sidebar {
+    width: 100%;
+    left: -100%;
+    }
+}
 
 
 @import "./main.scss";

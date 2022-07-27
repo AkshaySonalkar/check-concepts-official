@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
@@ -56,6 +57,9 @@ public class RegistrationRestController {
 
     @Autowired
     private Environment env;
+    
+    @Value("${spring.profiles.active}")
+	private String activeProfile;
 
     public RegistrationRestController() {
         super();
@@ -205,8 +209,12 @@ public class RegistrationRestController {
     }
 
     private String getAppUrl(HttpServletRequest request) {
-        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-    }
+		if(activeProfile.equalsIgnoreCase("dev"))
+		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+		if(activeProfile.equalsIgnoreCase("prod"))
+		return "http://www.check-concepts.com" + request.getContextPath();
+		return null;
+	}
 
     private String getClientIP(HttpServletRequest request) {
         final String xfHeader = request.getHeader("X-Forwarded-For");

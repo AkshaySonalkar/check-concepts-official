@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+	<title>Tags</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
+		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
+		<div th:if="${error != null}" class="alert alert-danger" th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">
+			error</div>
+		<div class="container-fluid py-5">
+			<div class="row">
+				<div class="card col-md-6">
+					<div class="card-header">
+						<i class="fa-solid fa-file-circle-plus me-1"></i>
+						Add New Tag
+					</div>
+					<div class="card-body">
+						<div class="container h-100">
+
+							<form action="/" method="POST" enctype="utf8">
+
+								<div class="mb-3">
+									<label for="name" class="form-label">Tag Name</label>
+									<input type="text" class="form-control" name="name" id="name" required
+										maxlength="50">
+								</div>
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div class="card col-md-6">
+					<div class="card-header">
+						<i class="fas fa-table me-1"></i>
+						Available Tags
+					</div>
+					<div class="card-body">
+						<table class="table table-striped table-bordered" id="tagsTable" style="width: 100%;">
+							<thead>
+								<tr>
+									<th scope="col" style="width: 60%;">Tag Name</th>
+									<th scope="col" style="width: 20%;">Edit</th>
+									<th scope="col" style="width: 20%;">Delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="tag : ${tags}">
+									<td th:text="${tag.name}"></td>
+									<td><a th:href="@{/staff/tag/edit/{id}(id=${tag.id})}" class="btn btn-primary"><i
+												class="fa-solid fa-pen-to-square"></i></a></td>
+									<td><a th:href="@{/staff/tag/delete/{id}(id=${tag.id})}" class="btn btn-primary"><i
+												class="fa-solid fa-trash-can"></i>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script th:inline="javascript">
+			var serverContext = [[@{/}]];
+
+			$(document).ready(function () {
+				$('form').submit(function (event) {
+					createTag(event);
+				});
+			});
+
+			function createTag(event) {
+				event.preventDefault();
+				var formData = $('form').serialize();
+				$.post(serverContext + "staff/tag/save", formData, function (data) {
+					if (data.message == "success") {
+						window.location.href = serverContext + "staff/tagsCrud?message=New Tag Added Successfully";
+					}
+
+				})
+					.fail(function (data) {
+						if (data.responseJSON.error.indexOf("InternalError") > -1) {
+							window.location.href = serverContext + "staff/tagsCrud?message=" + data.responseJSON.message;
+						}
+
+					});
+			}
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+
+				$('#tagsTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+
+			});
+
+			window.onload = function () {
+				displayMessage();
+			};
+
+			function displayMessage() {
+
+				const queryString = window.location.search;
+				const urlParams = new URLSearchParams(queryString);
+				const message = urlParams.get('message');
+
+				const div = document.getElementById('message');
+				if (div.style.display === "none" && message != null) {
+					div.style.display = "block";
+					div.textContent = message;
+				}
+			}
+
+		</script>
+	</div>
+</body>
+
+</html>

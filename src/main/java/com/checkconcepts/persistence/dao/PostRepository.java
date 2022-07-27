@@ -13,5 +13,9 @@ public interface PostRepository extends
         JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p LEFT JOIN FETCH p.author ORDER BY p.updatedAt DESC")
     List<Post> findLatest5Posts();
+    
+    Post findByTitle(String postTitle);
+    
+    List<Post> findByTags_Name(String name);
 }
 

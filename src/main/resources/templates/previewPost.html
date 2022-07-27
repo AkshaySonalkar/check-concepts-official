@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+	<title th:text="${post.title}">Post title</title>
+	<meta name="description" th:content="${post.description}">
+
+</head>
+
+<body class=" d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<section>
+			<div class="container px-5 my-5">
+				<div class="row gx-5">
+					<div class="col-lg-3">
+						<div class="d-flex align-items-center mt-lg-5 mb-4">
+							<img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
+								alt="..." />
+							<div class="ms-3">
+								<div class="fw-bold"> <span th:text="${post.author.getUserDisplayName()}"
+										th:remove="tag">Akshay
+										Sonalkar </span></div>
+								<div class="text-muted">Author</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-9">
+						<!-- Post content-->
+						<article>
+							<!-- Post header-->
+							<header class="mb-4">
+								<!-- Post title-->
+								<h1 class="fw-bolder mb-1" th:inline="text">[[${post.title}]]</h1>
+								<!-- Post meta content-->
+								<div class="text-muted fst-italic mb-2"><span
+										th:text="${#dates.format(post.updatedAt, 'dd-MMM-yyyy')}"
+										th:remove="tag">Updated On </span></div>
+								<!-- Post categories-->
+								<a th:each="tag : ${post.tags}"
+									class="badge bg-secondary text-decoration-none link-light" th:text="${tag.name}"
+									href="#!">Tags</a>
+							</header>
+
+							<!-- Post content-->
+							<section class="mb-5">
+								<p class="fs-5 mb-4">
+									<span th:utext="${post.content}" th:remove="tag">Post Content.</span>
+								</p>
+							</section>
+						</article>
+
+						<div class="card mb-4" th:unless="${#lists.isEmpty(post.postsAttachments)}">
+							<div class="card-header">
+								<i class="fa-solid fa-images me-1"></i>
+								Supporting Attachment
+							</div>
+							<div class="card-body">
+								<table class="table table-striped table-bordered" id="attachmentsTable"
+									style="width: 100%;">
+									<thead>
+										<tr>
+											<th scope="col" style="width: 20%;">Attachment Name</th>
+											<th scope="col" style="width: 20%;">Attachment Type</th>
+											<th scope="col" style="width: 25%;">Attachment Source</th>
+											<th scope="col" style="width: 17.5%;">View</th>
+											<th scope="col" style="width: 17.5%;">Download</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="att : ${post.postsAttachments}">
+											<td th:text="${att.name}"></td>
+											<td th:text="${att.attachmentType}">
+											</td>
+											<td th:text="${att.attachmentSrc}"></td>
+											<td>
+												<a type="button" class="fa-solid fa-eye text-decoration-none"
+													data-bs-toggle="modal" data-bs-target="#pdfModalId"
+													style="font-size: 1.5em;" th:if="${att.attachmentType == 'pdf'}"
+													th:onclick="viewPdf([[${att.attachmentSrc}]],[[${att.name}]])">
+
+												</a>
+												<a type="button" class="fa-solid fa-eye text-decoration-none"
+													data-bs-toggle="modal" data-bs-target="#imageModalId"
+													style="font-size: 1.5em;" th:if="${att.attachmentType != 'pdf'}"
+													th:onclick="viewImage([[${att.attachmentSrc}]],[[${att.name}]])">
+
+												</a>
+											</td>
+											<td>
+												<a type="button" class="fa-solid fa-download text-decoration-none"
+													style="font-size: 1.5em;"
+													th:href="@{/files/{filename}(filename=${att.name})}">
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-end">
+				<a class="btn btn-outline-success btn-lg px-4"
+					th:href="@{/staff/post/request/publish/{id}(id=${post.id})}"
+					th:if="${#strings.equals(post.status.getDisplayName(), 'CREATED') OR #strings.equals(post.status.getDisplayName(), 'IMPROVEMENT REQUIRED')}"
+					sec:authorize="hasAuthority('STAFF_PRIVILEGE')">Send for Publish</a>
+				<a class="btn btn-outline-primary btn-lg px-4"
+					th:href="@{/admin/post/approve/publish/{id}(id=${post.id})}"
+					th:if="${#strings.equals(post.status.getDisplayName(), 'READY FOR PUBLISH')}"
+					sec:authorize="hasAuthority('ADMIN_PRIVILEGE')">Publish</a>
+				<a class="btn btn-outline-info btn-lg px-4" th:href="@{/admin/post/reject/publish/{id}(id=${post.id})}"
+					th:if="${#strings.equals(post.status.getDisplayName(), 'READY FOR PUBLISH')}"
+					sec:authorize="hasAuthority('ADMIN_PRIVILEGE')">Request Improvement</a>
+			</div>
+		</section>
+
+		<div class="modal fade" id="imageModalId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog modal-fullscreen">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">Image Viewer</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<img id="displayImageId" />
+						</iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="pdfModalId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog modal-fullscreen">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">PDF Viewer</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<iframe id="pdfViewerId" width="100%" height="100%" allowfullscreen>
+						</iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function () {
+
+				$('#attachmentsTable').dataTable({
+					scrollY: 200,
+					scrollX: true,
+				});
+
+			});
+
+			function viewImage(url, name) {
+				var att = document.getElementById('displayImageId');
+				att.src = url;
+				att.title = name;
+				att.alt = name;
+			}
+
+			function viewPdf(url, name) {
+				var att = document.getElementById('pdfViewerId');
+				att.src = url;
+				att.title = name;
+			}
+
+		</script>
+	</div>
+</body>
+
+</html>

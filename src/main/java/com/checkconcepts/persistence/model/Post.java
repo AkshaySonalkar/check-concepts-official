@@ -1,20 +1,23 @@
 package com.checkconcepts.persistence.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,21 +29,26 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 300)
+	@Column(nullable = false, length = 300, unique = true)
 	private String title;
 
 	@Lob
 	@Column(nullable = false)
 	private String description;
+	
+	@Lob
+	@Column
+	private String content;
 
 	@Column(nullable = false)
 	private Date createdAt = new Date();
 
 	@Column
 	private Date updatedAt = new Date();
-
-	@Column
-	private boolean published;
+	
+	@Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
+	private PostsStatus status;
 
 	@Column
 	private Date publishedAt = new Date();
@@ -50,12 +58,18 @@ public class Post {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SubCategory subCategoryType;
-
-	@OneToMany(mappedBy = "parentPost")
-	private Set<PostsMeta> postsMeta = new HashSet<PostsMeta>();
-
-	@ElementCollection
-	private List<Tag> tags = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "parentPostAttachment")
+	private Set<PostsAttachments> postsAttachments = new HashSet<PostsAttachments>();
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "posts_tags",
+      joinColumns = @JoinColumn(name = "post_id", 
+      referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id", 
+      referencedColumnName = "id"))
+    private Set<Tag> tags = new HashSet<>();
+	
 
 	public Long getId() {
 		return id;
@@ -113,12 +127,12 @@ public class Post {
 		this.updatedAt = updatedAt;
 	}
 
-	public boolean isPublished() {
-		return published;
+	public PostsStatus getStatus() {
+		return status;
 	}
 
-	public void setPublished(boolean published) {
-		this.published = published;
+	public void setStatus(PostsStatus status) {
+		this.status = status;
 	}
 
 	public Date getPublishedAt() {
@@ -128,32 +142,47 @@ public class Post {
 	public void setPublishedAt(Date publishedAt) {
 		this.publishedAt = publishedAt;
 	}
-
-	public Set<PostsMeta> getPostsMeta() {
-		return postsMeta;
+	
+	public Set<PostsAttachments> getPostsAttachments() {
+		return postsAttachments;
 	}
 
-	public void setPostsMeta(Set<PostsMeta> postsMeta) {
-		this.postsMeta = postsMeta;
+	public void setPostsAttachments(Set<PostsAttachments> postsAttachments) {
+		this.postsAttachments = postsAttachments;
+	}
+	
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
 	}
 
 	public Post() {
 	}
 
-	public Post(Long id, String title, String description, Date createdAt, Date updatedAt, boolean published,
-			Date publishedAt, User author, SubCategory subCategoryType, Set<PostsMeta> postsMeta, List<Tag> tags) {
+	public Post(Long id, String title, String description, String content, Date createdAt, Date updatedAt, PostsStatus status,
+			Date publishedAt, User author, SubCategory subCategoryType) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
+		this.content = content;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.published = published;
+		this.status = status;
 		this.publishedAt = publishedAt;
 		this.author = author;
 		this.subCategoryType = subCategoryType;
-		this.postsMeta = postsMeta;
-		this.tags = tags;
 	}
 
 	@Override
@@ -176,8 +205,8 @@ public class Post {
 	@Override
 	public String toString() {
 		return "Post [id=" + id + ", title=" + title + ", description=" + description + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + ", published=" + published + ", publishedAt=" + publishedAt + ", author="
-				+ author + ", subCategoryType=" + subCategoryType + ", postsMeta=" + postsMeta + ", tags=" + tags + "]";
+				+ ", updatedAt=" + updatedAt + ", status=" + status + ", publishedAt=" + publishedAt + ", author="
+				+ author + ", subCategoryType=" + subCategoryType +  "]";
 	}
 
 }
