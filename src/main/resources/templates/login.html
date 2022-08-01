@@ -3,7 +3,7 @@
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
 
 <head>
-	<title th:utext="#{label.pages.home.title}">Title</title>
+	<title th:utext="#{label.form.loginTitle}">Login</title>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -16,38 +16,6 @@
 
 			<div th:if="${error != null}" class="alert alert-danger"
 				th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-
-
-			<!-- <div class="container">
-			<div th:if="${message != null}" class="alert alert-info"
-				th:utext="${message}">message</div>
-
-			<div id="message" th:if="${message == null}" style="display: none;"
-				class="alert alert-info"></div>
-
-
-			<div th:if="${error != null}" class="alert alert-danger"
-				th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-			<div class="row">
-				<form name='f' action="login" method='POST' onsubmit="return validate();">
-					<label class="col-sm-4" th:utext="#{label.form.loginEmail}">Email</label>
-					<span class="col-sm-8"><input class="form-control"
-						type='text' name='username' value='' /></span> <br /> <label
-						class="col-sm-4" th:utext="#{label.form.loginPass}">password</label>
-					<span class="col-sm-8"><input class="form-control"
-						type='password' name='password' /></span> <br /> <input
-						class="btn btn-primary" name="submit" type="submit"
-						th:value="#{label.form.submit}" />
-
-				</form>
-				<br /> <a class="btn btn-light" th:href="@{/registration}"
-					th:utext="#{label.form.loginSignUp}">signup</a> <br /> <br /> <a
-					class="btn btn-light" th:href="@{/forgetPassword}"
-					th:utext="#{message.forgetPassword}">forget</a>
-			</div>
-		</div> -->
-
-
 
 			<section>
 				<div class="container py-5 h-100">

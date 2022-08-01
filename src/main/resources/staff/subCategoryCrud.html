@@ -9,10 +9,10 @@
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
 		<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
-		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
-		<div th:if="${error != null}" class="alert alert-danger" th:utext="${session[SPRING_SECURITY_LAST_EXCEPTION]}">
+		<div th:if="${error != null}" class="alert alert-danger" th:utext="${error}">
 			error</div>
-		<span id="categoryError" class="alert alert-danger" style="display:none"></span>
+		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
+		<div id="error" th:if="${error == null}" style="display: none;" class="alert alert-danger"></div>
 		<div class="container-fluid py-5">
 			<section>
 				<div class="card mb-4">
@@ -109,15 +109,13 @@
 					if (data.message == "success") {
 						window.location.href = serverContext + "staff/subCategoryCrud?message=New Category Added Successfully";
 					}
+					if (data.message == "error") {
+						window.location.href = serverContext + "staff/subCategoryCrud?error=" + data.error;
+					}
 
 				})
 					.fail(function (data) {
-						if (data.responseJSON.error == "CategoryAlreadyExist") {
-							$("#categoryError").show().html(data.responseJSON.message);
-						}
-						else if (data.responseJSON.error.indexOf("InternalError") > -1) {
-							window.location.href = serverContext + "staff/subCategoryCrud?message=" + data.responseJSON.message;
-						}
+						window.location.href = serverContext + "staff/subCategoryCrud?error=Something went wrong";
 
 					});
 			}
@@ -127,7 +125,7 @@
 			$(document).ready(function () {
 
 				$('#categoryTable').dataTable({
-					scrollY: 200,
+					scrollY: 500,
 					scrollX: true,
 				});
 
@@ -143,10 +141,19 @@
 				const urlParams = new URLSearchParams(queryString);
 				const message = urlParams.get('message');
 
+				const error = urlParams.get('error');
+
 				const div = document.getElementById('message');
+
+				const errdiv = document.getElementById('error');
 				if (div.style.display === "none" && message != null) {
 					div.style.display = "block";
 					div.textContent = message;
+				}
+
+				if (errdiv.style.display === "none" && error != null) {
+					errdiv.style.display = "block";
+					errdiv.textContent = error;
 				}
 			}
 

@@ -8,6 +8,9 @@
 
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
+	<div th:if="${message != null}" class="alert alert-info" th:utext="${message}">message</div>
+		<div th:if="${error != null}" class="alert alert-danger" th:utext="${error}">
+			error</div>
 		<div class="container-fluid py-5">
 			<section>
 				<div class="card mb-4">

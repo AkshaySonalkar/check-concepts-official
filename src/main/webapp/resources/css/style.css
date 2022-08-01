@@ -332,6 +332,12 @@ footer{
     left: -100%;
     }
 }
+.explore-card{
+	transition: transform .4s;
+}
 
+.explore-card:hover{
+	transform: scale(1.1);
+}
 
 @import "./main.scss";

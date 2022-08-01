@@ -3,6 +3,7 @@ package com.checkconcepts.web.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.checkconcepts.persistence.model.UserGender;
 import com.checkconcepts.validation.PasswordMatches;
 import com.checkconcepts.validation.ValidEmail;
 import com.checkconcepts.validation.ValidPassword;
@@ -32,6 +33,8 @@ public class UserDto {
     private boolean isUsing2FA;
     
     private String roleName;
+    
+    private String gender;
 
     public String getEmail() {
         return email;
@@ -97,6 +100,16 @@ public class UserDto {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+
+
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	@Override

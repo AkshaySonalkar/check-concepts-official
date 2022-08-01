@@ -1,6 +1,5 @@
 package com.checkconcepts.web.admin.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -28,8 +27,8 @@ import com.checkconcepts.persistence.dao.RoleRepository;
 import com.checkconcepts.persistence.dao.UserRepository;
 import com.checkconcepts.persistence.model.Post;
 import com.checkconcepts.persistence.model.PostsStatus;
-import com.checkconcepts.persistence.model.SubCategory;
 import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.persistence.model.UserGender;
 import com.checkconcepts.service.ICategoryService;
 import com.checkconcepts.service.IPostService;
 import com.checkconcepts.service.ISubCategoryService;
@@ -99,6 +98,8 @@ public class AdminPagesNavigationController {
 		model.addAttribute("staffusers", userRepository.findAll().stream().filter(
 				u -> u.isEnabled() && u.getRoles().stream().anyMatch(r -> r.getName().equalsIgnoreCase("ROLE_STAFF")))
 				.collect(Collectors.toList()));
+		
+		model.addAttribute("genders", UserGender.getValuesAsString());
 		return "usersinfo";
 	}
 
@@ -112,61 +113,47 @@ public class AdminPagesNavigationController {
 	}
 
 	@PostMapping("/admin/update/{id}")
-	public String updateUser(@PathVariable("id") long id, @Valid User user, BindingResult result, Model model) {
+	public String updateUser(@PathVariable("id") long id, @Valid User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			user.setId(id);
 			return "update-user";
 		}
-		System.out.println(model.getAttribute("userrole"));
-		User userObj = userRepository.findById(id).get();
-		userObj.setLastName(user.getLastName());
-		userObj.setFirstName(user.getFirstName());
-		userRepository.save(userObj);
+		try {
+			
+			User userObj = userRepository.findById(id).get();
+			userObj.setLastName(user.getLastName());
+			userObj.setFirstName(user.getFirstName());
+			userRepository.save(userObj);
+			redirectAttributes.addFlashAttribute("message", "User updated successfully " + "!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "User failed to update " + "!");
+		}
+		
 
 		return "redirect:/admin/usersinfo";
 	}
 
 	@GetMapping("/admin/deactivate/{id}")
-	public String deactivateUser(@PathVariable("id") long id, Model model) {
+	public String deactivateUser(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttributes) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 		user.setAccountActive(false);
 		userRepository.save(user);
+		redirectAttributes.addFlashAttribute("message", "User deactivated successfully " + "!");
 
 		return "redirect:/admin/usersinfo";
 	}
 
 	@GetMapping("/admin/activate/{id}")
-	public String activateUser(@PathVariable("id") long id, Model model) {
+	public String activateUser(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttributes) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 		user.setAccountActive(true);
 		userRepository.save(user);
-
+		redirectAttributes.addFlashAttribute("message", "User activated successfully " + "!");
 		return "redirect:/admin/usersinfo";
 	}
 
-	@GetMapping("/admin/make/staff/{id}")
-	public String makeStaffUser(@PathVariable("id") long id, Model model) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-		user.getRoles().remove(roleRepository.findByName("ROLE_USER"));
-		User userObj = userRepository.save(user);
-		userObj.setRoles(Arrays.asList(roleRepository.findByName("ROLE_STAFF")));
-		userRepository.save(userObj);
-		return "redirect:/admin/usersinfo";
-	}
-
-	@GetMapping("/admin/make/admin/{id}")
-	public String makeAdminUser(@PathVariable("id") long id, Model model) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-		user.getRoles().remove(roleRepository.findByName("ROLE_USER"));
-		User userObj = userRepository.save(user);
-		userObj.setRoles(Arrays.asList(roleRepository.findByName("ROLE_ADMIN")));
-		userRepository.save(userObj);
-		return "redirect:/admin/usersinfo";
-	}
 
 	@GetMapping("/admin/signup")
 	public String showSignUpForm(User user) {

@@ -11,6 +11,8 @@ import com.checkconcepts.persistence.dao.UserRepository;
 import com.checkconcepts.persistence.model.Privilege;
 import com.checkconcepts.persistence.model.Role;
 import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.persistence.model.UserGender;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -96,6 +98,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             user.setEmail(email);
             user.setEnabled(true);
             user.setAccountActive(true);
+            user.setGender(UserGender.MALE);
         }
         user.setRoles(roles);
         user = userRepository.save(user);

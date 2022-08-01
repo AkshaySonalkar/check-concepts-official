@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" layout:decorate="~{layout}">
+
+<head>
+	<title th:text="${pagetitle}">Page Title</title>
+	<meta name="description" th:content="${pagedesc}">
+</head>
+
+<body class="d-flex flex-column h-100">
+	<div layout:fragment="content">
+		<section class="py-5">
+			<div class="container">
+				<div class="row gx-5">
+					<div class="col-lg-4 mb-5" th:each="post : ${posts}">
+						<div class="card h-100 shadow border-0 explore-card">
+
+							<div class="card-body p-4">
+
+								<a class="text-decoration-none link-dark stretched-link"
+									th:href="@{/tech/post/{id}/{name}(id=${post.id}, name=${post.title})}">
+									<div class="h5 card-title" th:text="${post.title}">Blog post title</div>
+								</a>
+								<a th:each="tag : ${post.tags}"
+									class="badge bg-primary bg-gradient rounded-pill mx-1 text-decoration-none mb-3"
+									th:text="${tag.name}">Tags</a>
+								<article>
+									<p class="card-text mb-0" th:text="${post.description}">Post Description.</p>
+								</article>
+							</div>
+							<div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+								<div class="d-flex align-items-end justify-content-between">
+									<div class="d-flex align-items-center">
+										<img class="img-fluid rounded-circle" style="width: 40px;"
+											th:if="${#strings.equals(post.author.gender.getDisplayName(), 'MALE')}"
+											th:src="@{/resources/avatar/male_icon.svg}" alt="Author Avatar Icon" />
+										<img class="img-fluid rounded-circle" style="width: 40px;"
+											th:if="${#strings.equals(post.author.gender.getDisplayName(), 'FEMALE')}"
+											th:src="@{/resources/avatar/female_icon.svg}" alt="Author Avatar Icon" />
+										<div class="small">
+											<div class="fw-bold" th:text="${post.author.getUserDisplayName()}">Akshay
+												Sonalkar</div>
+											<div class="text-muted"><span
+													th:text="${#dates.format(post.updatedAt, 'dd-MMM-yyyy')}"
+													th:remove="tag">Updated On </span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+
+</html>

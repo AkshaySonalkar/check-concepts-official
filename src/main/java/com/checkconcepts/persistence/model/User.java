@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,6 +43,10 @@ public class User {
     private boolean accountActive;
 
     private String secret;
+    
+    @Column(name = "gender")
+    @Enumerated(EnumType.ORDINAL)
+	private UserGender gender;
 
     //
 
@@ -120,8 +126,16 @@ public class User {
     public void setSecret(String secret) {
         this.secret = secret;
     }
+    
+    public UserGender getGender() {
+		return gender;
+	}
 
-    @Override
+	public void setGender(UserGender gender) {
+		this.gender = gender;
+	}
+
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

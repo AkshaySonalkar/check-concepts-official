@@ -84,7 +84,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .and().authorizeRequests()
             	.antMatchers("/").permitAll()
                 .antMatchers("/login*", "/logout*", "/signin/**", "/signup/**", "/customLogin", "/contact*", "/about*", "/index*", "/webjars/**","/accessDenied",
-                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*", "/files/*", "/image/**","/pdf/**",
+                        "/user/registration*", "/registrationConfirm*", "/expiredAccount*", "/registration*", "/files/*", "/image/**","/pdf/**","/tech/**","/nonTech/**",
                         "/badUser*", "/user/resendRegistrationToken*" ,"/forgetPassword*", "/user/resetPassword*","/user/savePassword*","/updatePassword*",
                         "/user/changePassword*", "/emailError*", "/resources/**","/old/user/registration*","/successRegister*","/qrcode*","/user/enableNewLoc*")
                 .permitAll()

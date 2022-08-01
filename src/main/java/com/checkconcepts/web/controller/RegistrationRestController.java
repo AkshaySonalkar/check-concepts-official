@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.checkconcepts.persistence.model.User;
 import com.checkconcepts.persistence.model.VerificationToken;
@@ -77,14 +78,26 @@ public class RegistrationRestController {
     }
     
     @PostMapping("/user/admin/registration")
-    public GenericResponse registerUserStaffAccount(@Valid final UserDto accountDto, final HttpServletRequest request) {
+    public GenericResponse registerUserStaffAccount(@Valid final UserDto accountDto, final HttpServletRequest request, RedirectAttributes redirectAttributes) {
         LOGGER.debug("Registering user account with information: {}", accountDto);
         if(accountDto.getRoleName().equalsIgnoreCase("ROLE_STAFF")) {
-        	final User registered = userService.registerNewStaffUserAccount(accountDto);
+        	try {
+        		final User registered = userService.registerNewStaffUserAccount(accountDto);
+            	redirectAttributes.addFlashAttribute("message", "New Staff User registered successfully " + "!");
+			} catch (Exception e) {
+				redirectAttributes.addFlashAttribute("error", "New Staff User failed to register " + "!");
+			}
+        	
 //        	userService.addUserLocation(registered, getClientIP(request));
         }
         if(accountDto.getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
-        	final User registered = userService.registerNewAdminUserAccount(accountDto);
+        	try {
+        		final User registered = userService.registerNewAdminUserAccount(accountDto);
+        		redirectAttributes.addFlashAttribute("message", "New Admin User registered successfully " + "!");
+			} catch (Exception e) {
+				redirectAttributes.addFlashAttribute("error", "New Admin User failed to register " + "!");
+			}
+        	
 //        	userService.addUserLocation(registered, getClientIP(request));
         }
         
@@ -212,7 +225,7 @@ public class RegistrationRestController {
 		if(activeProfile.equalsIgnoreCase("dev"))
 		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		if(activeProfile.equalsIgnoreCase("prod"))
-		return "http://www.check-concepts.com" + request.getContextPath();
+		return "https://www.checkconcepts.org" + request.getContextPath();
 		return null;
 	}
 

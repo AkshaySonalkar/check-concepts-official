@@ -24,6 +24,7 @@ import com.checkconcepts.persistence.dao.VerificationTokenRepository;
 import com.checkconcepts.persistence.model.NewLocationToken;
 import com.checkconcepts.persistence.model.PasswordResetToken;
 import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.persistence.model.UserGender;
 import com.checkconcepts.persistence.model.UserLocation;
 import com.checkconcepts.persistence.model.VerificationToken;
 import com.checkconcepts.web.dto.UserDto;
@@ -33,23 +34,23 @@ import com.checkconcepts.web.error.UserAlreadyExistException;
 @Transactional
 public class UserService implements IUserService {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private VerificationTokenRepository tokenRepository;
+	@Autowired
+	private VerificationTokenRepository tokenRepository;
 
-    @Autowired
-    private PasswordResetTokenRepository passwordTokenRepository;
+	@Autowired
+	private PasswordResetTokenRepository passwordTokenRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RoleRepository roleRepository;
+	@Autowired
+	private RoleRepository roleRepository;
 
-    @Autowired
-    private SessionRegistry sessionRegistry;
+	@Autowired
+	private SessionRegistry sessionRegistry;
 
 	/*
 	 * @Autowired
@@ -57,203 +58,207 @@ public class UserService implements IUserService {
 	 * @Qualifier("GeoIPCountry") private DatabaseReader databaseReader;
 	 */
 
-    @Autowired
-    private UserLocationRepository userLocationRepository;
+	@Autowired
+	private UserLocationRepository userLocationRepository;
 
-    @Autowired
-    private NewLocationTokenRepository newLocationTokenRepository;
+	@Autowired
+	private NewLocationTokenRepository newLocationTokenRepository;
 
-    @Autowired
-    private Environment env;
+	@Autowired
+	private Environment env;
 
-    public static final String TOKEN_INVALID = "invalidToken";
-    public static final String TOKEN_EXPIRED = "expired";
-    public static final String TOKEN_VALID = "valid";
+	public static final String TOKEN_INVALID = "invalidToken";
+	public static final String TOKEN_EXPIRED = "expired";
+	public static final String TOKEN_VALID = "valid";
 
-    public static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
-    public static String APP_NAME = "SpringRegistration";
+	public static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
+	public static String APP_NAME = "SpringRegistration";
 
-    // API
+	// API
 
-    @Override
-    public User registerNewUserAccount(final UserDto accountDto) {
-        if (emailExists(accountDto.getEmail())) {
-            throw new UserAlreadyExistException("There is an account with that email address: " + accountDto.getEmail());
-        }
-        final User user = new User();
+	@Override
+	public User registerNewUserAccount(final UserDto accountDto) {
+		if (emailExists(accountDto.getEmail())) {
+			throw new UserAlreadyExistException(
+					"There is an account with that email address: " + accountDto.getEmail());
+		}
+		final User user = new User();
 
-        user.setFirstName(accountDto.getFirstName());
-        user.setLastName(accountDto.getLastName());
-        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-        user.setEmail(accountDto.getEmail());
-        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
-        return userRepository.save(user);
-    }
-    
-    @Override
-    public User registerNewStaffUserAccount(final UserDto accountDto) {
-        if (emailExists(accountDto.getEmail())) {
-            throw new UserAlreadyExistException("There is an account with that email address: " + accountDto.getEmail());
-        }
-        final User user = new User();
+		user.setFirstName(accountDto.getFirstName());
+		user.setLastName(accountDto.getLastName());
+		user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+		user.setEmail(accountDto.getEmail());
+		user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
+		return userRepository.save(user);
+	}
 
-        user.setFirstName(accountDto.getFirstName());
-        user.setLastName(accountDto.getLastName());
-        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-        user.setEmail(accountDto.getEmail());
-        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_STAFF")));
-        user.setEnabled(Boolean.TRUE);
-        user.setAccountActive(true);
-        return userRepository.save(user);
-    }
-    
-    @Override
-    public User registerNewAdminUserAccount(final UserDto accountDto) {
-        if (emailExists(accountDto.getEmail())) {
-            throw new UserAlreadyExistException("There is an account with that email address: " + accountDto.getEmail());
-        }
-        final User user = new User();
+	@Override
+	public User registerNewStaffUserAccount(final UserDto accountDto) {
+		if (emailExists(accountDto.getEmail())) {
+			throw new UserAlreadyExistException(
+					"There is an account with that email address: " + accountDto.getEmail());
+		}
+		final User user = new User();
 
-        user.setFirstName(accountDto.getFirstName());
-        user.setLastName(accountDto.getLastName());
-        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-        user.setEmail(accountDto.getEmail());
-        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_ADMIN")));
-        user.setEnabled(Boolean.TRUE);
-        user.setAccountActive(true);
-        return userRepository.save(user);
-    }
+		user.setFirstName(accountDto.getFirstName());
+		user.setLastName(accountDto.getLastName());
+		user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+		user.setEmail(accountDto.getEmail());
+		user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_STAFF")));
+		user.setEnabled(Boolean.TRUE);
+		user.setAccountActive(true);
+		if (accountDto.getGender().equals(UserGender.MALE.getDisplayName()))
+			user.setGender(UserGender.MALE);
+		if (accountDto.getGender().equals(UserGender.FEMALE.getDisplayName()))
+			user.setGender(UserGender.FEMALE);
+		return userRepository.save(user);
+	}
 
-    @Override
-    public User getUser(final String verificationToken) {
-        final VerificationToken token = tokenRepository.findByToken(verificationToken);
-        if (token != null) {
-            return token.getUser();
-        }
-        return null;
-    }
+	@Override
+	public User registerNewAdminUserAccount(final UserDto accountDto) {
+		if (emailExists(accountDto.getEmail())) {
+			throw new UserAlreadyExistException(
+					"There is an account with that email address: " + accountDto.getEmail());
+		}
+		final User user = new User();
 
-    @Override
-    public VerificationToken getVerificationToken(final String VerificationToken) {
-        return tokenRepository.findByToken(VerificationToken);
-    }
+		user.setFirstName(accountDto.getFirstName());
+		user.setLastName(accountDto.getLastName());
+		user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+		user.setEmail(accountDto.getEmail());
+		user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_ADMIN")));
+		user.setEnabled(Boolean.TRUE);
+		user.setAccountActive(true);
+		if (accountDto.getGender().equals(UserGender.MALE.getDisplayName()))
+			user.setGender(UserGender.MALE);
+		if (accountDto.getGender().equals(UserGender.FEMALE.getDisplayName()))
+			user.setGender(UserGender.FEMALE);
+		return userRepository.save(user);
+	}
 
-    @Override
-    public void saveRegisteredUser(final User user) {
-        userRepository.save(user);
-    }
+	@Override
+	public User getUser(final String verificationToken) {
+		final VerificationToken token = tokenRepository.findByToken(verificationToken);
+		if (token != null) {
+			return token.getUser();
+		}
+		return null;
+	}
 
-    @Override
-    public void deleteUser(final User user) {
-        final VerificationToken verificationToken = tokenRepository.findByUser(user);
+	@Override
+	public VerificationToken getVerificationToken(final String VerificationToken) {
+		return tokenRepository.findByToken(VerificationToken);
+	}
 
-        if (verificationToken != null) {
-            tokenRepository.delete(verificationToken);
-        }
+	@Override
+	public void saveRegisteredUser(final User user) {
+		userRepository.save(user);
+	}
 
-        final PasswordResetToken passwordToken = passwordTokenRepository.findByUser(user);
+	@Override
+	public void deleteUser(final User user) {
+		final VerificationToken verificationToken = tokenRepository.findByUser(user);
 
-        if (passwordToken != null) {
-            passwordTokenRepository.delete(passwordToken);
-        }
+		if (verificationToken != null) {
+			tokenRepository.delete(verificationToken);
+		}
 
-        userRepository.delete(user);
-    }
+		final PasswordResetToken passwordToken = passwordTokenRepository.findByUser(user);
 
-    @Override
-    public void createVerificationTokenForUser(final User user, final String token) {
-        final VerificationToken myToken = new VerificationToken(token, user);
-        tokenRepository.save(myToken);
-    }
+		if (passwordToken != null) {
+			passwordTokenRepository.delete(passwordToken);
+		}
 
-    @Override
-    public VerificationToken generateNewVerificationToken(final String existingVerificationToken) {
-        VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
-        vToken.updateToken(UUID.randomUUID()
-            .toString());
-        vToken = tokenRepository.save(vToken);
-        return vToken;
-    }
+		userRepository.delete(user);
+	}
 
-    @Override
-    public void createPasswordResetTokenForUser(final User user, final String token) {
-        final PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordTokenRepository.save(myToken);
-    }
+	@Override
+	public void createVerificationTokenForUser(final User user, final String token) {
+		final VerificationToken myToken = new VerificationToken(token, user);
+		tokenRepository.save(myToken);
+	}
 
-    @Override
-    public User findUserByEmail(final String email) {
-        return userRepository.findByEmail(email);
-    }
+	@Override
+	public VerificationToken generateNewVerificationToken(final String existingVerificationToken) {
+		VerificationToken vToken = tokenRepository.findByToken(existingVerificationToken);
+		vToken.updateToken(UUID.randomUUID().toString());
+		vToken = tokenRepository.save(vToken);
+		return vToken;
+	}
 
-    @Override
-    public PasswordResetToken getPasswordResetToken(final String token) {
-        return passwordTokenRepository.findByToken(token);
-    }
+	@Override
+	public void createPasswordResetTokenForUser(final User user, final String token) {
+		final PasswordResetToken myToken = new PasswordResetToken(token, user);
+		passwordTokenRepository.save(myToken);
+	}
 
-    @Override
-    public Optional<User> getUserByPasswordResetToken(final String token) {
-        return Optional.ofNullable(passwordTokenRepository.findByToken(token) .getUser());
-    }
+	@Override
+	public User findUserByEmail(final String email) {
+		return userRepository.findByEmail(email);
+	}
 
-    @Override
-    public Optional<User> getUserByID(final long id) {
-        return userRepository.findById(id);
-    }
+	@Override
+	public PasswordResetToken getPasswordResetToken(final String token) {
+		return passwordTokenRepository.findByToken(token);
+	}
 
-    @Override
-    public void changeUserPassword(final User user, final String password) {
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-    }
+	@Override
+	public Optional<User> getUserByPasswordResetToken(final String token) {
+		return Optional.ofNullable(passwordTokenRepository.findByToken(token).getUser());
+	}
 
-    @Override
-    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
-        return passwordEncoder.matches(oldPassword, user.getPassword());
-    }
+	@Override
+	public Optional<User> getUserByID(final long id) {
+		return userRepository.findById(id);
+	}
 
-    @Override
-    public String validateVerificationToken(String token) {
-        final VerificationToken verificationToken = tokenRepository.findByToken(token);
-        if (verificationToken == null) {
-            return TOKEN_INVALID;
-        }
+	@Override
+	public void changeUserPassword(final User user, final String password) {
+		user.setPassword(passwordEncoder.encode(password));
+		userRepository.save(user);
+	}
 
-        final User user = verificationToken.getUser();
-        final Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate()
-            .getTime() - cal.getTime()
-            .getTime()) <= 0) {
-            tokenRepository.delete(verificationToken);
-            return TOKEN_EXPIRED;
-        }
+	@Override
+	public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+		return passwordEncoder.matches(oldPassword, user.getPassword());
+	}
 
-        user.setEnabled(true);
-        user.setAccountActive(true);
-        // tokenRepository.delete(verificationToken);
-        userRepository.save(user);
-        return TOKEN_VALID;
-    }
+	@Override
+	public String validateVerificationToken(String token) {
+		final VerificationToken verificationToken = tokenRepository.findByToken(token);
+		if (verificationToken == null) {
+			return TOKEN_INVALID;
+		}
 
-    private boolean emailExists(final String email) {
-        return userRepository.findByEmail(email) != null;
-    }
+		final User user = verificationToken.getUser();
+		final Calendar cal = Calendar.getInstance();
+		if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+			tokenRepository.delete(verificationToken);
+			return TOKEN_EXPIRED;
+		}
 
-    @Override
-    public List<String> getUsersFromSessionRegistry() {
-        return sessionRegistry.getAllPrincipals()
-            .stream()
-            .filter((u) -> !sessionRegistry.getAllSessions(u, false)
-                .isEmpty())
-            .map(o -> {
-                if (o instanceof User) {
-                    return ((User) o).getEmail();
-                } else {
-                    return o.toString()
-            ;
-                }
-            }).collect(Collectors.toList());
-    }
+		user.setEnabled(true);
+		user.setAccountActive(true);
+		// tokenRepository.delete(verificationToken);
+		userRepository.save(user);
+		return TOKEN_VALID;
+	}
+
+	private boolean emailExists(final String email) {
+		return userRepository.findByEmail(email) != null;
+	}
+
+	@Override
+	public List<String> getUsersFromSessionRegistry() {
+		return sessionRegistry.getAllPrincipals().stream()
+				.filter((u) -> !sessionRegistry.getAllSessions(u, false).isEmpty()).map(o -> {
+					if (o instanceof User) {
+						return ((User) o).getEmail();
+					} else {
+						return o.toString();
+					}
+				}).collect(Collectors.toList());
+	}
 
 	/*
 	 * @Override public NewLocationToken isNewLoginLocation(String username, String
@@ -270,18 +275,18 @@ public class UserService implements IUserService {
 	 * catch (final Exception e) { return null; } return null; }
 	 */
 
-    @Override
-    public String isValidNewLocationToken(String token) {
-        final NewLocationToken locToken = newLocationTokenRepository.findByToken(token);
-        if (locToken == null) {
-            return null;
-        }
-        UserLocation userLoc = locToken.getUserLocation();
-        userLoc.setEnabled(true);
-        userLoc = userLocationRepository.save(userLoc);
-        newLocationTokenRepository.delete(locToken);
-        return userLoc.getCountry();
-    }
+	@Override
+	public String isValidNewLocationToken(String token) {
+		final NewLocationToken locToken = newLocationTokenRepository.findByToken(token);
+		if (locToken == null) {
+			return null;
+		}
+		UserLocation userLoc = locToken.getUserLocation();
+		userLoc.setEnabled(true);
+		userLoc = userLocationRepository.save(userLoc);
+		newLocationTokenRepository.delete(locToken);
+		return userLoc.getCountry();
+	}
 
 	/*
 	 * @Override public void addUserLocation(User user, String ip) {
@@ -295,16 +300,15 @@ public class UserService implements IUserService {
 	 * RuntimeException(e); } }
 	 */
 
-    private boolean isGeoIpLibEnabled() {
-        return Boolean.parseBoolean(env.getProperty("geo.ip.lib.enabled"));
-    }
+	private boolean isGeoIpLibEnabled() {
+		return Boolean.parseBoolean(env.getProperty("geo.ip.lib.enabled"));
+	}
 
-    private NewLocationToken createNewLocationToken(String country, User user) {
-        UserLocation loc = new UserLocation(country, user);
-        loc = userLocationRepository.save(loc);
+	private NewLocationToken createNewLocationToken(String country, User user) {
+		UserLocation loc = new UserLocation(country, user);
+		loc = userLocationRepository.save(loc);
 
-        final NewLocationToken token = new NewLocationToken(UUID.randomUUID()
-            .toString(), loc);
-        return newLocationTokenRepository.save(token);
-    }
+		final NewLocationToken token = new NewLocationToken(UUID.randomUUID().toString(), loc);
+		return newLocationTokenRepository.save(token);
+	}
 }

@@ -176,7 +176,7 @@ public class StaffPagesNavigationController {
 
 	@PostMapping("/staff/update/category/{id}")
 	public String updateCategory(@PathVariable("id") long id, @Valid Category category, BindingResult result,
-			Model model) {
+			Model model, final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			category.setId(id);
 			return "update-category";
@@ -188,12 +188,14 @@ public class StaffPagesNavigationController {
 		categoryObj.setTech(category.isTech());
 		categoryService.save(categoryObj);
 
+		redirectAttributes.addFlashAttribute("message", "Category updated successfully  " + category.getName() + "!");
+
 		return "redirect:/staff/categoryCrud";
 	}
 
 	@GetMapping("/staff/category/delete/{id}")
 	public String deleteCategory(@PathVariable("id") long id, @Valid Category category, BindingResult result,
-			Model model) {
+			Model model, final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			category.setId(id);
 			return "redirect:/staff/categoryCrud";
@@ -201,8 +203,10 @@ public class StaffPagesNavigationController {
 		Category categoryObj = categoryService.findCategoryById(id).get();
 		try {
 			categoryService.delete(categoryObj);
+			redirectAttributes.addFlashAttribute("message", "Category deleted successfully  "+ "!");
 		} catch (Exception e) {
 			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Category failed to delete  " + "!");
 			return "redirect:/staff/categoryCrud";
 		}
 		return "redirect:/staff/categoryCrud";
@@ -210,7 +214,7 @@ public class StaffPagesNavigationController {
 
 	@PostMapping("/staff/update/subcategory/{id}")
 	public String updateSubCategory(@PathVariable("id") long id, @Valid SubCategory category, BindingResult result,
-			Model model) {
+			Model model, final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			category.setId(id);
 			return "update-subcategory";
@@ -220,13 +224,14 @@ public class StaffPagesNavigationController {
 		categoryObj.setDescription(category.getDescription());
 		categoryObj.setPremium(category.isPremium());
 		subCategoryService.save(categoryObj);
+		redirectAttributes.addFlashAttribute("message", "Sub Category updated successfully  " + category.getName() + "!");
 
 		return "redirect:/staff/subCategoryCrud";
 	}
 
 	@GetMapping("/staff/subcategory/delete/{id}")
-	public String deleteSubCategory(@PathVariable("id") long id, @Valid Category category, BindingResult result,
-			Model model) {
+	public String deleteSubCategory(@PathVariable("id") long id, @Valid SubCategory category, BindingResult result,
+			Model model, final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			category.setId(id);
 			return "redirect:/staff/subCategoryCrud";
@@ -234,8 +239,10 @@ public class StaffPagesNavigationController {
 		SubCategory categoryObj = subCategoryService.findSubCategoryById(id).get();
 		try {
 			subCategoryService.delete(categoryObj);
+			redirectAttributes.addFlashAttribute("message", "Sub Category deleted successfully  "+ "!");
 		} catch (Exception e) {
 			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Sub Category failed to delete  " + "!");
 			return "redirect:/staff/subCategoryCrud";
 		}
 		return "redirect:/staff/subCategoryCrud";
@@ -286,7 +293,8 @@ public class StaffPagesNavigationController {
 	}
 
 	@PostMapping("/staff/update/post/{id}")
-	public String updatePost(@PathVariable("id") long id, @Valid Post post, BindingResult result, Model model) {
+	public String updatePost(@PathVariable("id") long id, @Valid Post post, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			post.setId(id);
 			return "update-post";
@@ -298,13 +306,16 @@ public class StaffPagesNavigationController {
 		postObj.setContent(post.getContent());
 		postObj.setTags(post.getTags());
 		postService.save(postObj);
+		
+		redirectAttributes.addFlashAttribute("message", "Post updated successfully  " + post.getTitle() + "!");
 
 		return "redirect:/staff/postsCrud";
 	}
 
 	@GetMapping("/staff/attachment/delete/{postid}/{attid}/{name}")
 	public String deleteSubCategory(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
-			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model) {
+			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			att.setName(name);
 			return "redirect:/staff/post/edit/" + postid;
@@ -314,8 +325,10 @@ public class StaffPagesNavigationController {
 		try {
 			storageService.deleteFile(name);
 			postAttachmentService.delete(postAttachmentObj);
+			redirectAttributes.addFlashAttribute("message", "Post attachment deleted successfully  " + "!");
 		} catch (Exception e) {
 			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Post attachment failed to delete  " + "!");
 			return "redirect:/staff/post/edit/" + postid;
 		}
 		return "redirect:/staff/post/edit/" + postid;
@@ -330,14 +343,15 @@ public class StaffPagesNavigationController {
 			postService.save(postObj);
 			redirectAttributes.addFlashAttribute("message", "Post sent for publish successfully " + "!");
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "Error occured " + "!");
+			redirectAttributes.addFlashAttribute("error", "Post failed to sent for publish " + "!");
 			return "redirect:/staff/postsCrud";
 		}
 		return "redirect:/staff/postsCrud";
 	}
 
 	@GetMapping("/staff/post/delete/{id}")
-	public String deletePost(@PathVariable("id") long id, @Valid Post post, BindingResult result, Model model) {
+	public String deletePost(@PathVariable("id") long id, @Valid Post post, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			post.setId(id);
 			return "redirect:/staff/postsCrud";
@@ -345,8 +359,10 @@ public class StaffPagesNavigationController {
 		Post postObj = postService.findPostById(id).get();
 		try {
 			postService.delete(postObj);
+			redirectAttributes.addFlashAttribute("message", "Post deleted successfully " + "!");
 		} catch (Exception e) {
 			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("message", "Post failed to delete " + "!");
 			return "redirect:/staff/postsCrud";
 		}
 		return "redirect:/staff/postsCrud";
@@ -437,20 +453,26 @@ public class StaffPagesNavigationController {
 	}
 
 	@PostMapping("/staff/update/tag/{id}")
-	public String updateTag(@PathVariable("id") long id, @Valid Tag tag, BindingResult result, Model model) {
+	public String updateTag(@PathVariable("id") long id, @Valid Tag tag, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			tag.setId(id);
 			return "update-tag";
 		}
-		Tag tagObj = tagService.findTagById(id).get();
-		tagObj.setName(tag.getName());
-		tagService.save(tagObj);
-
+		try {
+			Tag tagObj = tagService.findTagById(id).get();
+			tagObj.setName(tag.getName());
+			tagService.save(tagObj);
+			redirectAttributes.addFlashAttribute("message", "Tag saved successfully  " + tag.getName() + "!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Tag failed to save  " + tag.getName() + "!");
+		}
 		return "redirect:/staff/tagsCrud";
 	}
 
 	@GetMapping("/staff/tag/delete/{id}")
-	public String deleteTag(@PathVariable("id") long id, @Valid Tag tag, BindingResult result, Model model) {
+	public String deleteTag(@PathVariable("id") long id, @Valid Tag tag, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			tag.setId(id);
 			return "redirect:/staff/tagsCrud";
@@ -458,8 +480,9 @@ public class StaffPagesNavigationController {
 		Tag tagObj = tagService.findTagById(id).get();
 		try {
 			tagService.delete(tagObj);
+			redirectAttributes.addFlashAttribute("message", "Tag deleted successfully  "+ "!");
 		} catch (Exception e) {
-			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("message", "Tag failed to delete  " + "!");
 			return "redirect:/staff/tagsCrud";
 		}
 		return "redirect:/staff/tagsCrud";

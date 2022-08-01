@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+
+<head>
+	<title>About Us</title>
+</head>
+
+<body class="d-flex flex-column">
+
+	<div layout:fragment="content">
+		<main class="flex-shrink-0">
+			<!-- Header-->
+			<header class="py-5">
+				<div class="container px-5">
+					<div class="row justify-content-center">
+						<div class="col-lg-8 col-xxl-6">
+							<div class="text-center my-5">
+								<h1 class="fw-bolder mb-3">Our mission is to make transparent, reliable and accurate
+									contents for everyone.
+								</h1>
+								<p class="lead fw-normal text-muted mb-4">Start explorig technical, non technical
+									contents which are reliable, transparent and accurate. We at CheckConcepts
+									committed to write/publish contents which are accurate, clear, concise, coherent,
+									and
+									appropriate.</p>
+								<a class="btn btn-primary btn-lg" href="#scroll-target">Read our story</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</header>
+			<!-- About section one-->
+			<section class="py-5 bg-light" id="scroll-target">
+				<div class="container px-5 my-5">
+					<div class="row gx-5 align-items-center">
+						<div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" th:src="@{/resources/avatar/team-hands-in.jpg}" style="width: 600px; height: 400px;"
+								alt="Check Concepts Founding" /></div>
+						<div class="col-lg-6">
+							<h2 class="fw-bolder">Our founding</h2>
+							<p class="lead fw-normal text-muted mb-0">Everything we see or hear on internet are not
+								always reliable and transparent. Sometimes this misinformation mislead readers which is
+								very dangerous. Misinfomation is not like plumbing problem that we can quickly fix. But
+								we can definitely overcome this by providing most reliable and transparent information.
+								And this is the reason we have started building CheckConcepts contents. </p>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- About section two-->
+			<section class="py-5">
+				<div class="container px-5 my-5">
+					<div class="row gx-5 align-items-center">
+						<div class="col-lg-6 order-first order-lg-last"><img class="img-fluid rounded mb-5 mb-lg-0"
+								th:src="@{/resources/avatar/handshake-on-blue.jpg}" style="width: 600px; height: 400px;" alt="Check Concepts Core Values" /></div>
+						<div class="col-lg-6">
+							<h2 class="fw-bolder">Content &amp; beyond</h2>
+							<p class="lead fw-normal text-muted mb-0">We at CheckConcepts started publishing contents
+								in tech and non tech fields which are reliable, transparent, accurate and appropriate.
+								But publishing contents is not the only motive, We at CheckConcepts wants to give that
+								trust for our readers which is very difficult to find on this internet.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Team members section-->
+			<section class="py-5 bg-light">
+				<div class="container px-5 my-5">
+					<div class="text-center">
+						<h2 class="fw-bolder">Our team</h2>
+						<p class="lead fw-normal text-muted mb-5">Dedicated to quality and your success</p>
+					</div>
+					<div class="row gx-5 row-cols-1 row-cols-sm-2 row-cols-xl-4 justify-content-center">
+						<div class="col mb-5 mb-5 mb-xl-0">
+							<div class="text-center">
+									<img class="img-fluid rounded-circle mb-4 px-4" th:src="@{/resources/avatar/akshay_profile.jpg}" style="width: 100%;"
+										alt="CheckConcepts Founder Akshay Sonalkar Image" />
+								<h5 class="fw-bolder">Akshay Sonalkar</h5>
+								<div class="fst-italic text-muted">Founder</div>
+							</div>
+						</div>
+						<!--<div class="col mb-5 mb-5 mb-xl-0">
+							<div class="text-center">
+								<img class="img-fluid rounded-circle mb-4 px-4"
+									src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
+								<h5 class="fw-bolder">ABC</h5>
+								<div class="fst-italic text-muted">Co-Founder</div>
+							</div>
+						</div>
+						<div class="col mb-5 mb-5 mb-sm-0">
+							<div class="text-center">
+								<img class="img-fluid rounded-circle mb-4 px-4"
+									src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
+								<h5 class="fw-bolder">XYZ</h5>
+								<div class="fst-italic text-muted">Co-Founder</div>
+							</div>
+						</div>
+						<div class="col mb-5">
+							<div class="text-center">
+								<img class="img-fluid rounded-circle mb-4 px-4"
+									src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
+								<h5 class="fw-bolder">PQR</h5>
+								<div class="fst-italic text-muted">Co-Founder</div>
+							</div>
+						</div>-->
+					</div>
+				</div>
+			</section>
+
+		</main>
+	</div>
+
+</body>
+
+</html>

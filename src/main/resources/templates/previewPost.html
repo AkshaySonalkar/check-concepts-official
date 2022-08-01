@@ -15,8 +15,12 @@
 				<div class="row gx-5">
 					<div class="col-lg-3">
 						<div class="d-flex align-items-center mt-lg-5 mb-4">
-							<img class="img-fluid rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
-								alt="..." />
+							<img class="img-fluid rounded-circle" style="width: 50px;"
+								th:if="${#strings.equals(post.author.gender.getDisplayName(), 'MALE')}"
+								th:src="@{/resources/avatar/male_icon.svg}" alt="Author Avatar Icon" />
+							<img class="img-fluid rounded-circle" style="width: 50px;"
+								th:if="${#strings.equals(post.author.gender.getDisplayName(), 'FEMALE')}"
+								th:src="@{/resources/avatar/female_icon.svg}" alt="Author Avatar Icon" />
 							<div class="ms-3">
 								<div class="fw-bold"> <span th:text="${post.author.getUserDisplayName()}"
 										th:remove="tag">Akshay
@@ -35,17 +39,19 @@
 								<!-- Post meta content-->
 								<div class="text-muted fst-italic mb-2"><span
 										th:text="${#dates.format(post.updatedAt, 'dd-MMM-yyyy')}"
-										th:remove="tag">Updated On </span></div>
+										th:remove="tag">Updated On </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="time"></span> minute read</div>
 								<!-- Post categories-->
 								<a th:each="tag : ${post.tags}"
-									class="badge bg-secondary text-decoration-none link-light" th:text="${tag.name}"
-									href="#!">Tags</a>
+									class="badge bg-primary bg-gradient rounded-pill mx-1 text-decoration-none mb-3"
+									th:text="${tag.name}">Tags</a>
 							</header>
 
 							<!-- Post content-->
 							<section class="mb-5">
 								<p class="fs-5 mb-4">
+								<article id="article">
 									<span th:utext="${post.content}" th:remove="tag">Post Content.</span>
+								</article>
 								</p>
 							</section>
 						</article>
@@ -156,6 +162,8 @@
 					scrollY: 200,
 					scrollX: true,
 				});
+				
+				readingTime();
 
 			});
 
@@ -170,6 +178,14 @@
 				var att = document.getElementById('pdfViewerId');
 				att.src = url;
 				att.title = name;
+			}
+
+			function readingTime() {
+				const text = document.getElementById("article").innerText;
+				const wpm = 150;
+				const words = text.trim().split(/\s+/).length;
+				const time = Math.ceil(words / wpm);
+				document.getElementById("time").innerText = time;
 			}
 
 		</script>

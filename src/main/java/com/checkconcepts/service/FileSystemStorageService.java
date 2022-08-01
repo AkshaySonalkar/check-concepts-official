@@ -140,7 +140,7 @@ public class FileSystemStorageService implements StorageService {
 		if (activeProfile.equalsIgnoreCase("dev"))
 			return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 		if (activeProfile.equalsIgnoreCase("prod"))
-			return "http://www.check-concepts.com" + request.getContextPath();
+			return "https://www.checkconcepts.org" + request.getContextPath();
 		return null;
 	}
 
