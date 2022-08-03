@@ -30,6 +30,14 @@
 									<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
 										class="text-danger"></span>
 								</div>
+								
+								<div class="mb-3 form-check">
+									<label for="tech" class="col-form-label">is Tech Tag?</label>
+									<input type="checkbox" th:field="*{tech}" class="form-check-input" id="tech">
+
+									<span th:if="${#fields.hasErrors('tech')}" th:errors="*{tech}"
+										class="text-danger"></span>
+								</div>
 
 								<input type="submit" class="btn btn-primary" value="Update Tag">
 							</form>

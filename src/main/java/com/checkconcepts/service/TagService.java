@@ -32,6 +32,7 @@ public class TagService implements ITagService {
 		}
 		final Tag tag = new Tag();
 		tag.setName(tagDto.getName());
+		tag.setTech(tagDto.isTech());
 		return tagsRepository.save(tag);
 	}
 

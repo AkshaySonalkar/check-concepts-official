@@ -287,7 +287,10 @@ public class StaffPagesNavigationController {
 		Post post = postService.findPostById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
 		model.addAttribute("post", post);
-		List<Tag> tags = tagService.findAll();
+		List<Tag> tags = new ArrayList<>();
+		if(post.getSubCategoryType().getCategoryType().isTech())
+		tags = tagService.findAll().stream().filter(t->t.isTech()).collect(Collectors.toList());
+		else tags = tagService.findAll().stream().filter(t-> !t.isTech()).collect(Collectors.toList());
 		model.addAttribute("alltags", tags);
 		return "update-post";
 	}
@@ -329,6 +332,50 @@ public class StaffPagesNavigationController {
 		} catch (Exception e) {
 			// TODO: handle exception
 			redirectAttributes.addFlashAttribute("error", "Post attachment failed to delete  " + "!");
+			return "redirect:/staff/post/edit/" + postid;
+		}
+		return "redirect:/staff/post/edit/" + postid;
+	}
+	
+	@GetMapping("/staff/attachment/support/uncheck/{postid}/{attid}/{name}")
+	public String uncheckSupportDoc(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
+			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			att.setName(name);
+			return "redirect:/staff/post/edit/" + postid;
+		}
+
+		PostsAttachments postAttachmentObj = postAttachmentService.findPostAttachmentById(attid).get();
+		try {
+			postAttachmentObj.setSupportingDoc(false);
+			postAttachmentService.save(postAttachmentObj);
+			redirectAttributes.addFlashAttribute("message", "Post attachment support unchecked successfully  " + "!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Post attachment failed to uncheck supporting doc  " + "!");
+			return "redirect:/staff/post/edit/" + postid;
+		}
+		return "redirect:/staff/post/edit/" + postid;
+	}
+	
+	@GetMapping("/staff/attachment/support/check/{postid}/{attid}/{name}")
+	public String checkSupportDoc(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
+			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			att.setName(name);
+			return "redirect:/staff/post/edit/" + postid;
+		}
+
+		PostsAttachments postAttachmentObj = postAttachmentService.findPostAttachmentById(attid).get();
+		try {
+			postAttachmentObj.setSupportingDoc(true);
+			postAttachmentService.save(postAttachmentObj);
+			redirectAttributes.addFlashAttribute("message", "Post attachment checked successfully  " + "!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Post attachment failed to check as supporting doc  " + "!");
 			return "redirect:/staff/post/edit/" + postid;
 		}
 		return "redirect:/staff/post/edit/" + postid;
@@ -462,6 +509,7 @@ public class StaffPagesNavigationController {
 		try {
 			Tag tagObj = tagService.findTagById(id).get();
 			tagObj.setName(tag.getName());
+			tagObj.setTech(tag.isTech());
 			tagService.save(tagObj);
 			redirectAttributes.addFlashAttribute("message", "Tag saved successfully  " + tag.getName() + "!");
 		} catch (Exception e) {

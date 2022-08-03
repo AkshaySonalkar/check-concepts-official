@@ -54,11 +54,12 @@ public class FileSystemStorageService implements StorageService {
 	public void storePostFile(MultipartFile file, Long postId, HttpServletRequest request) {
 		String[] fileTypes = new String[] { "jpg", "jpeg", "png", "JPG", "JPEG", "PNG" };
 		List<String> fileTypeList = new ArrayList<>(Arrays.asList(fileTypes));
+		String fileStoreName = System.currentTimeMillis() + "_" +file.getOriginalFilename();
 		try {
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file.");
 			}
-			Path destinationFile = this.rootLocation.resolve(Paths.get(file.getOriginalFilename())).normalize()
+			Path destinationFile = this.rootLocation.resolve(Paths.get(fileStoreName)).normalize()
 					.toAbsolutePath();
 			if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
 				// This is a security check
@@ -71,12 +72,12 @@ public class FileSystemStorageService implements StorageService {
 				Post parentPost = postService.findPostById(postId).get();
 				PostsAttachments att = new PostsAttachments();
 				if (fileTypeList.contains(com.google.common.io.Files.getFileExtension(file.getOriginalFilename())))
-					att.setAttachmentSrc(getAppUrl(request) + "/image/display/" + file.getOriginalFilename());
+					att.setAttachmentSrc(getAppUrl(request) + "/image/display/" + fileStoreName);
 				else
-					att.setAttachmentSrc(getAppUrl(request) + "/pdf/display/" + file.getOriginalFilename());
+					att.setAttachmentSrc(getAppUrl(request) + "/pdf/display/" + fileStoreName);
 
 				att.setAttachmentType(com.google.common.io.Files.getFileExtension(file.getOriginalFilename()));
-				att.setName(file.getOriginalFilename());
+				att.setName(fileStoreName);
 				att.setParentPostAttachment(parentPost);
 				postsAttachmentsService.save(att);
 			} catch (ConstraintViolationException e) {

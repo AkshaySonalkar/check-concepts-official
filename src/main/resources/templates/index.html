@@ -29,26 +29,7 @@
 
 	<div layout:fragment="content">
 		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
-		<!--	<aside>
-			<h2>Recent Posts</h2>
-			<a href="#" th:each="p : ${latest5posts}" th:text="${p.title}" th:href="@{/posts/view/{id}/(id=${p.id})}">Work
-				Begins on HTML5.1</a>
-		</aside>
-		
-		<main id="posts">
-			<article th:each="p : ${latest3posts}">
-				<h2 class="title" th:text="${p.title}">Post Title</h2>
-				<div class="date">
-					<i>Posted on</i>
-					<span th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</span>
-					<span th:if="${p.author}" th:remove="tag">
-						<i>by</i> <span th:text="${p.author.firstName != null ?
-		                        p.author.firstName : p.author.email}">Svetlin Nakov</span>
-					</span>
-				</div>
-				<p class="content" th:utext="${p.body}">Post content</p>
-			</article>
-		</main> -->
+
 		<main class="flex-shrink-0">
 			<!-- Header-->
 			<header class="py-5" style="padding-bottom: 5rem !important;">
@@ -56,11 +37,9 @@
 					<div class="row gx-5 align-items-center justify-content-center">
 						<div class="col-lg-8 col-xl-7 col-xxl-6">
 							<div class="my-5 text-center text-xl-start">
-								<h1 class="display-5 fw-bolder text-black mb-2"> We're Creating an Educative,
-									Transparent and Reliable Contents</h1>
-								<p class="lead fw-normal text-black-50 mb-4">We are committed to provide a transparent,
-									reliable, accurate, clear, concise, coherent, and appropriate well structured contents for everyone.
-									Because we don't want to mislead anyone anyway!</p>
+								<h1 class="display-5 fw-bolder text-black mb-2">We're Creating an amazing Contents</h1>
+								<p class="lead fw-normal text-black-50 mb-4">We are super excited to provide a
+									beautiful, clear, concise and well structured contents for everyone.</p>
 								<div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
 									<a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
 									<a class="btn btn-outline-success btn-lg px-4" th:href="@{/about}">Learn More</a>
@@ -69,7 +48,7 @@
 						</div>
 						<div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img
 								class="img-fluid rounded-3 my-5" th:src="@{/resources/avatar/checkconcepts_content.gif}"
-								style="width: 600px;height: 400px;" alt="..." /></div>
+								style="width: 600px;height: 400px;" alt="checkconcepts_content" /></div>
 					</div>
 				</div>
 			</header>
@@ -78,7 +57,7 @@
 				<div class="container px-5 my-5">
 					<div class="row gx-5">
 						<div class="col-lg-4 mb-5 mb-lg-0">
-							<h2 class="fw-bolder mb-0">A better way to explore something trustworthy</h2>
+							<h2 class="fw-bolder mb-0">A better way to explore something elegant</h2>
 						</div>
 						<div class="col-lg-8">
 							<div class="row gx-5 row-cols-1 row-cols-md-2">
@@ -89,7 +68,7 @@
 									<h2 class="h5">Technical Contents</h2>
 									<p class="mb-0">We are at CheckConcepts aimed to write/publish well structured
 										contents in different tech categories. We at
-										CheckConcepts always try to provide accurate, clear, concise, coherent,
+										CheckConcepts always try to provide accurate, clear, concise, coherent and
 										appropriate contents. </p>
 								</div>
 								<div class="col mb-5 h-100">
@@ -98,7 +77,7 @@
 											style="font-size: 2em; color: green;"></i></div>
 									<h2 class="h5">Non Technical Contents</h2>
 									<p class="mb-0">Non Technical Contents are equally or even more important when it
-										comes to it's originallity, quality, transparency and reliability. We are at
+										comes to it's originallity, quality and reliability. We are at
 										CheckConcepts committed to provide authentic, transparent information.</p>
 								</div>
 								<div class="col mb-5 mb-md-0 h-100">

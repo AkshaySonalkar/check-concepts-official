@@ -23,10 +23,11 @@
 							<thead>
 								<tr>
 									<th scope="col" style="width: 15%;">Attachment Name</th>
-									<th scope="col" style="width: 15%;">Attachment Type</th>
+									<th scope="col" style="width: 5%;">Attachment Type</th>
 									<th scope="col" style="width: 25%;">Attachment Source</th>
 									<th scope="col" style="width: 15%;">View</th>
 									<th scope="col" style="width: 15%;">Copy</th>
+									<th scope="col" style="width: 10%;">Support Doc</th>
 									<th scope="col" style="width: 15%;">Delete</th>
 								</tr>
 							</thead>
@@ -56,6 +57,20 @@
 										</a>
 										<span th:id="${att.attachmentSrc}" style="display:none;"> copied! </span>
 									</td>
+									
+									<td>
+										<a type="button" class="fa-regular fa-square-check"
+											style="font-size: 1.5em; color: green;" th:if="${att.supportingDoc} == true"
+											th:href="@{/staff/attachment/support/uncheck/{postid}/{attid}/{name}(postid=${post.id},attid=${att.id},name=${att.name})}">
+
+										</a>
+										<a type="button" class="fa-regular fa-square-check"
+											style="font-size: 1.5em;" th:if="${att.supportingDoc} == false"
+											th:href="@{/staff/attachment/support/check/{postid}/{attid}/{name}(postid=${post.id},attid=${att.id},name=${att.name})}">
+
+										</a>
+									</td>
+									
 									<td><a th:href="@{/staff/attachment/delete/{postid}/{attid}/{name}(postid=${post.id},attid=${att.id},name=${att.name})}"
 											class="btn btn-primary"><i class="fa-solid fa-trash-can"></i>
 									</td>

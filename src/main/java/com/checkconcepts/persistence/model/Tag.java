@@ -24,6 +24,9 @@ public class Tag {
 	@Column(name = "name", unique = true)
 	private String name;
 	
+	@Column
+	private boolean tech;
+	
 	@ManyToMany(mappedBy = "tags")
 	private Set<Post> postTags = new HashSet<Post>();
 
@@ -41,6 +44,14 @@ public class Tag {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isTech() {
+		return tech;
+	}
+
+	public void setTech(boolean tech) {
+		this.tech = tech;
 	}
 
 	public Set<Post> getPostTags() {

@@ -8,21 +8,8 @@
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
 		<div class="container">
-			<div th:if="${message != null}" class="alert alert-info"
-				th:utext="${message}">message</div>
-
-			<h1>This is the landing page for the user</h1>
-
-			<div th:each="dataa : ${data}">
-				<p th:utext="${dataa}">Data</p>
-			</div>
-
-			<div sec:authorize="hasAuthority('USER_PRIVILEGE')">This text
-				is only visible to a user</div>
-
-
-			<a class="btn btn-default" th:href="@{/changePassword.html}"
-				th:utext="#{message.changePassword}">change password</a>
+			
+			We don't have anything right now to display here.
 
 		</div>
 	</div>

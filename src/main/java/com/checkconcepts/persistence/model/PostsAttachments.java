@@ -27,6 +27,9 @@ public class PostsAttachments {
 
 	@Column
 	private String attachmentSrc;
+	
+	@Column(columnDefinition = "boolean default false")
+	private boolean supportingDoc;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Post parentPostAttachment;
@@ -61,6 +64,14 @@ public class PostsAttachments {
 
 	public void setAttachmentSrc(String attachmentSrc) {
 		this.attachmentSrc = attachmentSrc;
+	}
+
+	public boolean isSupportingDoc() {
+		return supportingDoc;
+	}
+
+	public void setSupportingDoc(boolean supportingDoc) {
+		this.supportingDoc = supportingDoc;
 	}
 
 	public Post getParentPostAttachment() {

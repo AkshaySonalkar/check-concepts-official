@@ -6,6 +6,8 @@ public class TagDto {
 
 	@NotNull
 	private String name;
+	
+	private boolean tech;
 
 	public String getName() {
 		return name;
@@ -15,4 +17,11 @@ public class TagDto {
 		this.name = name;
 	}
 
+	public boolean isTech() {
+		return tech;
+	}
+
+	public void setTech(boolean tech) {
+		this.tech = tech;
+	}
 }

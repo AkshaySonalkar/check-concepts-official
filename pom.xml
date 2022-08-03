@@ -87,10 +87,8 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
+			</dependency> -->
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -107,11 +105,8 @@
 
 		<!-- maxmind dependency -->
 
-		<!-- <dependency>
-			<groupId>com.maxmind.geoip2</groupId>
-			<artifactId>geoip2</artifactId>
-			<version>${geoip2.version}</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.maxmind.geoip2</groupId> <artifactId>geoip2</artifactId> 
+			<version>${geoip2.version}</version> </dependency> -->
 
 		<!-- test -->
 
@@ -150,12 +145,20 @@
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>font-awesome</artifactId>
-            <version>${font-awesome.version}</version>
-        </dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>font-awesome</artifactId>
+			<version>${font-awesome.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.273</version>
+		</dependency>
+
 
 	</dependencies>
 

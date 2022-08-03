@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,11 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.checkconcepts.persistence.model.Post;
-import com.checkconcepts.persistence.model.PostsAttachments;
-import com.checkconcepts.service.PostService;
 import com.checkconcepts.service.StorageService;
-import com.checkconcepts.web.error.StorageException;
 import com.checkconcepts.web.error.StorageFileNotFoundException;
 
 @Controller

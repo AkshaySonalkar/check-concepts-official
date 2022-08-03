@@ -74,7 +74,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="att : ${post.postsAttachments}">
+										<tr th:each="att : ${post.postsAttachments}" th:if="${att.supportingDoc} == true">
 											<td th:text="${att.name}"></td>
 											<td th:text="${att.attachmentType}">
 											</td>
