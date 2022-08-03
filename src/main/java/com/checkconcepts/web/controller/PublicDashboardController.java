@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.checkconcepts.menu.MenuCategory;
 import com.checkconcepts.persistence.model.Category;
@@ -79,9 +77,11 @@ public class PublicDashboardController {
 			techCategories.add(category);
 		}
 
-		model.addAttribute("sidebarHeader",
-				postService.findPostById(id).get().getSubCategoryType().getName() + " Posts");
-		model.addAttribute("sidebarcategories", techCategories);
+		/*
+		 * model.addAttribute("sidebarHeader",
+		 * postService.findPostById(id).get().getSubCategoryType().getName() +
+		 * " Posts"); model.addAttribute("sidebarcategories", techCategories);
+		 */
 		model.addAttribute("post", post);
 		return "/techPost";
 	}
@@ -98,9 +98,11 @@ public class PublicDashboardController {
 			nonTtechCategories.add(category);
 		}
 
-		model.addAttribute("sidebarHeader",
-				postService.findPostById(id).get().getSubCategoryType().getName() + " Posts");
-		model.addAttribute("sidebarcategories", nonTtechCategories);
+		/*
+		 * model.addAttribute("sidebarHeader",
+		 * postService.findPostById(id).get().getSubCategoryType().getName() +
+		 * " Posts"); model.addAttribute("sidebarcategories", nonTtechCategories);
+		 */
 		model.addAttribute("post", post);
 		return "/nonTechPost";
 	}
@@ -123,8 +125,8 @@ public class PublicDashboardController {
 	public String exploreTech(final HttpServletRequest request, final Model model) {
 		
 		List<MenuCategory> categories = getTechCategories();
-		model.addAttribute("sidebarHeader", "Tech Categories");
-		model.addAttribute("sidebarcategories", categories);
+//		model.addAttribute("sidebarHeader", "Tech Categories");
+//		model.addAttribute("sidebarcategories", categories);
 		Set<Post> allPosts = new HashSet<>();
 		StringBuilder sb = new StringBuilder();
 		for(MenuCategory cat : categories) {
@@ -146,8 +148,8 @@ public class PublicDashboardController {
 	public String exploreNonTech(final HttpServletRequest request, final Model model) {
 		
 		List<MenuCategory> categories = getNonTechCategories();
-		model.addAttribute("sidebarHeader", "Non Tech Categories");
-		model.addAttribute("sidebarcategories", categories);
+//		model.addAttribute("sidebarHeader", "Non Tech Categories");
+//		model.addAttribute("sidebarcategories", categories);
 		Set<Post> allPosts = new HashSet<>();
 		StringBuilder sb = new StringBuilder();
 		for(MenuCategory cat : categories) {
@@ -176,8 +178,8 @@ public class PublicDashboardController {
 			techCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p->p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet()));
 		}
-		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
-		model.addAttribute("sidebarcategories", techCategories);
+//		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
+//		model.addAttribute("sidebarcategories", techCategories);
 		model.addAttribute("posts", allPosts);
 		model.addAttribute("pagetitle", "Explore "+categoryService.findCategoryById(id).get().getName()+" Technical Contents");
 		model.addAttribute("pagedesc", "Explore "+categoryService.findCategoryById(id).get().getDescription());
@@ -196,8 +198,8 @@ public class PublicDashboardController {
 			techCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p->p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet()));
 		}
-		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
-		model.addAttribute("sidebarcategories", techCategories);
+//		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
+//		model.addAttribute("sidebarcategories", techCategories);
 		model.addAttribute("posts", allPosts);
 		model.addAttribute("pagetitle", "Explore "+categoryService.findCategoryById(id).get().getName()+" Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore "+categoryService.findCategoryById(id).get().getDescription());
@@ -214,8 +216,8 @@ public class PublicDashboardController {
 					"/tech/post/" + post.getId() + "/" + post.getTitle());
 			techCategories.add(category);
 		}
-		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
-		model.addAttribute("sidebarcategories", techCategories);
+//		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
+//		model.addAttribute("sidebarcategories", techCategories);
 		model.addAttribute("posts", posts);
 		model.addAttribute("pagetitle", "Explore "+subCategoryService.findSubCategoryById(id).get().getName()+" Technical Contents");
 		model.addAttribute("pagedesc", "Explore "+subCategoryService.findSubCategoryById(id).get().getDescription());
@@ -231,8 +233,8 @@ public class PublicDashboardController {
 					"/nonTech/post/" + post.getId() + "/" + post.getTitle());
 			techCategories.add(category);
 		}
-		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
-		model.addAttribute("sidebarcategories", techCategories);
+//		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
+//		model.addAttribute("sidebarcategories", techCategories);
 		model.addAttribute("posts", posts);
 		model.addAttribute("pagetitle", "Explore "+subCategoryService.findSubCategoryById(id).get().getName()+" Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore "+subCategoryService.findSubCategoryById(id).get().getDescription());
