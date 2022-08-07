@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.checkconcepts.service.AWSStorageService;
 import com.checkconcepts.service.StorageService;
 import com.checkconcepts.web.error.StorageFileNotFoundException;
 
@@ -33,15 +36,32 @@ public class FileUploadController {
 	public FileUploadController(StorageService storageService) {
 		this.storageService = storageService;
 	}
-
+	
+	@Autowired
+	AWSStorageService awsStorageService;
+	
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+	
 	@GetMapping("/files/{filename:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-		Resource file = storageService.loadAsResource(filename);
+		if (activeProfile.equalsIgnoreCase("dev")) {
+			Resource file = storageService.loadAsResource(filename);
+			
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+					.body(file);
+		}
+		
+		byte[] file = awsStorageService.downloadFile(filename);
+		final ByteArrayResource resource = new ByteArrayResource(file);
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-				.body(file);
+				.contentLength(file.length)
+				.header("Content-type", "application/octet-stream")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+				.body(resource);
+		
 	}
 
 	@GetMapping("/image/{imageName}")
@@ -76,8 +96,10 @@ public class FileUploadController {
 			RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
 		try {
+			if (activeProfile.equalsIgnoreCase("dev"))
 			storageService.storePostFile(file, id, request);
-
+			if (activeProfile.equalsIgnoreCase("prod"))
+			awsStorageService.uploadFile(file, id);	
 			redirectAttributes.addFlashAttribute("message",
 					"You successfully uploaded " + file.getOriginalFilename() + "!");
 		} catch (Exception e) {

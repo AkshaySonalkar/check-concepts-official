@@ -19,8 +19,8 @@ public class UserPagesNavigationController {
 	@Autowired
     private MessageSource messages;
 	
-	@GetMapping("/enduser/userConsole")
-    public ModelAndView userConsole(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey) {
+	@GetMapping("/user/session/userDashboard")
+    public ModelAndView userDashboard(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey) {
 
         Locale locale = request.getLocale();
         messageKey.ifPresent( key -> {
@@ -30,7 +30,7 @@ public class UserPagesNavigationController {
         );
         System.out.println("Hey User !!!");
         model.addAttribute("data", "User Console Data");
-        return new ModelAndView("userConsole", model);
+        return new ModelAndView("/session/userDashboard", model);
     }
 
 }

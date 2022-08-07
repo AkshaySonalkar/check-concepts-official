@@ -119,7 +119,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
              }
             
 				/* return "/homepage.html?user="+username; */
-             return "/enduser/userConsole";
+             return "/user/session/userDashboard";
         } else if (isAdmin) {
             return "/admin/adminConsole";
         } else if (isStaff) {

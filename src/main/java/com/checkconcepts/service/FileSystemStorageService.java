@@ -131,6 +131,7 @@ public class FileSystemStorageService implements StorageService {
 	@PostConstruct
 	public void init() {
 		try {
+			if (activeProfile.equalsIgnoreCase("dev"))
 			Files.createDirectories(rootLocation);
 		} catch (IOException e) {
 			throw new StorageException("Could not initialize storage", e);

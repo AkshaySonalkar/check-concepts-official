@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.checkconcepts.persistence.model.Privilege;
 import com.checkconcepts.persistence.model.Role;
@@ -58,7 +59,7 @@ public class RegistrationController {
 
 	@GetMapping("/registrationConfirm")
 	public ModelAndView confirmRegistration(final HttpServletRequest request, final ModelMap model,
-			@RequestParam("token") final String token) throws UnsupportedEncodingException {
+			@RequestParam("token") final String token, final RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
 		Locale locale = request.getLocale();
 		model.addAttribute("lang", locale.getLanguage());
 		final String result = userService.validateVerificationToken(token);
@@ -70,7 +71,7 @@ public class RegistrationController {
 			// return "redirect:/qrcode.html?lang=" + locale.getLanguage();
 			// }
 			authWithoutPassword(user);
-			model.addAttribute("messageKey", "message.accountVerified");
+			redirectAttributes.addFlashAttribute("message", "Welcome to CheckConcepts. Your account verified successfully " + "!");
 
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			String username = "";
@@ -82,7 +83,7 @@ public class RegistrationController {
 
 			User userObj = userService.findUserByEmail(username);
 			session.setAttribute("fullname", userObj.getFirstName().concat(" " + userObj.getLastName()));
-			return new ModelAndView("redirect:/enduser/userConsole", model);
+			return new ModelAndView("redirect:/user/session/userDashboard", model);
 		}
 
 		model.addAttribute("messageKey", "auth.message." + result);

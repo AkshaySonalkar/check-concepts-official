@@ -92,7 +92,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/updatePassword*").hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN_PRIVILEGE")
                 .antMatchers("/staff/**").hasAnyAuthority("STAFF_PRIVILEGE")
-                .antMatchers("/enduser/**").hasAnyAuthority("USER_PRIVILEGE")
+                .antMatchers("/user/session/**").hasAnyAuthority("USER_PRIVILEGE")
                 .antMatchers("/common/**").hasAnyAuthority("ADMIN_PRIVILEGE","STAFF_PRIVILEGE","USER_PRIVILEGE")
 				.anyRequest().authenticated()
                 .and()
@@ -117,9 +117,9 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .logoutSuccessUrl("/logout.html?logSucc=true")
                 .deleteCookies("JSESSIONID")
-                .permitAll()
-             .and()
-                .rememberMe().rememberMeServices(rememberMeServices()).key("theKey");
+                .permitAll();
+//             .and()
+//                .rememberMe().rememberMeServices(rememberMeServices()).key("theKey");
 
     // @formatter:on
 	}

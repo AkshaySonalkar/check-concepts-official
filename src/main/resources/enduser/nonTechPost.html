@@ -56,7 +56,7 @@
 							</section>
 						</article>
 
-						<div class="card mb-4" th:unless="${#lists.isEmpty(post.postsAttachments)}">
+						<div class="card mb-4" th:if="${supportingDocPresent} == true">
 							<div class="card-header">
 								<i class="fa-solid fa-images me-1"></i>
 								Supporting Attachment
@@ -66,32 +66,25 @@
 									style="width: 100%;">
 									<thead>
 										<tr>
-											<th scope="col" style="width: 20%;">Attachment Name</th>
-											<th scope="col" style="width: 20%;">Attachment Type</th>
-											<th scope="col" style="width: 25%;">Attachment Source</th>
-											<th scope="col" style="width: 17.5%;">View</th>
-											<th scope="col" style="width: 17.5%;">Download</th>
+											<th scope="col" style="width: 30%;">Attachment Name</th>
+											<th scope="col" style="width: 30%;">Attachment Type</th>
+											<th scope="col" style="width: 20%;">View</th>
+											<th scope="col" style="width: 20%;">Download</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="att : ${post.postsAttachments}">
+										<tr th:each="att : ${post.postsAttachments}" th:if="${att.supportingDoc} == true">
 											<td th:text="${att.name}"></td>
 											<td th:text="${att.attachmentType}">
 											</td>
-											<td th:text="${att.attachmentSrc}"></td>
 											<td>
 												<a type="button" class="fa-solid fa-eye text-decoration-none"
 													data-bs-toggle="modal" data-bs-target="#pdfModalId"
-													style="font-size: 1.5em;" th:if="${att.attachmentType == 'pdf'}"
+													style="font-size: 1.5em;"
 													th:onclick="viewPdf([[${att.attachmentSrc}]],[[${att.name}]])">
 
 												</a>
-												<a type="button" class="fa-solid fa-eye text-decoration-none"
-													data-bs-toggle="modal" data-bs-target="#imageModalId"
-													style="font-size: 1.5em;" th:if="${att.attachmentType != 'pdf'}"
-													th:onclick="viewImage([[${att.attachmentSrc}]],[[${att.name}]])">
-
-												</a>
+											
 											</td>
 											<td>
 												<a type="button" class="fa-solid fa-download text-decoration-none"
@@ -109,28 +102,13 @@
 			</div>
 		</section>
 
-		<div class="modal fade" id="imageModalId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-			aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			<div class="modal-dialog modal-fullscreen">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="staticBackdropLabel">Image Viewer</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<img id="displayImageId" />
-						</iframe>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<div class="modal fade" id="pdfModalId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
 			aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div class="modal-dialog modal-fullscreen">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="staticBackdropLabel">PDF Viewer</h5>
+						<h5 class="modal-title" id="staticBackdropLabel">Attachment Viewer</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">

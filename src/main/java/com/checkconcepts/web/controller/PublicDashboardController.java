@@ -82,6 +82,8 @@ public class PublicDashboardController {
 		 * postService.findPostById(id).get().getSubCategoryType().getName() +
 		 * " Posts"); model.addAttribute("sidebarcategories", techCategories);
 		 */
+		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att->att.isSupportingDoc());
+		model.addAttribute("supportingDocPresent", supportingDocPresent);
 		model.addAttribute("post", post);
 		return "/techPost";
 	}
@@ -103,6 +105,8 @@ public class PublicDashboardController {
 		 * postService.findPostById(id).get().getSubCategoryType().getName() +
 		 * " Posts"); model.addAttribute("sidebarcategories", nonTtechCategories);
 		 */
+		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att->att.isSupportingDoc());
+		model.addAttribute("supportingDocPresent", supportingDocPresent);
 		model.addAttribute("post", post);
 		return "/nonTechPost";
 	}

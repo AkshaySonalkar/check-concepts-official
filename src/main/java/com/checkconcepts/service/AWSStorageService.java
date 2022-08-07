@@ -6,9 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -45,31 +44,23 @@ public class AWSStorageService {
 	private PostsAttachmentsService postsAttachmentsService;
 
     public String uploadFile(MultipartFile file, Long postId) {
-    	String[] fileTypes = new String[] { "jpg", "jpeg", "png", "JPG", "JPEG", "PNG" };
-		List<String> fileTypeList = new ArrayList<>(Arrays.asList(fileTypes));
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).withCannedAcl(CannedAccessControlList.PublicRead));
         fileObj.delete();
-        
         Post parentPost = postService.findPostById(postId).get();
 		PostsAttachments att = new PostsAttachments();
-		if (fileTypeList.contains(com.google.common.io.Files.getFileExtension(file.getOriginalFilename())))
-			att.setAttachmentSrc("https://www.checkconcepts.org" + "/image/display/" + fileName);
-		else
-			att.setAttachmentSrc("https://www.checkconcepts.org" + "/pdf/display/" + fileName);
-
+		att.setAttachmentSrc(returnDocAwsS3Url(fileName));
 		att.setAttachmentType(com.google.common.io.Files.getFileExtension(file.getOriginalFilename()));
 		att.setName(fileName);
 		att.setParentPostAttachment(parentPost);
 		postsAttachmentsService.save(att);
-		
         return "File uploaded : " + fileName;
     }
 
 
     public byte[] downloadFile(String fileName) {
-
+    	
         S3Object s3Object = s3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
@@ -101,6 +92,11 @@ public class AWSStorageService {
     public String deleteFile(String fileName) {
         s3Client.deleteObject(bucketName, fileName);
         return fileName + " removed ...";
+    }
+    
+    public String returnDocAwsS3Url(String fileName) {
+    	URL url = s3Client.getUrl(bucketName, fileName);
+		return url.toExternalForm();
     }
 
 

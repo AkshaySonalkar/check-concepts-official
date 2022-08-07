@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ import com.checkconcepts.persistence.model.PostsStatus;
 import com.checkconcepts.persistence.model.SubCategory;
 import com.checkconcepts.persistence.model.Tag;
 import com.checkconcepts.persistence.model.User;
+import com.checkconcepts.service.AWSStorageService;
 import com.checkconcepts.service.ICategoryService;
 import com.checkconcepts.service.IPostService;
 import com.checkconcepts.service.IPostsAttachmentsService;
@@ -64,10 +66,16 @@ public class StaffPagesNavigationController {
 	StorageService storageService;
 
 	@Autowired
+	AWSStorageService awsStorageService;
+
+	@Autowired
 	IPostsAttachmentsService postAttachmentService;
 
 	@Autowired
 	ITagService tagService;
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 
 	@GetMapping("/staff/staffConsole")
 	public ModelAndView staffConsole(final HttpServletRequest request, final ModelMap model,
@@ -203,7 +211,7 @@ public class StaffPagesNavigationController {
 		Category categoryObj = categoryService.findCategoryById(id).get();
 		try {
 			categoryService.delete(categoryObj);
-			redirectAttributes.addFlashAttribute("message", "Category deleted successfully  "+ "!");
+			redirectAttributes.addFlashAttribute("message", "Category deleted successfully  " + "!");
 		} catch (Exception e) {
 			// TODO: handle exception
 			redirectAttributes.addFlashAttribute("error", "Category failed to delete  " + "!");
@@ -224,7 +232,8 @@ public class StaffPagesNavigationController {
 		categoryObj.setDescription(category.getDescription());
 		categoryObj.setPremium(category.isPremium());
 		subCategoryService.save(categoryObj);
-		redirectAttributes.addFlashAttribute("message", "Sub Category updated successfully  " + category.getName() + "!");
+		redirectAttributes.addFlashAttribute("message",
+				"Sub Category updated successfully  " + category.getName() + "!");
 
 		return "redirect:/staff/subCategoryCrud";
 	}
@@ -239,7 +248,7 @@ public class StaffPagesNavigationController {
 		SubCategory categoryObj = subCategoryService.findSubCategoryById(id).get();
 		try {
 			subCategoryService.delete(categoryObj);
-			redirectAttributes.addFlashAttribute("message", "Sub Category deleted successfully  "+ "!");
+			redirectAttributes.addFlashAttribute("message", "Sub Category deleted successfully  " + "!");
 		} catch (Exception e) {
 			// TODO: handle exception
 			redirectAttributes.addFlashAttribute("error", "Sub Category failed to delete  " + "!");
@@ -288,9 +297,10 @@ public class StaffPagesNavigationController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
 		model.addAttribute("post", post);
 		List<Tag> tags = new ArrayList<>();
-		if(post.getSubCategoryType().getCategoryType().isTech())
-		tags = tagService.findAll().stream().filter(t->t.isTech()).collect(Collectors.toList());
-		else tags = tagService.findAll().stream().filter(t-> !t.isTech()).collect(Collectors.toList());
+		if (post.getSubCategoryType().getCategoryType().isTech())
+			tags = tagService.findAll().stream().filter(t -> t.isTech()).collect(Collectors.toList());
+		else
+			tags = tagService.findAll().stream().filter(t -> !t.isTech()).collect(Collectors.toList());
 		model.addAttribute("alltags", tags);
 		return "update-post";
 	}
@@ -309,7 +319,7 @@ public class StaffPagesNavigationController {
 		postObj.setContent(post.getContent());
 		postObj.setTags(post.getTags());
 		postService.save(postObj);
-		
+
 		redirectAttributes.addFlashAttribute("message", "Post updated successfully  " + post.getTitle() + "!");
 
 		return "redirect:/staff/postsCrud";
@@ -326,7 +336,10 @@ public class StaffPagesNavigationController {
 
 		PostsAttachments postAttachmentObj = postAttachmentService.findPostAttachmentById(attid).get();
 		try {
-			storageService.deleteFile(name);
+			if (activeProfile.equalsIgnoreCase("dev"))
+				storageService.deleteFile(name);
+			if (activeProfile.equalsIgnoreCase("prod"))
+				awsStorageService.deleteFile(name);
 			postAttachmentService.delete(postAttachmentObj);
 			redirectAttributes.addFlashAttribute("message", "Post attachment deleted successfully  " + "!");
 		} catch (Exception e) {
@@ -336,7 +349,55 @@ public class StaffPagesNavigationController {
 		}
 		return "redirect:/staff/post/edit/" + postid;
 	}
-	
+
+	@GetMapping("/staff/attachment/make/profilepic/{postid}/{attid}/{name}")
+	public String makePostProfilePic(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
+			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			att.setName(name);
+			return "redirect:/staff/post/edit/" + postid;
+		}
+
+		postService.findPostById(postid).get().getPostsAttachments().forEach(attObj -> {
+			attObj.setProfilePic(false);
+			postAttachmentService.save(attObj);
+		});
+		PostsAttachments postAttachmentObj = postAttachmentService.findPostAttachmentById(attid).get();
+		try {
+			postAttachmentObj.setProfilePic(true);
+			postAttachmentService.save(postAttachmentObj);
+			redirectAttributes.addFlashAttribute("message", "Post attachment make profile pic successfully  " + "!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Post attachment failed to make profile pic  " + "!");
+			return "redirect:/staff/post/edit/" + postid;
+		}
+		return "redirect:/staff/post/edit/" + postid;
+	}
+
+	@GetMapping("/staff/attachment/remove/profilepic/{postid}/{attid}/{name}")
+	public String removePostProfilePic(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
+			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
+			final RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			att.setName(name);
+			return "redirect:/staff/post/edit/" + postid;
+		}
+
+		PostsAttachments postAttachmentObj = postAttachmentService.findPostAttachmentById(attid).get();
+		try {
+			postAttachmentObj.setProfilePic(false);
+			postAttachmentService.save(postAttachmentObj);
+			redirectAttributes.addFlashAttribute("message", "Post attachment removed profile pic successfully  " + "!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			redirectAttributes.addFlashAttribute("error", "Post attachment failed to remove profile pic  " + "!");
+			return "redirect:/staff/post/edit/" + postid;
+		}
+		return "redirect:/staff/post/edit/" + postid;
+	}
+
 	@GetMapping("/staff/attachment/support/uncheck/{postid}/{attid}/{name}")
 	public String uncheckSupportDoc(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
 			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
@@ -358,7 +419,7 @@ public class StaffPagesNavigationController {
 		}
 		return "redirect:/staff/post/edit/" + postid;
 	}
-	
+
 	@GetMapping("/staff/attachment/support/check/{postid}/{attid}/{name}")
 	public String checkSupportDoc(@PathVariable("postid") long postid, @PathVariable("attid") long attid,
 			@PathVariable("name") String name, PostsAttachments att, BindingResult result, Model model,
@@ -450,6 +511,8 @@ public class StaffPagesNavigationController {
 		Post post = postService.findPostById(postid).get();
 		model.addAttribute("post", post);
 
+		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att->att.isSupportingDoc());
+		model.addAttribute("supportingDocPresent", supportingDocPresent);
 		/*
 		 * model.addAttribute("files", storageService.loadAll() .map(path ->
 		 * MvcUriComponentsBuilder .fromMethodName(FileUploadController.class,
@@ -528,7 +591,7 @@ public class StaffPagesNavigationController {
 		Tag tagObj = tagService.findTagById(id).get();
 		try {
 			tagService.delete(tagObj);
-			redirectAttributes.addFlashAttribute("message", "Tag deleted successfully  "+ "!");
+			redirectAttributes.addFlashAttribute("message", "Tag deleted successfully  " + "!");
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("message", "Tag failed to delete  " + "!");
 			return "redirect:/staff/tagsCrud";

@@ -6,6 +6,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="icon" th:href="@{/resources/avatar/checkconcepts_green.svg}">
 
 	<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">CheckConcepts</title>
 
@@ -82,7 +83,7 @@
 			<div id="dismiss">
 				<i class="fa-solid fa-xmark"></i>
 			</div>
-			<div class="sidebar-header" th:if="${sidebarHeader != null}">
+			<div class="sidebar-header">
 				<a th:href="@{/index}" class="link-dark text-decoration-none"><span class="fs-4"
 						th:text="${sidebarHeader}">CheckConcepts</span></a>
 			</div>
@@ -103,7 +104,9 @@
 					<button type="button" id="sidebarCollapse" class="btn" th:if="${sidebarHeader != null}">
 						<i class="fas fa-align-left"></i>
 					</button>
-					<a class="navbar-brand" th:href="@{/index}">CheckConcepts</a>
+					<a th:href="@{/index}"><img
+							th:src="@{/resources/avatar/checkconcepts_logo.svg}" style="width: 70px;height: 70px;"
+							alt="checkconcepts_content" /></a>
 
 					<button class="btn d-inline-block d-lg-none ml-auto" type="button" data-bs-toggle="collapse"
 						data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -123,7 +126,7 @@
 
 						<ul class="nav navbar-nav ms-auto profile-menu" sec:authorize="isAuthenticated()">
 							<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link"
-									th:href="@{/enduser/userConsole}" th:utext="#{label.pages.home.title}">Home</a></li>
+									th:href="@{/user/session/userDashboard}" th:utext="#{label.pages.home.title}">Home</a></li>
 							<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link"
 									th:href="@{/admin/adminConsole}" th:utext="#{label.pages.home.title}">Home</a></li>
 							<li class="nav-item" sec:authorize="hasAuthority('STAFF_PRIVILEGE')"><a class="nav-link"
@@ -165,7 +168,7 @@
 					</div>
 				</div>
 			</nav>
-			
+
 			<!-- Content Section -->
 			<section layout:fragment="content">
 				<p>This is filled by the content template.</p>
@@ -173,16 +176,19 @@
 
 			<footer>
 				<div class="footer-content">
-					<h3>CheckConcepts</h3>
-					<h5 style="margin: auto;">Don't read it, Understand it with
-						CheckConcepts <span style='font-size:20px;'>&#128519;</span></h5>
+					<img th:src="@{/resources/avatar/checkconcepts_logo_slogan.svg}" style="width: 200px;height: 200px;"
+						alt="checkconcepts_content" />
 					<p>CheckConcepts is a website where you will find great contents
 						on technical, non-technical topics.</p>
 					<ul class="socials">
-						<li><a href="https://github.com/Check-Concepts/CheckConcepts" target="_blank"><i class="fab fa-github"></i></a></li>
-						<li><a href="https://twitter.com/CheckConcepts" target="_blank"><i class="fab fa-twitter"></i></a></li>
-						<li><a href="https://www.linkedin.com/company/checkconcepts-org/" target="_blank"><i class="fab fa-linkedin"></i></a></li>
-						<li><a href="https://www.youtube.com/channel/UCTvhOsz8a2E2_StBD3P1zMA" target="_blank"><i class="fab fa-youtube"></i></a></li>
+						<li><a href="https://github.com/Check-Concepts/CheckConcepts" target="_blank"><i
+									class="fab fa-github"></i></a></li>
+						<li><a href="https://twitter.com/CheckConcepts" target="_blank"><i
+									class="fab fa-twitter"></i></a></li>
+						<li><a href="https://www.linkedin.com/company/checkconcepts-org/" target="_blank"><i
+									class="fab fa-linkedin"></i></a></li>
+						<li><a href="https://www.youtube.com/channel/UCTvhOsz8a2E2_StBD3P1zMA" target="_blank"><i
+									class="fab fa-youtube"></i></a></li>
 					</ul>
 				</div>
 

@@ -189,6 +189,8 @@ public class AdminPagesNavigationController {
 
 		Post post = postService.findPostById(postid).get();
 		model.addAttribute("post", post);
+		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att->att.isSupportingDoc());
+		model.addAttribute("supportingDocPresent", supportingDocPresent);
 
 		/*
 		 * Post post = postService.findPostById(postid).get();

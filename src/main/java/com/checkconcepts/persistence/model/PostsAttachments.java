@@ -30,6 +30,9 @@ public class PostsAttachments {
 	
 	@Column(columnDefinition = "boolean default false")
 	private boolean supportingDoc;
+	
+	@Column(columnDefinition = "boolean default false")
+	private boolean profilePic;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Post parentPostAttachment;
@@ -80,6 +83,14 @@ public class PostsAttachments {
 
 	public void setParentPostAttachment(Post parentPostAttachment) {
 		this.parentPostAttachment = parentPostAttachment;
+	}
+
+	public boolean isProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(boolean profilePic) {
+		this.profilePic = profilePic;
 	}
 
 	@Override
