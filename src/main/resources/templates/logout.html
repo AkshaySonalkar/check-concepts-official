@@ -4,25 +4,34 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />
-	<title th:utext="#{label.pages.home.title}">home</title>
+	<title th:utext="#{label.pages.logout}">Logout</title>
 </head>
 
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
-		<div class="row d-flex justify-content-center align-items-center h-100">
-			<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-				<div class="card shadow-2-strong" style="border-radius: 1rem;">
-					<div class="card-body p-5 text-center">
-						<h3 id="error" class="alert alert-danger" th:if="${session[SPRING_SECURITY_LAST_EXCEPTION]}"
-							th:utext="#{message.logoutError}">error</h3>
+		<div class="container-fluid">
+			<section>
+				<div class="container py-5 h-100">
+					<div class="row d-flex justify-content-center align-items-center h-100">
+						<div class="col-12 col-md-8 col-lg-6 col-xl-7">
+							<div class="card shadow-2-strong" style="border-radius: 1rem;">
+								<div class="card-body p-5 text-center">
+									<h3 id="error" class="alert alert-danger"
+										th:if="${session[SPRING_SECURITY_LAST_EXCEPTION]}"
+										th:utext="#{message.logoutError}">error</h3>
 
-						<h3 id="success" class="alert alert-info" th:if="${param.logSucc}"
-							th:utext="#{message.logoutSucc}"> success</h3>
-						<br /><br /><br />
-						<a class="btn btn-primary" th:href="@{/login}" th:utext="#{label.form.loginLink}">login</a>
+									<h3 id="success" class="alert alert-info" th:if="${param.logSucc}"
+										th:utext="#{message.logoutSucc}"> success</h3>
+									<br /><br /><br />
+									<a class="btn btn-primary" th:href="@{/login}"
+										th:utext="#{label.form.loginLink}">login</a>
+								</div>
+							</div>
+						</div>
 					</div>
+
 				</div>
-			</div>
+			</section>
 		</div>
 	</div>
 </body>
