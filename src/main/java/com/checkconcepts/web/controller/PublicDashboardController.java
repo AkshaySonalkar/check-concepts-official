@@ -129,6 +129,8 @@ public class PublicDashboardController {
 	public String exploreTech(final HttpServletRequest request, final Model model) {
 
 		List<MenuCategory> categories = getTechCategories();
+		Set<MenuCategory>displayCategories = new HashSet<MenuCategory>();
+		
 //		model.addAttribute("sidebarHeader", "Tech Categories");
 //		model.addAttribute("sidebarcategories", categories);
 		Set<Post> allPosts = new HashSet<>();
@@ -136,6 +138,13 @@ public class PublicDashboardController {
 		for (MenuCategory cat : categories) {
 			Set<SubCategory> subCategories = categoryService.findCategoryById(cat.getId()).get().getSubCategories();
 			for (SubCategory subcat : subCategories) {
+				int subCatPostsCount = subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+						.collect(Collectors.toSet()).size();
+				
+				if(subCatPostsCount>0) {
+					displayCategories.add(cat);
+				}
+				
 				allPosts.addAll(subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 						.collect(Collectors.toSet()));
 				sb.append(subcat.getName() + ", ");
@@ -147,7 +156,7 @@ public class PublicDashboardController {
 		model.addAttribute("pagetitle", "Explore Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
 		
-		model.addAttribute("categories",categories);
+		model.addAttribute("categories",displayCategories);
 
 		return "allCategoryTechContents";
 	}
@@ -156,6 +165,8 @@ public class PublicDashboardController {
 	public String exploreNonTech(final HttpServletRequest request, final Model model) {
 
 		List<MenuCategory> categories = getNonTechCategories();
+		Set<MenuCategory>displayCategories = new HashSet<MenuCategory>();
+		
 //		model.addAttribute("sidebarHeader", "Non Tech Categories");
 //		model.addAttribute("sidebarcategories", categories);
 		Set<Post> allPosts = new HashSet<>();
@@ -163,6 +174,14 @@ public class PublicDashboardController {
 		for (MenuCategory cat : categories) {
 			Set<SubCategory> subCategories = categoryService.findCategoryById(cat.getId()).get().getSubCategories();
 			for (SubCategory subcat : subCategories) {
+				
+				int subCatPostsCount = subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+						.collect(Collectors.toSet()).size();
+				
+				if(subCatPostsCount>0) {
+					displayCategories.add(cat);
+				}
+				
 				allPosts.addAll(subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 						.collect(Collectors.toSet()));
 				sb.append(subcat.getName() + ", ");
@@ -173,7 +192,7 @@ public class PublicDashboardController {
 		model.addAttribute("pagetitle", "Explore Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
 		
-		model.addAttribute("categories",categories);
+		model.addAttribute("categories",displayCategories);
 		
 		return "allCategoryNonTechContents";
 	}
