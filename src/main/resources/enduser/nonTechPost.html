@@ -39,7 +39,8 @@
 								<!-- Post meta content-->
 								<div class="text-muted fst-italic mb-2"><span
 										th:text="${#dates.format(post.updatedAt, 'dd-MMM-yyyy')}"
-										th:remove="tag">Updated On </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="time"></span> minute read</div>
+										th:remove="tag">Updated On </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+										id="time"></span> minute read</div>
 								<!-- Post categories-->
 								<a th:each="tag : ${post.tags}"
 									class="badge bg-primary bg-gradient rounded-pill mx-1 text-decoration-none mb-3"
@@ -73,7 +74,8 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="att : ${post.postsAttachments}" th:if="${att.supportingDoc} == true">
+										<tr th:each="att : ${post.postsAttachments}"
+											th:if="${att.supportingDoc} == true">
 											<td th:text="${att.name}"></td>
 											<td th:text="${att.attachmentType}">
 											</td>
@@ -84,7 +86,7 @@
 													th:onclick="viewPdf([[${att.attachmentSrc}]],[[${att.name}]])">
 
 												</a>
-											
+
 											</td>
 											<td>
 												<a type="button" class="fa-solid fa-download text-decoration-none"
@@ -97,34 +99,27 @@
 								</table>
 							</div>
 						</div>
-						
-						
-						<section class="py-5 bg-light">
-                <div class="container">
-                    <div class="row gx-5">
-                        <div class="col-xl-12">
-                            <h2 class="fw-bolder fs-5 mb-4">Explore related posts</h2>
-                            <!-- News item-->
-                            <div class="mb-4" th:each="relatedPost : ${relatedPosts}">
-                                <div class="small text-muted" th:text="${#dates.format(relatedPost.updatedAt, 'dd-MMM-yyyy')}">May 12, 2022</div>
-                                <a class="link-dark" th:href="@{/nonTech/post/{id}/{name}(id=${relatedPost.id}, name=${#strings.replace(relatedPost.title,' ','-')})}"><h3 th:inline="text">[[${relatedPost.title}]]</h3></a>
-                            </div>
-                            
-                            <div class="text-end mb-5 mb-xl-0">
-                                <a class="text-decoration-none" th:href="@{/nonTech/category/{id}/{name} (id=${postcategory.id}, name=${postcategory.name})}">
-                                    More posts
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </section>
-            
-            
-            
-						
+
+
+                        <br /><br />
+						<h2 class="fw-bolder fs-5 mb-4">Explore related posts</h2>
+						<!-- News item-->
+						<div class="mb-4" th:each="relatedPost : ${relatedPosts}">
+							<div class="small text-muted"
+								th:text="${#dates.format(relatedPost.updatedAt, 'dd-MMM-yyyy')}">May 12, 2022</div>
+							<a class="link-dark text-decoration-none"
+								th:href="@{/nonTech/post/{id}/{name}(id=${relatedPost.id}, name=${#strings.replace(relatedPost.title,' ','-')})}">
+								<h5 th:inline="text">[[${relatedPost.title}]]</h5>
+							</a>
+						</div>
+
+						<div class="text-end mb-5 mb-xl-0">
+							<a class="text-decoration-none"
+								th:href="@{/nonTech/category/{id}/{name} (id=${postcategory.id}, name=${postcategory.name})}">
+								More posts
+								<i class="fa-solid fa-arrow-right"></i>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -154,7 +149,7 @@
 					scrollY: 200,
 					scrollX: true,
 				});
-				
+
 				readingTime();
 
 			});
