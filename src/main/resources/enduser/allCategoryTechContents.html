@@ -26,7 +26,7 @@
 					<div class="modal-body">
 						<div class="row">
 							<div class="col-lg-3 mb-5" th:each="cat : ${categories}">
-								<div class="card h-100 shadow border-0 explore-card">
+								<div class="card h-100 shadow border-2 explore-card" style="border-color: slateblue;">
 									<div class="card-body p-4">
 
 										<a class="text-decoration-none link-dark stretched-link"
@@ -60,7 +60,7 @@
 							<div class="card-body p-4">
 
 								<a class="text-decoration-none link-dark stretched-link"
-									th:href="@{/tech/post/{id}/{name}(id=${post.id}, name=${post.title})}">
+									th:href="@{/tech/post/{id}/{name}(id=${post.id}, name=${#strings.replace(post.title,' ','-')})}">
 									<div class="h5 card-title" th:text="${post.title}">Blog post title</div>
 								</a>
 								<a th:each="tag : ${post.tags}"

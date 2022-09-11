@@ -83,7 +83,15 @@ public class PublicDashboardController {
 		 */
 		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att -> att.isSupportingDoc());
 		model.addAttribute("supportingDocPresent", supportingDocPresent);
+		
 		model.addAttribute("post", post);
+		
+		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
+		model.addAttribute("relatedPosts", relatedPosts);
+		
+		Category cat = post.getSubCategoryType().getCategoryType();
+		model.addAttribute("postcategory", cat);
+		
 		return "/techPost";
 	}
 
@@ -108,6 +116,12 @@ public class PublicDashboardController {
 		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att -> att.isSupportingDoc());
 		model.addAttribute("supportingDocPresent", supportingDocPresent);
 		model.addAttribute("post", post);
+		
+		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
+		model.addAttribute("relatedPosts", relatedPosts);
+		
+		Category cat = post.getSubCategoryType().getCategoryType();
+		model.addAttribute("postcategory", cat);
 		return "/nonTechPost";
 	}
 
