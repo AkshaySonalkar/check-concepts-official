@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.checkconcepts.menu.MenuCategory;
+import com.checkconcepts.menu.MenuSubCategory;
 import com.checkconcepts.persistence.model.Category;
 import com.checkconcepts.persistence.model.Post;
 import com.checkconcepts.persistence.model.PostsStatus;
@@ -48,17 +49,34 @@ public class PublicDashboardController {
 
 	@GetMapping("/index")
 	public String login(final HttpServletRequest request, final Model model) {
+
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+
 		return "index";
 	}
 
 	@GetMapping("/contact")
 	public String contact(final HttpServletRequest request, final Model model) {
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 		Locale locale = request.getLocale();
 		return "contact";
 	}
 
 	@GetMapping("/about")
 	public String about(final HttpServletRequest request, final Model model) {
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 		Locale locale = request.getLocale();
 		return "aboutus";
 	}
@@ -66,60 +84,53 @@ public class PublicDashboardController {
 	@GetMapping("/tech/post/{id}/{name}")
 	public String techPostView(@PathVariable("id") Long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 		Post post = postService.findPostById(id).get();
 		Set<Post> posts = postService.findPostById(id).get().getSubCategoryType().getPosts();
 
-		List<MenuCategory> techCategories = new ArrayList<>();
-		for (Post postObj : posts) {
-			MenuCategory category = new MenuCategory(postObj.getId(), postObj.getTitle(), postObj.getDescription(),
-					true, false, "/tech/post/" + postObj.getId() + "/" + postObj.getTitle());
-			techCategories.add(category);
-		}
+		model.addAttribute("sidebarHeader", postService.findPostById(id).get().getSubCategoryType().getName());
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(posts, true, false));
 
-		/*
-		 * model.addAttribute("sidebarHeader",
-		 * postService.findPostById(id).get().getSubCategoryType().getName() +
-		 * " Posts"); model.addAttribute("sidebarcategories", techCategories);
-		 */
 		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att -> att.isSupportingDoc());
 		model.addAttribute("supportingDocPresent", supportingDocPresent);
-		
+
 		model.addAttribute("post", post);
-		
+
 		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
 		model.addAttribute("relatedPosts", relatedPosts);
-		
+
 		Category cat = post.getSubCategoryType().getCategoryType();
 		model.addAttribute("postcategory", cat);
-		
+
 		return "/techPost";
 	}
 
 	@GetMapping("/nonTech/post/{id}/{name}")
 	public String nonTechPostView(@PathVariable("id") Long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 		Post post = postService.findPostById(id).get();
 		Set<Post> posts = postService.findPostById(id).get().getSubCategoryType().getPosts();
 
-		List<MenuCategory> nonTtechCategories = new ArrayList<>();
-		for (Post postObj : posts) {
-			MenuCategory category = new MenuCategory(postObj.getId(), postObj.getTitle(), postObj.getDescription(),
-					false, false, "/nonTech/post/" + postObj.getId() + "/" + postObj.getTitle());
-			nonTtechCategories.add(category);
-		}
+		model.addAttribute("sidebarHeader", postService.findPostById(id).get().getSubCategoryType().getName());
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(posts, false, false));
 
-		/*
-		 * model.addAttribute("sidebarHeader",
-		 * postService.findPostById(id).get().getSubCategoryType().getName() +
-		 * " Posts"); model.addAttribute("sidebarcategories", nonTtechCategories);
-		 */
 		boolean supportingDocPresent = post.getPostsAttachments().stream().anyMatch(att -> att.isSupportingDoc());
 		model.addAttribute("supportingDocPresent", supportingDocPresent);
 		model.addAttribute("post", post);
-		
+
 		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
 		model.addAttribute("relatedPosts", relatedPosts);
-		
+
 		Category cat = post.getSubCategoryType().getCategoryType();
 		model.addAttribute("postcategory", cat);
 		return "/nonTechPost";
@@ -141,61 +152,71 @@ public class PublicDashboardController {
 
 	@GetMapping("/tech")
 	public String exploreTech(final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 
 		List<MenuCategory> categories = getTechCategories();
-		Set<MenuCategory>displayCategories = new HashSet<MenuCategory>();
-		
-//		model.addAttribute("sidebarHeader", "Tech Categories");
-//		model.addAttribute("sidebarcategories", categories);
+		Set<MenuCategory> displayCategories = new HashSet<MenuCategory>();
+
 		Set<Post> allPosts = new HashSet<>();
 		StringBuilder sb = new StringBuilder();
 		for (MenuCategory cat : categories) {
 			Set<SubCategory> subCategories = categoryService.findCategoryById(cat.getId()).get().getSubCategories();
 			for (SubCategory subcat : subCategories) {
-				int subCatPostsCount = subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
-						.collect(Collectors.toSet()).size();
-				
-				if(subCatPostsCount>0) {
+				int subCatPostsCount = subcat.getPosts().stream()
+						.filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet()).size();
+
+				if (subCatPostsCount > 0) {
 					displayCategories.add(cat);
 				}
-				
+
 				allPosts.addAll(subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 						.collect(Collectors.toSet()));
 				sb.append(subcat.getName() + ", ");
 			}
 		}
 
-		model.addAttribute("posts",
-				allPosts.stream().sorted((o1, o2) -> o2.getUpdatedAt().compareTo(o1.getUpdatedAt())).collect(Collectors.toList()));
+		model.addAttribute("posts", allPosts.stream().sorted((o1, o2) -> o2.getUpdatedAt().compareTo(o1.getUpdatedAt()))
+				.collect(Collectors.toList()));
 		model.addAttribute("pagetitle", "Explore Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
-		
-		model.addAttribute("categories",displayCategories);
+		model.addAttribute("categories", displayCategories);
+
+		model.addAttribute("sidebarHeader", "Tech");
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, true, false));
 
 		return "allCategoryTechContents";
 	}
 
 	@GetMapping("/nonTech")
 	public String exploreNonTech(final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 
 		List<MenuCategory> categories = getNonTechCategories();
-		Set<MenuCategory>displayCategories = new HashSet<MenuCategory>();
-		
-//		model.addAttribute("sidebarHeader", "Non Tech Categories");
-//		model.addAttribute("sidebarcategories", categories);
+		Set<MenuCategory> displayCategories = new HashSet<MenuCategory>();
+
 		Set<Post> allPosts = new HashSet<>();
 		StringBuilder sb = new StringBuilder();
 		for (MenuCategory cat : categories) {
 			Set<SubCategory> subCategories = categoryService.findCategoryById(cat.getId()).get().getSubCategories();
 			for (SubCategory subcat : subCategories) {
-				
-				int subCatPostsCount = subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
-						.collect(Collectors.toSet()).size();
-				
-				if(subCatPostsCount>0) {
+
+				int subCatPostsCount = subcat.getPosts().stream()
+						.filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet()).size();
+
+				if (subCatPostsCount > 0) {
 					displayCategories.add(cat);
 				}
-				
+
 				allPosts.addAll(subcat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 						.collect(Collectors.toSet()));
 				sb.append(subcat.getName() + ", ");
@@ -205,22 +226,31 @@ public class PublicDashboardController {
 		model.addAttribute("posts", allPosts);
 		model.addAttribute("pagetitle", "Explore Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
-		
-		model.addAttribute("categories",displayCategories);
-		
+		model.addAttribute("categories", displayCategories);
+
+		model.addAttribute("sidebarHeader", "Non Tech");
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, false, false));
+
 		return "allCategoryNonTechContents";
 	}
 
 	@GetMapping("/tech/category/{id}/{name}")
-	public String exploreTechCategory(@PathVariable("id") long id,@PathVariable("name") String name, final HttpServletRequest request,
-			final Model model) {
+	public String exploreTechCategory(@PathVariable("id") long id, @PathVariable("name") String name,
+			final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		Set<SubCategory> subCategories = categoryService.findCategoryById(id).get().getSubCategories();
-		List<MenuCategory> techCategories = new ArrayList<>();
+		List<MenuCategory> techSubCategories = new ArrayList<>();
 		Set<Post> allPosts = new HashSet<>();
 		for (SubCategory cat : subCategories) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
 					cat.isPremium(), "/tech/subcategory/" + cat.getId());
-			techCategories.add(category);
+			techSubCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 					.collect(Collectors.toSet()));
 		}
@@ -230,19 +260,58 @@ public class PublicDashboardController {
 		model.addAttribute("pagetitle",
 				"Explore " + categoryService.findCategoryById(id).get().getName() + " Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+
+		model.addAttribute("sidebarHeader", name);
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, true, false));
+
+		return "categorySpecificTechContents";
+	}
+
+	@GetMapping("/tech/subcategory/{id}/{name}")
+	public String exploreTechSubCategory(@PathVariable("id") long id, @PathVariable("name") String name,
+			final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
+		SubCategory subCategories = subCategoryService.findSubCategoryById(id).get();
+
+		Set<Post> allPosts = new HashSet<>();
+
+		allPosts.addAll(subCategories.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+				.collect(Collectors.toSet()));
+
+		model.addAttribute("posts", allPosts);
+		model.addAttribute("pagetitle",
+				"Explore " + categoryService.findCategoryById(id).get().getName() + " Technical Contents");
+		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+
+		model.addAttribute("sidebarHeader", name);
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, true, false));
+
 		return "categorySpecificTechContents";
 	}
 
 	@GetMapping("/nonTech/category/{id}/{name}")
-	public String exploreNonTechCategory(@PathVariable("id") long id,@PathVariable("name") String name, final HttpServletRequest request,
-			final Model model) {
+	public String exploreNonTechCategory(@PathVariable("id") long id, @PathVariable("name") String name,
+			final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		Set<SubCategory> subCategories = categoryService.findCategoryById(id).get().getSubCategories();
-		List<MenuCategory> techCategories = new ArrayList<>();
+		List<MenuCategory> techSubCategories = new ArrayList<>();
 		Set<Post> allPosts = new HashSet<>();
 		for (SubCategory cat : subCategories) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), false,
 					cat.isPremium(), "/nonTech/subcategory/" + cat.getId());
-			techCategories.add(category);
+			techSubCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 					.collect(Collectors.toSet()));
 		}
@@ -252,47 +321,39 @@ public class PublicDashboardController {
 		model.addAttribute("pagetitle",
 				"Explore " + categoryService.findCategoryById(id).get().getName() + " Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+
+		model.addAttribute("sidebarHeader", name);
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, false, false));
+
 		return "categorySpecificNonTechContents";
 	}
 
-	@GetMapping("/tech/subcategory/{id}")
-	public String exploreTechSubCategory(@PathVariable("id") long id, final HttpServletRequest request,
-			final Model model) {
-		Set<Post> posts = subCategoryService.findSubCategoryById(id).get().getPosts().stream()
-				.filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet());
-		List<MenuCategory> techCategories = new ArrayList<>();
-		for (Post post : posts) {
-			MenuCategory category = new MenuCategory(post.getId(), post.getTitle(), post.getDescription(), true, false,
-					"/tech/post/" + post.getId() + "/" + post.getTitle());
-			techCategories.add(category);
-		}
-//		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
-//		model.addAttribute("sidebarcategories", techCategories);
-		model.addAttribute("posts", posts);
-		model.addAttribute("pagetitle",
-				"Explore " + subCategoryService.findSubCategoryById(id).get().getName() + " Technical Contents");
-		model.addAttribute("pagedesc", "Explore " + subCategoryService.findSubCategoryById(id).get().getDescription());
-		return "subCategorySpecificTechContents";
-	}
+	@GetMapping("/nonTech/subcategory/{id}/{name}")
+	public String exploreNonTechSubCategory(@PathVariable("id") long id, @PathVariable("name") String name,
+			final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
 
-	@GetMapping("/nonTech/subcategory/{id}")
-	public String exploreNonTechSubCategory(@PathVariable("id") long id, final HttpServletRequest request,
-			final Model model) {
-		Set<Post> posts = subCategoryService.findSubCategoryById(id).get().getPosts().stream()
-				.filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED)).collect(Collectors.toSet());
-		List<MenuCategory> techCategories = new ArrayList<>();
-		for (Post post : posts) {
-			MenuCategory category = new MenuCategory(post.getId(), post.getTitle(), post.getDescription(), true, false,
-					"/nonTech/post/" + post.getId() + "/" + post.getTitle());
-			techCategories.add(category);
-		}
-//		model.addAttribute("sidebarHeader", subCategoryService.findSubCategoryById(id).get().getName() + " Posts");
-//		model.addAttribute("sidebarcategories", techCategories);
-		model.addAttribute("posts", posts);
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
+		SubCategory subCategories = subCategoryService.findSubCategoryById(id).get();
+
+		Set<Post> allPosts = new HashSet<>();
+
+		allPosts.addAll(subCategories.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+				.collect(Collectors.toSet()));
+
+		model.addAttribute("posts", allPosts);
 		model.addAttribute("pagetitle",
-				"Explore " + subCategoryService.findSubCategoryById(id).get().getName() + " Non Technical Contents");
-		model.addAttribute("pagedesc", "Explore " + subCategoryService.findSubCategoryById(id).get().getDescription());
-		return "subCategorySpecificNonTechContents";
+				"Explore " + categoryService.findCategoryById(id).get().getName() + " Non Technical Contents");
+		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+
+		model.addAttribute("sidebarHeader", name);
+		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, false, false));
+
+		return "categorySpecificNonTechContents";
 	}
 
 	public List<MenuCategory> getTechCategories() {
@@ -303,7 +364,7 @@ public class PublicDashboardController {
 				.collect(Collectors.toList());
 		for (Category cat : categoryList) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
-					cat.isPremium(), "/tech/category/" + cat.getId()+"/"+cat.getName());
+					cat.isPremium(), "/tech/category/" + cat.getId() + "/" + cat.getName());
 			techCategories.add(category);
 		}
 		return techCategories;
@@ -312,16 +373,93 @@ public class PublicDashboardController {
 
 	public List<MenuCategory> getNonTechCategories() {
 
-		List<MenuCategory> techCategories = new ArrayList<>();
+		List<MenuCategory> nonTechCategories = new ArrayList<>();
 
 		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> !cat.isTech())
 				.collect(Collectors.toList());
 		for (Category cat : categoryList) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), false,
-					cat.isPremium(), "/nonTech/category/" + cat.getId()+"/"+cat.getName());
+					cat.isPremium(), "/nonTech/category/" + cat.getId() + "/" + cat.getName());
+			nonTechCategories.add(category);
+		}
+		return nonTechCategories;
+
+	}
+
+	public List<MenuCategory> getTechCategoriesWithSubCategories() {
+
+		List<MenuCategory> techCategories = new ArrayList<>();
+
+		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> cat.isTech())
+				.collect(Collectors.toList());
+
+		for (Category cat : categoryList) {
+
+			List<MenuSubCategory> subcategories = new ArrayList<>();
+
+			if (!cat.getSubCategories().isEmpty()) {
+
+				for (SubCategory subcat : cat.getSubCategories()) {
+
+					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
+							subcat.getDescription(), subcat.isPremium(),
+							"/tech/subcategory/" + subcat.getId() + "/" + subcat.getName());
+
+					subcategories.add(subcategory);
+				}
+
+			}
+
+			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
+					cat.isPremium(), "/tech/category/" + cat.getId() + "/" + cat.getName(), subcategories);
 			techCategories.add(category);
 		}
 		return techCategories;
+
+	}
+
+	public List<MenuCategory> getNonTechCategoriesWithSubCategories() {
+
+		List<MenuCategory> nonTechCategories = new ArrayList<>();
+
+		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> !cat.isTech())
+				.collect(Collectors.toList());
+		for (Category cat : categoryList) {
+
+			List<MenuSubCategory> subcategories = new ArrayList<>();
+
+			if (!cat.getSubCategories().isEmpty()) {
+
+				for (SubCategory subcat : cat.getSubCategories()) {
+
+					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
+							subcat.getDescription(), subcat.isPremium(),
+							"/nonTech/subcategory/" + subcat.getId() + "/" + subcat.getName());
+
+					subcategories.add(subcategory);
+				}
+
+			}
+
+			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
+					cat.isPremium(), "/nonTech/category/" + cat.getId() + "/" + cat.getName(), subcategories);
+			nonTechCategories.add(category);
+		}
+		return nonTechCategories;
+
+	}
+
+	public List<MenuCategory> getPostsDataMenuCategory(Set<Post> allPosts, boolean tech, boolean premium) {
+
+		List<MenuCategory> postsDataCategories = new ArrayList<>();
+
+		for (Post post : allPosts) {
+			MenuCategory postCat = new MenuCategory(post.getId(), post.getTitle(), post.getDescription(), tech, premium,
+					tech ? "/tech/post/" + post.getId() + "/" + post.getTitle().replace(" ", "-")
+							: "/nonTech/post/" + post.getId() + "/" + post.getTitle().replace(" ", "-"));
+			postsDataCategories.add(postCat);
+		}
+		return postsDataCategories;
 
 	}
 

@@ -87,13 +87,12 @@
 	<div layout:fragment="content">
 		<div id='card' class="card shadow-2-strong animated fadeIn">
 			<div id='upper-side'>
-				<i class="fa fa-check" style="font-size: 5rem;"></i>
-				<h3 id='status'>Account Created</h3>
+			<i class="fa-solid fa-thumbs-up" style="font-size: 5rem;"></i>
+				<h3 id='status'>Account Verified</h3>
 			</div>
 			<div id='lower-side'>
 				<p id='message'>
-					Congratulations, your account has been created successfully. We have sent you verification link over
-					email, please verify before login.
+					Congratulations, your account has been verified successfully. You can login now.
 				</p>
 				<a th:href="@{/login}" th:utext="#{label.login}">login</a>
 			</div>

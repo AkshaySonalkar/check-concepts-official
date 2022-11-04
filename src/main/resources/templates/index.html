@@ -3,7 +3,7 @@
 	layout:decorate="~{layout.html}">
 
 <head>
-	<title>Welcome to Our Site</title>
+	<title>Don't read it, understand it</title>
 	<script th:inline="javascript">
 
 		window.onload = function () {
@@ -28,6 +28,7 @@
 <body class="d-flex flex-column h-100">
 
 	<div layout:fragment="content">
+
 		<div id="message" th:if="${message == null}" style="display: none;" class="alert alert-info"></div>
 
 		<main class="flex-shrink-0">
@@ -37,7 +38,7 @@
 					<div class="row gx-5 align-items-center justify-content-center">
 						<div class="col-lg-8 col-xl-7 col-xxl-6">
 							<div class="my-5 text-center text-xl-start">
-								<h1 class="display-5 fw-bolder text-black mb-2">We're Creating an amazing Contents</h1>
+								<h1 class="display-5 fw-bolder text-black mb-2">We're creating an amazing contents</h1>
 								<p class="lead fw-normal text-black-50 mb-4">We are super excited to provide a
 									beautiful, clear, concise and well structured contents for everyone.</p>
 								<div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
@@ -139,39 +140,102 @@
 							</div>
 						</div>
 					</div>
-					<div class="row gx-5">
 
-						<div class="col-lg-6 mb-5 explore-card">
-							<div class="card h-100 shadow border-0">
-								<img class="card-img-top" th:src="@{/resources/avatar/checkconcepts_technical.gif}"
-									style="width: 100%;height: 60%;" alt="CheckConcepts Technical Concepts" />
-								<div class="card-body p-4">
-									<a class="text-decoration-none link-dark stretched-link" th:href="@{/tech}">
-										<h5 class="card-title mb-3">Explore Technical Contents</h5>
-									</a>
-									<p class="card-text mb-0">Explore well structured contents in different
-										tech categories which are accurate, clear, concise, coherent, and appropriate.
-									</p>
+					<div class="container card py-2 mb-5" th:each="techCat : ${techCategories}">
+						<div class="card-header" style="background-color: unset !important;">
+							<h5 class="mb-0">
+								<span th:text="${techCat.name}"> </span>
+								<a class="text-decoration-none" th:href="${techCat.pageUrl}">
+									<i class="fa-solid fa-arrow-right" style="float: right;"></i>
+								</a>
+							</h5>
+						</div>
+						<div class="card-body">
+
+							<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+								<div class="col" th:each="techSubCat : ${techCat.subcategoies}"
+									style="text-align: center;">
+									<div class="p-3 border bg-light" style="background-color: aliceblue !important;">
+										<div class="card-title" th:text="${techSubCat.name}">Tech Sub Category
+											Name</div>
+
+										<a class="text-decoration-none link-dark" th:href="${techSubCat.pageUrl}">
+
+											<i class="fa-solid fa-arrow-up-right-from-square"
+												style="font-size: 2.1rem;color: seagreen;"></i>
+
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-6 mb-5 explore-card">
-							<div class="card h-100 shadow border-0">
-								<img class="card-img-top" th:src="@{/resources/avatar/checkconcepts_nontechnical.gif}"
-									style="width: 100%;height: 60%;" alt="CheckConcepts non Tech Concepts" />
-								<div class="card-body p-4">
-									<a class="text-decoration-none link-dark stretched-link" th:href="@{/nonTech}">
-										<h5 class="card-title mb-3">Explore Non Technical Contents</h5>
-									</a>
-									<p class="card-text mb-0">Explore transparent and reliable non technical contents in
-										various categories. Non technical contents which are authentic, and informative.
-									</p>
-								</div>
-
-							</div>
-						</div>
-
 					</div>
+
+
+
+					<div class="container card py-2 mb-5" th:each="nonTechCat : ${nonTechCategories}">
+						<div class="card-header" style="background-color: unset !important;">
+							<h5 class="mb-0">
+								<span th:text="${nonTechCat.name}"> </span>
+								<a class="text-decoration-none" th:href="${nonTechCat.pageUrl}">
+									<i class="fa-solid fa-arrow-right" style="float: right;"></i>
+								</a>
+							</h5>
+						</div>
+						<div class="card-body">
+
+							<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+								<div class="col" th:each="nonTechSubCat : ${nonTechCat.subcategoies}"
+									style="text-align: center;">
+									<div class="p-3 border bg-light" style="background-color: aliceblue !important;">
+										<div class="card-title" th:text="${nonTechSubCat.name}">Tech Sub Category
+											Name</div>
+										<a class="text-decoration-none link-dark" th:href="${nonTechSubCat.pageUrl}">
+											<i class="fa-solid fa-arrow-up-right-from-square"
+												style="font-size: 2.1rem;color: seagreen;"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+
+					<!--					<div class="row gx-5">-->
+					<!---->
+					<!--						<div class="col-lg-6 mb-5 explore-card">-->
+					<!--							<div class="card h-100 shadow border-0">-->
+					<!--								<img class="card-img-top" th:src="@{/resources/avatar/checkconcepts_technical.gif}"-->
+					<!--									style="width: 100%;height: 60%;" alt="CheckConcepts Technical Concepts" />-->
+					<!--								<div class="card-body p-4">-->
+					<!--									<a class="text-decoration-none link-dark stretched-link" th:href="@{/tech}">-->
+					<!--										<h5 class="card-title mb-3">Explore Technical Contents</h5>-->
+					<!--									</a>-->
+					<!--									<p class="card-text mb-0">Explore well structured contents in different-->
+					<!--										tech categories which are accurate, clear, concise, coherent, and appropriate.-->
+					<!--									</p>-->
+					<!--								</div>-->
+					<!--							</div>-->
+					<!--						</div>-->
+					<!--						<div class="col-lg-6 mb-5 explore-card">-->
+					<!--							<div class="card h-100 shadow border-0">-->
+					<!--								<img class="card-img-top" th:src="@{/resources/avatar/checkconcepts_nontechnical.gif}"-->
+					<!--									style="width: 100%;height: 60%;" alt="CheckConcepts non Tech Concepts" />-->
+					<!--								<div class="card-body p-4">-->
+					<!--									<a class="text-decoration-none link-dark stretched-link" th:href="@{/nonTech}">-->
+					<!--										<h5 class="card-title mb-3">Explore Non Technical Contents</h5>-->
+					<!--									</a>-->
+					<!--									<p class="card-text mb-0">Explore transparent and reliable non technical contents in-->
+					<!--										various categories. Non technical contents which are authentic, and informative.-->
+					<!--									</p>-->
+					<!--								</div>-->
+					<!---->
+					<!--							</div>-->
+					<!--						</div>-->
+					<!---->
+					<!--					</div>-->
 					<!-- Call to action
 					<aside class="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
 						<div

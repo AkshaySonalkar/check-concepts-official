@@ -4,22 +4,25 @@
 
 <head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0YF55C59BG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-0YF55C59BG"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {dataLayer.push(arguments);}
+		gtag('js', new Date());
 
-  gtag('config', 'G-0YF55C59BG');
-</script>
+		gtag('config', 'G-0YF55C59BG');
+	</script>
+
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2074312769705542"
+		crossorigin="anonymous"></script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link rel="icon" th:href="@{/resources/avatar/checkconcepts_green.svg}">
 
-	<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">CheckConcepts</title>
+	<title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">CheckConcepts.org</title>
 
 	<!-- Bootstrap CSS CDN -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -61,7 +64,7 @@
 			right: 0 !important;
 		}
 	</style>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 	<!-- Popper.JS -->
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
@@ -102,7 +105,10 @@
 			<div class="menu-items">
 
 				<a th:each="cat : ${sidebarcategories}" th:href="@{${cat.pageUrl}}">
-					<span th:text="${cat.name}">Category</span> </a>
+					<span th:text="${cat.name}" style="color: green;"
+						th:if="${(post != null) and (post.id eq cat.id)}">Category/Post</span>
+					<span th:text="${cat.name}" th:if="${(post != null) and (post.id ne cat.id)}">Category/Post</span>
+					<span th:text="${cat.name}" th:if="${post == null}">Category/Post</span> </a>
 			</div>
 		</nav>
 
@@ -115,9 +121,8 @@
 					<button type="button" id="sidebarCollapse" class="btn" th:if="${sidebarHeader != null}">
 						<i class="fas fa-align-left"></i>
 					</button>
-					<a th:href="@{/index}"><img
-							th:src="@{/resources/avatar/checkconcepts_logo.svg}" style="width: 70px;height: 70px;"
-							alt="checkconcepts_content" /></a>
+					<a th:href="@{/index}"><img th:src="@{/resources/avatar/checkconcepts_logo.svg}"
+							style="width: 70px;height: 70px;" alt="checkconcepts_content" /></a>
 
 					<button class="btn d-inline-block d-lg-none ml-auto" type="button" data-bs-toggle="collapse"
 						data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -137,7 +142,8 @@
 
 						<ul class="nav navbar-nav ms-auto profile-menu" sec:authorize="isAuthenticated()">
 							<li class="nav-item" sec:authorize="hasAuthority('USER_PRIVILEGE')"><a class="nav-link"
-									th:href="@{/user/session/userDashboard}" th:utext="#{label.pages.home.title}">Home</a></li>
+									th:href="@{/user/userDashboard}"
+									th:utext="#{label.pages.home.title}">Home</a></li>
 							<li class="nav-item" sec:authorize="hasAuthority('ADMIN_PRIVILEGE')"><a class="nav-link"
 									th:href="@{/admin/adminConsole}" th:utext="#{label.pages.home.title}">Home</a></li>
 							<li class="nav-item" sec:authorize="hasAuthority('STAFF_PRIVILEGE')"><a class="nav-link"
@@ -179,6 +185,115 @@
 					</div>
 				</div>
 			</nav>
+
+			<!-- Quick Navigation Dashboard -->
+
+			<!-- Button trigger modal -->
+			<a type="button" class="text-decoration-none filter-icon" data-bs-toggle="modal"
+				data-bs-target="#exampleModal" sec:authorize="!isAuthenticated()">
+				<i class="fa-solid fa-border-all" style="font-size: 30px;"></i>
+			</a>
+			
+			<!-- Button trigger modal -->
+			<a type="button" class="text-decoration-none filter-icon" data-bs-toggle="modal"
+				data-bs-target="#exampleModal" sec:authorize="hasAuthority('USER_PRIVILEGE')">
+				<i class="fa-solid fa-border-all" style="font-size: 30px;"></i>
+			</a>
+
+			<!-- Modal -->
+			<div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-fullscreen">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Quick Navigation Dashboard</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<div class="container card py-2 mb-5" th:each="techCat : ${techCategories}">
+								<div class="card-header" style="background-color: unset !important;">
+									<h5 class="mb-0">
+										<span th:text="${techCat.name}"> </span>
+										<a class="text-decoration-none" th:href="${techCat.pageUrl}">
+											<i class="fa-solid fa-arrow-right" style="float: right;"></i>
+										</a>
+									</h5>
+								</div>
+								<div class="card-body">
+
+									<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+										<div class="col" th:each="techSubCat : ${techCat.subcategoies}"
+											style="text-align: center;">
+											<div class="p-3 border bg-light"
+												style="background-color: aliceblue !important;">
+												<div class="card-title" th:text="${techSubCat.name}">Tech Sub Category
+													Name</div>
+
+												<a class="text-decoration-none link-dark"
+													th:href="${techSubCat.pageUrl}">
+
+													<i class="fa-solid fa-arrow-up-right-from-square"
+														style="font-size: 2.1rem;color: seagreen;"></i>
+
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+
+							<div class="container card py-2 mb-5" th:each="nonTechCat : ${nonTechCategories}">
+								<div class="card-header" style="background-color: unset !important;">
+									<h5 class="mb-0">
+										<span th:text="${nonTechCat.name}"> </span>
+										<a class="text-decoration-none" th:href="${nonTechCat.pageUrl}">
+											<i class="fa-solid fa-arrow-right" style="float: right;"></i>
+										</a>
+									</h5>
+								</div>
+								<div class="card-body">
+
+									<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+										<div class="col" th:each="nonTechSubCat : ${nonTechCat.subcategoies}"
+											style="text-align: center;">
+											<div class="p-3 border bg-light"
+												style="background-color: aliceblue !important;">
+												<div class="card-title" th:text="${nonTechSubCat.name}">Tech Sub
+													Category
+													Name</div>
+												<a class="text-decoration-none link-dark"
+													th:href="${nonTechSubCat.pageUrl}">
+													<i class="fa-solid fa-arrow-up-right-from-square"
+														style="font-size: 2.1rem;color: seagreen;"></i>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			<!-- Content Section -->
 			<section layout:fragment="content">

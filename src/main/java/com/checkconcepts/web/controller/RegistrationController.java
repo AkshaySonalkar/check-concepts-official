@@ -1,6 +1,7 @@
 package com.checkconcepts.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -8,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +30,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.checkconcepts.menu.MenuCategory;
+import com.checkconcepts.menu.MenuSubCategory;
+import com.checkconcepts.persistence.model.Category;
 import com.checkconcepts.persistence.model.Privilege;
 import com.checkconcepts.persistence.model.Role;
+import com.checkconcepts.persistence.model.SubCategory;
 import com.checkconcepts.persistence.model.User;
 import com.checkconcepts.security.ISecurityUserService;
+import com.checkconcepts.service.ICategoryService;
 import com.checkconcepts.service.IUserService;
 
 @Controller
@@ -50,6 +55,9 @@ public class RegistrationController {
 	@Autowired
 	private MessageSource messages;
 	
+	@Autowired
+	private ICategoryService categoryService;
+	
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
 
@@ -63,27 +71,29 @@ public class RegistrationController {
 		Locale locale = request.getLocale();
 		model.addAttribute("lang", locale.getLanguage());
 		final String result = userService.validateVerificationToken(token);
-		final HttpSession session = request.getSession(false);
+//		final HttpSession session = request.getSession(false);
 		if (result.equals("valid")) {
-			final User user = userService.getUser(token);
-			// if (user.isUsing2FA()) {
-			// model.addAttribute("qr", userService.generateQRUrl(user));
-			// return "redirect:/qrcode.html?lang=" + locale.getLanguage();
-			// }
-			authWithoutPassword(user);
-			redirectAttributes.addFlashAttribute("message", "Welcome to CheckConcepts. Your account verified successfully " + "!");
-
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			String username = "";
-			if (principal instanceof User) {
-				username = ((User) principal).getEmail();
-			} else {
-				username = principal.toString();
-			}
-
-			User userObj = userService.findUserByEmail(username);
-			session.setAttribute("fullname", userObj.getFirstName().concat(" " + userObj.getLastName()));
-			return new ModelAndView("redirect:/user/session/userDashboard", model);
+			
+			/*
+			 * final User user = userService.getUser(token); // if (user.isUsing2FA()) { //
+			 * model.addAttribute("qr", userService.generateQRUrl(user)); // return
+			 * "redirect:/qrcode.html?lang=" + locale.getLanguage(); // }
+			 * authWithoutPassword(user); redirectAttributes.addFlashAttribute("message",
+			 * "Welcome to CheckConcepts. Your account verified successfully " + "!");
+			 * 
+			 * Object principal =
+			 * SecurityContextHolder.getContext().getAuthentication().getPrincipal(); String
+			 * username = ""; if (principal instanceof User) { username = ((User)
+			 * principal).getEmail(); } else { username = principal.toString(); }
+			 * 
+			 * User userObj = userService.findUserByEmail(username);
+			 * session.setAttribute("fullname", userObj.getFirstName().concat(" " +
+			 * userObj.getLastName()));
+			 */
+			
+			return new ModelAndView("verifiedAccount", model);
+			
+			
 		}
 
 		model.addAttribute("messageKey", "auth.message." + result);
@@ -112,6 +122,13 @@ public class RegistrationController {
 
 	@GetMapping("/user/changePassword")
 	public ModelAndView showChangePasswordPage(final ModelMap model, @RequestParam("token") final String token) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		final String result = securityUserService.validatePasswordResetToken(token);
 
 		if (result != null) {
@@ -127,6 +144,13 @@ public class RegistrationController {
 	@GetMapping("/updatePassword")
 	public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model,
 			@RequestParam("messageKey") final Optional<String> messageKey) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		Locale locale = request.getLocale();
 		model.addAttribute("lang", locale.getLanguage());
 		messageKey.ifPresent(key -> {
@@ -141,6 +165,12 @@ public class RegistrationController {
 	public ModelAndView login(final HttpServletRequest request, final ModelMap model,
 			@RequestParam("messageKey") final Optional<String> messageKey,
 			@RequestParam("error") final Optional<String> error) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
 		
 		Locale locale = request.getLocale();
 		model.addAttribute("lang", locale.getLanguage());
@@ -197,6 +227,13 @@ public class RegistrationController {
 
 	@GetMapping("/registration")
 	public String registration(final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		Locale locale = request.getLocale();
 		model.addAttribute("data", "Registration DATA");
 		return "registration";
@@ -204,9 +241,79 @@ public class RegistrationController {
 
 	@GetMapping("/forgetPassword")
 	public String forgetPassword(final HttpServletRequest request, final Model model) {
+		
+		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
+		model.addAttribute("techCategories", techCategories);
+
+		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
+		model.addAttribute("nonTechCategories", nonTechCategories);
+		
 		Locale locale = request.getLocale();
 		model.addAttribute("data", "forgetPassword DATA");
 		return "forgetPassword";
+	}
+	
+	public List<MenuCategory> getTechCategoriesWithSubCategories() {
+
+		List<MenuCategory> techCategories = new ArrayList<>();
+
+		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> cat.isTech())
+				.collect(Collectors.toList());
+
+		for (Category cat : categoryList) {
+
+			List<MenuSubCategory> subcategories = new ArrayList<>();
+
+			if (!cat.getSubCategories().isEmpty()) {
+
+				for (SubCategory subcat : cat.getSubCategories()) {
+
+					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
+							subcat.getDescription(), subcat.isPremium(),
+							"/tech/subcategory/" + subcat.getId() + "/" + subcat.getName());
+
+					subcategories.add(subcategory);
+				}
+
+			}
+
+			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
+					cat.isPremium(), "/tech/category/" + cat.getId() + "/" + cat.getName(), subcategories);
+			techCategories.add(category);
+		}
+		return techCategories;
+
+	}
+
+	public List<MenuCategory> getNonTechCategoriesWithSubCategories() {
+
+		List<MenuCategory> nonTechCategories = new ArrayList<>();
+
+		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> !cat.isTech())
+				.collect(Collectors.toList());
+		for (Category cat : categoryList) {
+
+			List<MenuSubCategory> subcategories = new ArrayList<>();
+
+			if (!cat.getSubCategories().isEmpty()) {
+
+				for (SubCategory subcat : cat.getSubCategories()) {
+
+					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
+							subcat.getDescription(), subcat.isPremium(),
+							"/nonTech/subcategory/" + subcat.getId() + "/" + subcat.getName());
+
+					subcategories.add(subcategory);
+				}
+
+			}
+
+			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
+					cat.isPremium(), "/nonTech/category/" + cat.getId() + "/" + cat.getName(), subcategories);
+			nonTechCategories.add(category);
+		}
+		return nonTechCategories;
+
 	}
 
 }

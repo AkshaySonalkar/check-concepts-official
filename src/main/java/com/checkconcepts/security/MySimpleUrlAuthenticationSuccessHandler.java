@@ -47,7 +47,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(300 * 60);
+            session.setMaxInactiveInterval(600 * 60);;
 
             String email;
             if (authentication.getPrincipal() instanceof User) {
@@ -119,7 +119,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
              }
             
 				/* return "/homepage.html?user="+username; */
-             return "/user/session/userDashboard";
+             return "/user/userDashboard";
         } else if (isAdmin) {
             return "/admin/adminConsole";
         } else if (isStaff) {

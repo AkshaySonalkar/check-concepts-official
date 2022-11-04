@@ -20,6 +20,7 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
         if (session != null) {
             session.removeAttribute("user");
             session.removeAttribute("fullname");
+//            session.removeAttribute("JSESSIONID");
         }
 
         response.sendRedirect(request.getContextPath().concat("/logout.html?logSucc=true"));

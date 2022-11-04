@@ -30,7 +30,7 @@ public class MyCustomLoginAuthenticationSuccessHandler implements Authentication
 
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(300 * 60);
+            session.setMaxInactiveInterval(1 * 6);
             String username;
             if (authentication.getPrincipal() instanceof User) {
             	username = ((User)authentication.getPrincipal()).getEmail();

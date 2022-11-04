@@ -10,43 +10,6 @@
 <body class="d-flex flex-column h-100">
 	<div layout:fragment="content">
 
-		<!-- Button trigger modal -->
-		<a type="button" class="text-decoration-none filter-icon" data-bs-toggle="modal" data-bs-target="#exampleModal">
-			<i class="fa-solid fa-border-all" style="font-size: 30px;"></i>
-		</a>
-
-		<!-- Modal -->
-		<div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-fullscreen">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel"> Explore Contents Category Wise</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-lg-3 mb-5" th:each="cat : ${categories}">
-								<div class="card h-100 shadow border-2 explore-card" style="border-color: slateblue;">
-									<div class="card-body p-4">
-
-										<a class="text-decoration-none link-dark stretched-link"
-											th:href="${cat.pageUrl}">
-											<div class="h5 card-title" th:text="${cat.name}">Category Name</div>
-										</a>
-										<article>
-											<p class="card-text mb-0" th:text="${cat.description}">Category Description.
-											</p>
-										</article>
-									</div>
-
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<section class="py-5" th:if="${not #lists.isEmpty(posts)}">
 
 
