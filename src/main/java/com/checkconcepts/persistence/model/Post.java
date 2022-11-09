@@ -24,7 +24,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "posts")
-public class Post {
+public class Post implements Comparable<Post> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -207,6 +207,16 @@ public class Post {
 		return "Post [id=" + id + ", title=" + title + ", description=" + description + ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt + ", status=" + status + ", publishedAt=" + publishedAt + ", author="
 				+ author + ", subCategoryType=" + subCategoryType +  "]";
+	}
+
+	@Override
+	public int compareTo(Post o) {
+		if (id == o.getId())
+			return 0;
+		else if (id > o.getId())
+			return 1;
+		else
+			return -1;
 	}
 
 }

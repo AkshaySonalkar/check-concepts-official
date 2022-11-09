@@ -114,7 +114,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
                 .and()
             .sessionManagement()
-            	.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            	.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .invalidSessionUrl("/invalidSession")
                 .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
                 .sessionFixation().none()

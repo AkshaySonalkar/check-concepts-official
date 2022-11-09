@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sub_category")
-public class SubCategory {
+public class SubCategory implements Comparable<SubCategory> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -109,6 +109,16 @@ public class SubCategory {
 		return "SubCategory [id=" + id + ", subCategoryName=" + name + ", subCategoryDescription="
 				+ description + ", premium=" + premium + ", posts=" + posts + ", categoryType="
 				+ categoryType + "]";
+	}
+
+	@Override
+	public int compareTo(SubCategory o) {
+		if (id == o.getId())
+			return 0;
+		else if (id > o.getId())
+			return 1;
+		else
+			return -1;
 	}
 
 }

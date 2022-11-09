@@ -37,6 +37,10 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+	
+	<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+
 
 	<style type="text/css">
 		#footer-bottom {
@@ -79,10 +83,12 @@
 
 	<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
 
 	<script th:src="@{/resources/pwstrength.js}"></script>
 	<script th:src="@{/resources/layout.js}"></script>
 	<script th:src="@{/resources/richtext/jquery.richtext.min.js}"></script>
+	<script>hljs.highlightAll();</script>
 
 </head>
 
@@ -213,7 +219,7 @@
 								<div class="card-header" style="background-color: unset !important;">
 									<h5 class="mb-0">
 										<span th:text="${techCat.name}"> </span>
-										<a class="text-decoration-none" th:href="${techCat.pageUrl}">
+										<a class="text-decoration-none" th:href="${#strings.replace(techCat.pageUrl,' ','-')}">
 											<i class="fa-solid fa-arrow-right" style="float: right;"></i>
 										</a>
 									</h5>
@@ -229,7 +235,7 @@
 													Name</div>
 
 												<a class="text-decoration-none link-dark"
-													th:href="${techSubCat.pageUrl}">
+													th:href="${#strings.replace(techSubCat.pageUrl,' ','-')}">
 
 													<i class="fa-solid fa-arrow-up-right-from-square"
 														style="font-size: 2.1rem;color: seagreen;"></i>
@@ -247,7 +253,7 @@
 								<div class="card-header" style="background-color: unset !important;">
 									<h5 class="mb-0">
 										<span th:text="${nonTechCat.name}"> </span>
-										<a class="text-decoration-none" th:href="${nonTechCat.pageUrl}">
+										<a class="text-decoration-none" th:href="${#strings.replace(nonTechCat.pageUrl,' ','-')}">
 											<i class="fa-solid fa-arrow-right" style="float: right;"></i>
 										</a>
 									</h5>
@@ -259,7 +265,7 @@
 											style="text-align: center;">
 											<div class="p-3 border bg-light"
 												style="background-color: aliceblue !important;">
-												<div class="card-title" th:text="${nonTechSubCat.name}">Tech Sub
+												<div class="card-title" th:text="${#strings.replace(nonTechSubCat.pageUrl,' ','-')}">Tech Sub
 													Category
 													Name</div>
 												<a class="text-decoration-none link-dark"

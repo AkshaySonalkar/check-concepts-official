@@ -145,7 +145,7 @@
 						<div class="card-header" style="background-color: unset !important;">
 							<h5 class="mb-0">
 								<span th:text="${techCat.name}"> </span>
-								<a class="text-decoration-none" th:href="${techCat.pageUrl}">
+								<a class="text-decoration-none" th:href="${#strings.replace(techCat.pageUrl,' ','-')}">
 									<i class="fa-solid fa-arrow-right" style="float: right;"></i>
 								</a>
 							</h5>
@@ -159,7 +159,7 @@
 										<div class="card-title" th:text="${techSubCat.name}">Tech Sub Category
 											Name</div>
 
-										<a class="text-decoration-none link-dark" th:href="${techSubCat.pageUrl}">
+										<a class="text-decoration-none link-dark" th:href="${#strings.replace(techSubCat.pageUrl,' ','-')}">
 
 											<i class="fa-solid fa-arrow-up-right-from-square"
 												style="font-size: 2.1rem;color: seagreen;"></i>
@@ -177,7 +177,7 @@
 						<div class="card-header" style="background-color: unset !important;">
 							<h5 class="mb-0">
 								<span th:text="${nonTechCat.name}"> </span>
-								<a class="text-decoration-none" th:href="${nonTechCat.pageUrl}">
+								<a class="text-decoration-none" th:href="${#strings.replace(nonTechCat.pageUrl,' ','-')}">
 									<i class="fa-solid fa-arrow-right" style="float: right;"></i>
 								</a>
 							</h5>
@@ -190,7 +190,7 @@
 									<div class="p-3 border bg-light" style="background-color: aliceblue !important;">
 										<div class="card-title" th:text="${nonTechSubCat.name}">Tech Sub Category
 											Name</div>
-										<a class="text-decoration-none link-dark" th:href="${nonTechSubCat.pageUrl}">
+										<a class="text-decoration-none link-dark" th:href="${#strings.replace(nonTechSubCat.pageUrl,' ','-')}">
 											<i class="fa-solid fa-arrow-up-right-from-square"
 												style="font-size: 2.1rem;color: seagreen;"></i>
 										</a>

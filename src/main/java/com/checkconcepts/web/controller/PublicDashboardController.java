@@ -1,6 +1,7 @@
 package com.checkconcepts.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -84,7 +85,7 @@ public class PublicDashboardController {
 	@GetMapping("/tech/post/{id}/{name}")
 	public String techPostView(@PathVariable("id") Long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
@@ -102,7 +103,11 @@ public class PublicDashboardController {
 		model.addAttribute("post", post);
 
 		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
-		model.addAttribute("relatedPosts", relatedPosts);
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(relatedPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("relatedPosts", postsList);
 
 		Category cat = post.getSubCategoryType().getCategoryType();
 		model.addAttribute("postcategory", cat);
@@ -129,7 +134,12 @@ public class PublicDashboardController {
 		model.addAttribute("post", post);
 
 		List<Post> relatedPosts = post.getSubCategoryType().getPosts().stream().limit(10).collect(Collectors.toList());
-		model.addAttribute("relatedPosts", relatedPosts);
+		
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(relatedPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("relatedPosts", postsList);
 
 		Category cat = post.getSubCategoryType().getCategoryType();
 		model.addAttribute("postcategory", cat);
@@ -152,7 +162,7 @@ public class PublicDashboardController {
 
 	@GetMapping("/tech")
 	public String exploreTech(final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
@@ -180,8 +190,12 @@ public class PublicDashboardController {
 			}
 		}
 
-		model.addAttribute("posts", allPosts.stream().sorted((o1, o2) -> o2.getUpdatedAt().compareTo(o1.getUpdatedAt()))
-				.collect(Collectors.toList()));
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
+		
 		model.addAttribute("pagetitle", "Explore Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
 		model.addAttribute("categories", displayCategories);
@@ -194,7 +208,7 @@ public class PublicDashboardController {
 
 	@GetMapping("/nonTech")
 	public String exploreNonTech(final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
@@ -223,7 +237,12 @@ public class PublicDashboardController {
 			}
 		}
 
-		model.addAttribute("posts", allPosts);
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
+		
 		model.addAttribute("pagetitle", "Explore Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + sb + " and many more ...");
 		model.addAttribute("categories", displayCategories);
@@ -237,26 +256,30 @@ public class PublicDashboardController {
 	@GetMapping("/tech/category/{id}/{name}")
 	public String exploreTechCategory(@PathVariable("id") long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
 		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
 		model.addAttribute("nonTechCategories", nonTechCategories);
-		
+
 		Set<SubCategory> subCategories = categoryService.findCategoryById(id).get().getSubCategories();
 		List<MenuCategory> techSubCategories = new ArrayList<>();
 		Set<Post> allPosts = new HashSet<>();
 		for (SubCategory cat : subCategories) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), true,
-					cat.isPremium(), "/tech/subcategory/" + cat.getId());
+					cat.isPremium(), "/tech/subcategory/" + cat.getId() + "/" + cat.getName());
 			techSubCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 					.collect(Collectors.toSet()));
 		}
-//		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
-//		model.addAttribute("sidebarcategories", techCategories);
-		model.addAttribute("posts", allPosts);
+		
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
+		
 		model.addAttribute("pagetitle",
 				"Explore " + categoryService.findCategoryById(id).get().getName() + " Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
@@ -270,24 +293,27 @@ public class PublicDashboardController {
 	@GetMapping("/tech/subcategory/{id}/{name}")
 	public String exploreTechSubCategory(@PathVariable("id") long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
 		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
 		model.addAttribute("nonTechCategories", nonTechCategories);
-		
-		SubCategory subCategories = subCategoryService.findSubCategoryById(id).get();
+
+		SubCategory subCategory = subCategoryService.findSubCategoryById(id).get();
 
 		Set<Post> allPosts = new HashSet<>();
 
-		allPosts.addAll(subCategories.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+		allPosts.addAll(subCategory.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 				.collect(Collectors.toSet()));
 
-		model.addAttribute("posts", allPosts);
-		model.addAttribute("pagetitle",
-				"Explore " + categoryService.findCategoryById(id).get().getName() + " Technical Contents");
-		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
+		model.addAttribute("pagetitle", "Explore " + subCategory.getName() + " Technical Contents");
+		model.addAttribute("pagedesc", "Explore " + subCategory.getDescription());
 
 		model.addAttribute("sidebarHeader", name);
 		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, true, false));
@@ -298,26 +324,29 @@ public class PublicDashboardController {
 	@GetMapping("/nonTech/category/{id}/{name}")
 	public String exploreNonTechCategory(@PathVariable("id") long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
 		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
 		model.addAttribute("nonTechCategories", nonTechCategories);
-		
+
 		Set<SubCategory> subCategories = categoryService.findCategoryById(id).get().getSubCategories();
 		List<MenuCategory> techSubCategories = new ArrayList<>();
 		Set<Post> allPosts = new HashSet<>();
 		for (SubCategory cat : subCategories) {
 			MenuCategory category = new MenuCategory(cat.getId(), cat.getName(), cat.getDescription(), false,
-					cat.isPremium(), "/nonTech/subcategory/" + cat.getId());
+					cat.isPremium(), "/nonTech/subcategory/" + cat.getId() + "/" + cat.getName());
 			techSubCategories.add(category);
 			allPosts.addAll(cat.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 					.collect(Collectors.toSet()));
 		}
-//		model.addAttribute("sidebarHeader", categoryService.findCategoryById(id).get().getName() + " SubCategories");
-//		model.addAttribute("sidebarcategories", techCategories);
-		model.addAttribute("posts", allPosts);
+
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
 		model.addAttribute("pagetitle",
 				"Explore " + categoryService.findCategoryById(id).get().getName() + " Non Technical Contents");
 		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
@@ -331,24 +360,27 @@ public class PublicDashboardController {
 	@GetMapping("/nonTech/subcategory/{id}/{name}")
 	public String exploreNonTechSubCategory(@PathVariable("id") long id, @PathVariable("name") String name,
 			final HttpServletRequest request, final Model model) {
-		
+
 		List<MenuCategory> techCategories = getTechCategoriesWithSubCategories();
 		model.addAttribute("techCategories", techCategories);
 
 		List<MenuCategory> nonTechCategories = getNonTechCategoriesWithSubCategories();
 		model.addAttribute("nonTechCategories", nonTechCategories);
-		
-		SubCategory subCategories = subCategoryService.findSubCategoryById(id).get();
+
+		SubCategory subCategory = subCategoryService.findSubCategoryById(id).get();
 
 		Set<Post> allPosts = new HashSet<>();
 
-		allPosts.addAll(subCategories.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
+		allPosts.addAll(subCategory.getPosts().stream().filter(p -> p.getStatus().equals(PostsStatus.PUBLISHED))
 				.collect(Collectors.toSet()));
 
-		model.addAttribute("posts", allPosts);
-		model.addAttribute("pagetitle",
-				"Explore " + categoryService.findCategoryById(id).get().getName() + " Non Technical Contents");
-		model.addAttribute("pagedesc", "Explore " + categoryService.findCategoryById(id).get().getDescription());
+		List<Post> postsList = new ArrayList<>();
+		postsList.addAll(allPosts);
+		Collections.sort(postsList);
+		
+		model.addAttribute("posts", postsList);
+		model.addAttribute("pagetitle", "Explore " + subCategory.getName() + " Non Technical Contents");
+		model.addAttribute("pagedesc", "Explore " + subCategory.getDescription());
 
 		model.addAttribute("sidebarHeader", name);
 		model.addAttribute("sidebarcategories", getPostsDataMenuCategory(allPosts, false, false));
@@ -393,13 +425,21 @@ public class PublicDashboardController {
 		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> cat.isTech())
 				.collect(Collectors.toList());
 
+		Collections.sort(categoryList);
+
 		for (Category cat : categoryList) {
 
 			List<MenuSubCategory> subcategories = new ArrayList<>();
 
 			if (!cat.getSubCategories().isEmpty()) {
 
-				for (SubCategory subcat : cat.getSubCategories()) {
+				List<SubCategory> subCategoryList = new ArrayList<>();
+
+				subCategoryList.addAll(cat.getSubCategories());
+
+				Collections.sort(subCategoryList);
+
+				for (SubCategory subcat : subCategoryList) {
 
 					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
 							subcat.getDescription(), subcat.isPremium(),
@@ -424,13 +464,22 @@ public class PublicDashboardController {
 
 		List<Category> categoryList = categoryService.findAll().stream().filter(cat -> !cat.isTech())
 				.collect(Collectors.toList());
+
+		Collections.sort(categoryList);
+
 		for (Category cat : categoryList) {
 
 			List<MenuSubCategory> subcategories = new ArrayList<>();
 
 			if (!cat.getSubCategories().isEmpty()) {
 
-				for (SubCategory subcat : cat.getSubCategories()) {
+				List<SubCategory> subCategoryList = new ArrayList<>();
+
+				subCategoryList.addAll(cat.getSubCategories());
+
+				Collections.sort(subCategoryList);
+
+				for (SubCategory subcat : subCategoryList) {
 
 					MenuSubCategory subcategory = new MenuSubCategory(subcat.getId(), subcat.getName(),
 							subcat.getDescription(), subcat.isPremium(),
@@ -450,7 +499,7 @@ public class PublicDashboardController {
 	}
 
 	public List<MenuCategory> getPostsDataMenuCategory(Set<Post> allPosts, boolean tech, boolean premium) {
-
+		
 		List<MenuCategory> postsDataCategories = new ArrayList<>();
 
 		for (Post post : allPosts) {
