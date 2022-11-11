@@ -14,7 +14,10 @@
 				<div class="row gx-5">
 					<div class="col-lg-4 mb-5" th:each="post : ${posts}">
 						<div class="card h-100 shadow border-0 explore-card">
-
+						<img style="width: 100%; height: 150px;" th:each="attp : ${post.postsAttachments}"
+								th:if="${attp.profilePic}" class="card-img-top" th:src="${attp.attachmentSrc}"
+								alt="${attp.name}">
+						
 							<div class="card-body p-4">
 
 								<a class="text-decoration-none link-dark stretched-link"
